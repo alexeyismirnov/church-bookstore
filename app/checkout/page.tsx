@@ -1,38 +1,122 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 import Link from 'next/link';
-import { ArrowLeft, CreditCard, Truck, Shield } from 'lucide-react';
-import { books } from '../lib/data';
+import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { CheckoutForm } from '@/app/components/checkout/CheckoutForm';
+import { ShippingForm, ShippingAddress } from '@/app/components/checkout/ShippingForm';
+import { OrderSummary } from '@/app/components/checkout/OrderSummary';
+import { useRouter } from 'next/navigation';
+import { CartItem } from '@/app/types';
+import { books } from '@/app/lib/data';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CheckoutPage() {
-  const [formData, setFormData] = useState({
-    email: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    phone: '',
-    notes: '',
-  });
+  const router = useRouter();
+  const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [shippingAddress, setShippingAddress] = useState<ShippingAddress | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock cart items
-  const cartItems = [
-    { ...books[0], quantity: 1 },
-    { ...books[1], quantity: 2 },
-  ];
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const loadCart = () => {
+      try {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          setCartItems(JSON.parse(savedCart));
+        } else {
+          // Fallback to mock data if no cart in localStorage
+          setCartItems([
+            { ...books[0], quantity: 1 },
+            { ...books[1], quantity: 2 },
+          ]);
+        }
+      } catch (err) {
+        console.error('Error loading cart:', err);
+        // Fallback to mock data
+        setCartItems([
+          { ...books[0], quantity: 1 },
+          { ...books[1], quantity: 2 },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCart();
+  }, []);
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal > 50 ? 0 : 5.99;
   const total = subtotal + shipping;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    alert('Order placed successfully!');
+  // Handle shipping form completion
+  const handleShippingComplete = async (address: ShippingAddress) => {
+    setShippingAddress(address);
+    setError(null);
+
+    try {
+      // Create PaymentIntent with cart total
+      const response = await fetch('/api/stripe/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: total,
+          currency: 'usd',
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to initialize payment');
+
+      const { clientSecret } = await response.json();
+      setClientSecret(clientSecret);
+      setStep('payment');
+    } catch (err) {
+      setError('Failed to initialize payment. Please try again.');
+    }
   };
+
+  // Handle successful payment
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
+    // Clear cart after successful payment
+    localStorage.removeItem('cart');
+    router.push(`/checkout/confirmation?payment_intent=${paymentIntentId}`);
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  // Empty cart
+  if (cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-6" />
+            <h1 className="text-2xl font-bold text-dark mb-4">Your cart is empty</h1>
+            <p className="text-gray-500 mb-8">
+              Looks like you haven't added any books to your cart yet.
+            </p>
+            <Link href="/catalog" className="btn-primary">
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,226 +134,83 @@ export default function CheckoutPage() {
           Checkout
         </h1>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Checkout Form */}
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Contact Information */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-lg font-bold text-dark mb-4">Contact Information</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                      placeholder="your@email.com"
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        First Name
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.firstName}
-                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="John"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Last Name
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.lastName}
-                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="Doe"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            {error}
+          </div>
+        )}
 
-              {/* Shipping Address */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-lg font-bold text-dark mb-4">Shipping Address</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Address
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                      placeholder="123 Main Street"
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.city}
-                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="City"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        State
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.state}
-                        onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="State"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        ZIP Code
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.zip}
-                        onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="12345"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone
-                      </label>
-                      <input
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                        placeholder="(555) 123-4567"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Progress Steps */}
+        <div className="mb-8">
+          <div className="flex items-center">
+            <div className={`flex items-center ${step === 'shipping' ? 'text-primary' : 'text-green-600'}`}>
+              <span className={`w-8 h-8 rounded-full border-2 flex items-center justify-center mr-2 ${
+                step === 'shipping' ? 'border-primary' : 'border-green-600'
+              }`}>
+                {step === 'payment' ? '✓' : '1'}
+              </span>
+              <span className="font-medium">Shipping</span>
+            </div>
+            <div className="flex-1 h-0.5 mx-4 bg-gray-300" />
+            <div className={`flex items-center ${step === 'payment' ? 'text-primary' : 'text-gray-400'}`}>
+              <span className={`w-8 h-8 rounded-full border-2 flex items-center justify-center mr-2 ${
+                step === 'payment' ? 'border-primary' : 'border-gray-400'
+              }`}>
+                2
+              </span>
+              <span className="font-medium">Payment</span>
+            </div>
+          </div>
+        </div>
 
-              {/* Order Notes */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-lg font-bold text-dark mb-4">Order Notes (Optional)</h2>
-                <textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary h-24 resize-none"
-                  placeholder="Special instructions for delivery..."
-                />
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Form Area */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              {step === 'shipping' && (
+                <ShippingForm onComplete={handleShippingComplete} />
+              )}
 
-              <div className="flex items-center gap-4">
-                <Link
-                  href="/cart"
-                  className="flex items-center gap-2 text-gray-600 hover:text-primary font-medium"
+              {step === 'payment' && clientSecret && shippingAddress && (
+                <Elements
+                  stripe={stripePromise}
+                  options={{
+                    clientSecret,
+                    appearance: {
+                      theme: 'stripe',
+                      variables: {
+                        colorPrimary: '#D92022',
+                        colorBackground: '#ffffff',
+                        colorText: '#242424',
+                        colorDanger: '#dc2626',
+                        fontFamily: 'Inter, system-ui, sans-serif',
+                        borderRadius: '8px',
+                      },
+                    },
+                  }}
                 >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Cart
-                </Link>
-                <button type="submit" className="btn-primary flex-grow">
-                  Place Order
-                </button>
-              </div>
-            </form>
+                  <CheckoutForm
+                    orderTotal={total}
+                    shippingAddress={shippingAddress}
+                    onSuccess={handlePaymentSuccess}
+                    onBack={() => setStep('shipping')}
+                  />
+                </Elements>
+              )}
+            </div>
+
+            <Link
+              href="/cart"
+              className="inline-flex items-center gap-2 text-primary hover:text-primary-dark mt-6 font-medium"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Cart
+            </Link>
           </div>
 
-          {/* Order Summary */}
-          <div>
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-              <h2 className="text-lg font-bold text-dark mb-6">Order Summary</h2>
-              
-              {/* Items */}
-              <div className="space-y-4 mb-6">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex gap-4">
-                    <div className="w-16 h-20 flex-shrink-0">
-                      <img
-                        src={item.coverImage}
-                        alt={item.title}
-                        className="w-full h-full object-cover rounded"
-                      />
-                    </div>
-                    <div className="flex-grow">
-                      <h3 className="font-medium text-dark text-sm line-clamp-1">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-dark">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <hr className="border-gray-100 mb-6" />
-
-              {/* Totals */}
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-gray-600">
-                  <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
-                </div>
-                <hr className="border-gray-100" />
-                <div className="flex justify-between text-xl font-bold text-dark">
-                  <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
-                </div>
-              </div>
-
-              {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-4 text-center text-xs text-gray-500">
-                <div className="flex flex-col items-center gap-2">
-                  <Shield className="w-6 h-6 text-primary" />
-                  <span>Secure Payment</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <Truck className="w-6 h-6 text-primary" />
-                  <span>Fast Shipping</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <CreditCard className="w-6 h-6 text-primary" />
-                  <span>Easy Returns</span>
-                </div>
-              </div>
-            </div>
+          {/* Order Summary Sidebar */}
+          <div className="lg:col-span-1">
+            <OrderSummary cartItems={cartItems} shipping={shipping} />
           </div>
         </div>
       </div>
