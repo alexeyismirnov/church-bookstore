@@ -43,3 +43,83 @@ export interface FilterState {
   inStock: boolean;
   sortBy: 'newest' | 'price-asc' | 'price-desc' | 'popular';
 }
+
+// ============================================================================
+// Oscar API Types
+// ============================================================================
+
+/**
+ * Oscar API Product response
+ * Based on the Django Oscar oscarapi product serializer
+ */
+export interface OscarProduct {
+  id: number;
+  upc: string;
+  url?: string;
+  title: string;
+  price: string;
+  currency?: string;
+  availability?: string;
+  is_available: boolean;
+  is_new?: boolean;
+  is_bestseller?: boolean;
+  image_url: string | null;
+  images?: Array<{
+    original: string;
+    caption?: string;
+  }>;
+  
+  // Multi-language titles (optional, for detailed views)
+  title_en?: string;
+  title_ru?: string;
+  title_zh_hans?: string;
+  title_zh_hant?: string;
+  
+  // Additional fields that may be present
+  description?: string;
+  author?: string;
+  publisher?: string;
+  pub_date?: string;
+  text_script?: string;
+  category?: string;
+  categories?: Array<{
+    name: string;
+    slug: string;
+  }>;
+  
+  // Stock and pricing
+  stockrecords?: Array<{
+    partner: string;
+    partner_sku: string;
+    price_currency: string;
+    price_excl_tax: string;
+    price_incl_tax: string;
+    num_in_stock: number | null;
+    num_allocated: number;
+    low_stock_threshold: number | null;
+  }>;
+}
+
+/**
+ * Oscar API Paginated Response
+ * Standard Django REST Framework pagination format
+ */
+export interface OscarPaginationResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
+/**
+ * Oscar API Product List Response
+ */
+export type OscarProductListResponse = OscarPaginationResponse<OscarProduct>;
+
+/**
+ * Oscar API Error Response
+ */
+export interface OscarApiError {
+  detail?: string;
+  [key: string]: string | string[] | undefined;
+}

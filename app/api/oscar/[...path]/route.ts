@@ -3,20 +3,20 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-const OSCAR_API_BASE = process.env.OSCAR_API_URL || 'http://localhost:8000/api';
+const OSCAR_API_BASE = process.env.OSCAR_API_URL || 'https://orthodoxbookshop.asia/api';
 
 async function proxyToOscar(
   request: NextRequest,
   pathSegments: string[],
   method: string
 ) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionId = cookieStore.get('oscar-session-id')?.value;
   
   // Build the target URL
   const path = pathSegments.join('/');
   const searchParams = request.nextUrl.searchParams.toString();
-  const targetUrl = `${OSCAR_API_BASE}/${path}/${searchParams ? `?${searchParams}` : ''}`;
+  const targetUrl = `${OSCAR_API_BASE}/${path}${searchParams ? `?${searchParams}` : ''}`;
 
   // Prepare headers
   const headers: HeadersInit = {
@@ -84,35 +84,40 @@ async function proxyToOscar(
 // Handle all HTTP methods
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyToOscar(request, params.path, 'GET');
+  const { path } = await params;
+  return proxyToOscar(request, path, 'GET');
 }
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyToOscar(request, params.path, 'POST');
+  const { path } = await params;
+  return proxyToOscar(request, path, 'POST');
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyToOscar(request, params.path, 'PUT');
+  const { path } = await params;
+  return proxyToOscar(request, path, 'PUT');
 }
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyToOscar(request, params.path, 'PATCH');
+  const { path } = await params;
+  return proxyToOscar(request, path, 'PATCH');
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyToOscar(request, params.path, 'DELETE');
+  const { path } = await params;
+  return proxyToOscar(request, path, 'DELETE');
 }
