@@ -57,7 +57,6 @@ export default function ProductCard({ book }: ProductCardProps) {
                                 book.downloadUrl && 
                                 book.downloadUrl.includes('orthodoxbookshop');
             
-            // Build variants array: existing variants or create synthetic ones for special case
             let displayVariants = book.variants || [];
             
             if (hasFreeEbook) {
