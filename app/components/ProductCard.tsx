@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Heart, Star } from 'lucide-react';
+import { Heart, Star, BookOpen } from 'lucide-react';
+import { SiAdobeacrobatreader } from 'react-icons/si';
 import { Book } from '../types';
 
 interface ProductCardProps {
@@ -37,23 +38,6 @@ export default function ProductCard({ book }: ProductCardProps) {
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-grow">
-        {/* Rating */}
-        <div className="flex items-center gap-1 mb-2">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-4 h-4 ${
-                  i < Math.floor(book.rating)
-                    ? 'fill-yellow-400 text-yellow-400'
-                    : 'fill-gray-200 text-gray-200'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-sm text-gray-500">({book.reviewCount})</span>
-        </div>
-
         {/* Title */}
         <Link href={`/product/${book.id}`}>
           <h3 className="font-semibold text-dark mb-1 line-clamp-2 group-hover:text-primary transition-colors">
@@ -64,21 +48,35 @@ export default function ProductCard({ book }: ProductCardProps) {
         {/* Author */}
         <p className="text-sm text-gray-500 mb-3">{book.author}</p>
 
-        {/* Price & Button */}
+        {/* Price & Book Type Icon */}
         <div className="mt-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-dark">
-              ${book.price.toFixed(2)}
-            </span>
+            {book.price === 0 ? (
+              <span className="text-lg font-bold text-green-600">
+                FREE
+              </span>
+            ) : (
+              <span className="text-lg font-bold text-dark">
+                ${book.price.toFixed(2)}
+              </span>
+            )}
             {book.originalPrice && (
               <span className="text-sm text-gray-400 line-through">
                 ${book.originalPrice.toFixed(2)}
               </span>
             )}
+            {/* Book Type Indicator */}
+            {book.isShippingRequired === true && (
+              <span title="Paper book">
+                <BookOpen className="w-4 h-4 text-red-500 ml-1" />
+              </span>
+            )}
+            {book.isShippingRequired === false && (
+              <span title="E-book (PDF)">
+                <SiAdobeacrobatreader className="w-4 h-4 text-red-500 ml-1" />
+              </span>
+            )}
           </div>
-          <button className="btn-primary text-sm py-2 px-4">
-            Add to Cart
-          </button>
         </div>
       </div>
     </div>

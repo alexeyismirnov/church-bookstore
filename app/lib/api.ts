@@ -112,5 +112,6 @@ export function oscarProductToBook(product: OscarProduct) {
     inStock: product.is_available !== false, // Default to true unless explicitly false
     isNew: product.is_new || false,
     isBestseller: product.is_bestseller || false,
+    isShippingRequired: product.is_shipping_required,
   };
 }

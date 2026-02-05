@@ -15,6 +15,7 @@ export interface Book {
   inStock: boolean;
   isNew?: boolean;
   isBestseller?: boolean;
+  isShippingRequired?: boolean;
 }
 
 export interface CartItem extends Book {
@@ -98,6 +99,9 @@ export interface OscarProduct {
     num_allocated: number;
     low_stock_threshold: number | null;
   }>;
+
+  // Product type indicator (true for paper books, false for e-books)
+  is_shipping_required?: boolean;
 }
 
 /**

@@ -11,7 +11,7 @@ interface CartItemProps {
 
 export default function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
   return (
-    <div className="flex gap-4 py-6 border-b border-gray-100">
+    <div className="flex gap-4 py-6 px-6 border-b border-gray-100">
       {/* Image */}
       <div className="w-24 h-32 flex-shrink-0">
         <img
