@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant } from '../types';
 
 const API_BASE = '/api/oscar';
 const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
@@ -92,6 +92,13 @@ export function getProductTitle(product: OscarProduct, locale: string = 'en'): s
 }
 
 /**
+ * Convert variant price string to number
+ */
+export function parseVariantPrice(variant: Variant): number {
+  return parseFloat(variant.price) || 0;
+}
+
+/**
  * Convert Oscar product to the Book interface used by the frontend
  * This allows gradual migration of other pages
  */
@@ -113,5 +120,9 @@ export function oscarProductToBook(product: OscarProduct) {
     isNew: product.is_new || false,
     isBestseller: product.is_bestseller || false,
     isShippingRequired: product.is_shipping_required,
+    isParent: product.is_parent,
+    parentId: product.parent_id,
+    variants: product.variants,
+    downloadUrl: product.download_url,
   };
 }

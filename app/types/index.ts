@@ -1,3 +1,10 @@
+export interface Variant {
+  id: number;
+  price: string;
+  is_shipping_required: boolean;
+  book_type: "printed" | "ebook";
+}
+
 export interface Book {
   id: string;
   title: string;
@@ -16,6 +23,10 @@ export interface Book {
   isNew?: boolean;
   isBestseller?: boolean;
   isShippingRequired?: boolean;
+  isParent?: boolean;
+  parentId?: number | null;
+  variants?: Variant[];
+  downloadUrl?: string | null;
 }
 
 export interface CartItem extends Book {
@@ -102,6 +113,14 @@ export interface OscarProduct {
 
   // Product type indicator (true for paper books, false for e-books)
   is_shipping_required?: boolean;
+
+  // Parent/child product variant structure
+  is_parent?: boolean;
+  parent_id?: number | null;
+  variants?: Variant[];
+  
+  // Download URL for free e-book (when printed book has free digital version)
+  download_url?: string | null;
 }
 
 /**
