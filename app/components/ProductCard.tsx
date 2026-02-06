@@ -67,15 +67,23 @@ export default function ProductCard({ book }: ProductCardProps) {
               displayVariants = [
                 {
                   id: parseInt(book.id),
+                  title: book.title,
                   price: book.price.toFixed(2),
                   is_shipping_required: true,
                   book_type: 'printed' as const,
+                  isAvailable: true,
+                  isInStock: true,
+                  stockCount: 1,
                 },
                 {
                   id: parseInt(book.id) + 1000000, // Offset to avoid collision
+                  title: `${book.title} (E-book)`,
                   price: '0.00',
                   is_shipping_required: false,
                   book_type: 'ebook' as const,
+                  isAvailable: true,
+                  isInStock: true,
+                  stockCount: 0,
                 },
               ];
             }
