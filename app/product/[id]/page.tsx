@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { Heart, Check, Truck, Shield, Minus, Plus, Download, FileText, BookOpen } from 'lucide-react';
-import { getProductById, oscarProductToBook } from '../../lib/api';
-import { Book } from '../../types';
+import { Download, FileText, BookOpen, Package, Monitor } from 'lucide-react';
+import { getProductById, oscarProductToBook, parseVariantPrice } from '../../lib/api';
+import { Book, Variant } from '../../types';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -155,46 +155,111 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </h1>
             </div>
 
-            {/* Price */}
-            <div className="flex items-center gap-4">
-              <span className="text-3xl font-bold text-dark">
-                ${book.price.toFixed(2)}
-              </span>
-              {book.originalPrice && (
-                <span className="text-xl text-gray-400 line-through">
-                  ${book.originalPrice.toFixed(2)}
-                </span>
-              )}
-            </div>
+            {/* Product Variants or Single Product Row */}
+            {book.isParent && book.variants && book.variants.length > 0 ? (
+              /* Multiple Variants: Show one row per variant */
+              <div className="space-y-3">
+                {book.variants.map((variant: Variant) => {
+                  const variantPrice = parseVariantPrice(variant);
+                  return (
+                    <div key={variant.id} className="flex items-center justify-between gap-4 bg-gray-50 rounded-xl p-4">
+                      {/* Variant Title & Book Type */}
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          {variant.book_type === 'ebook' ? (
+                            <>
+                              <Monitor className="w-5 h-5 text-blue-500" />
+                              <span className="text-blue-600 font-medium">E-book</span>
+                            </>
+                          ) : (
+                            <>
+                              <Package className="w-5 h-5 text-amber-600" />
+                              <span className="text-amber-700 font-medium">Printed</span>
+                            </>
+                          )}
+                        </div>
 
-            {/* Stock Status */}
-            <div className="flex items-center gap-2">
-              {book.inStock ? (
-                <>
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-green-600 font-medium">In Stock</span>
-                </>
-              ) : (
-                <span className="text-red-500 font-medium">Out of Stock</span>
-              )}
-            </div>
+                      </div>
 
-            {/* Quantity & Add to Cart */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex items-center gap-3 border rounded-lg px-4 py-2 w-fit">
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="w-8 text-center font-medium">1</span>
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <Plus className="w-4 h-4" />
-                </button>
+                      {/* Price */}
+                      <div className="flex items-center gap-2">
+                        {variantPrice === 0 ? (
+                          <span className="text-xl font-bold text-green-600">FREE</span>
+                        ) : (
+                          <span className="text-xl font-bold text-dark">
+                            ${variantPrice.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Add to Cart Button or FREE label */}
+                      {variantPrice === 0 ? (
+                        <span className="text-green-600 font-semibold whitespace-nowrap">FREE</span>
+                      ) : variant.isAvailable === false ? (
+                        <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
+                          Out of Stock
+                        </button>
+                      ) : (
+                        <button className="btn-primary whitespace-nowrap">
+                          Add to Cart
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              <button className="btn-primary flex-grow">
-                Add to Cart
-              </button>
+            ) : (
+              /* Single Product: Show one row with book type, price, add to cart */
+              <div className="flex items-center justify-between gap-4 bg-gray-50 rounded-xl p-4">
+                {/* Book Type */}
+                <div className="flex items-center gap-2">
+                  {book.isShippingRequired === false ? (
+                    <>
+                      <Monitor className="w-5 h-5 text-blue-500" />
+                      <span className="text-blue-600 font-medium">E-book</span>
+                    </>
+                  ) : (
+                    <>
+                      <Package className="w-5 h-5 text-amber-600" />
+                      <span className="text-amber-700 font-medium">Printed</span>
+                    </>
+                  )}
+                </div>
 
-            </div>
+                {/* Price */}
+                <div className="flex items-center gap-2">
+                  {book.price === 0 ? (
+                    <span className="text-2xl font-bold text-green-600">
+                      FREE
+                    </span>
+                  ) : (
+                    <>
+                      <span className="text-2xl font-bold text-dark">
+                        ${book.price.toFixed(2)}
+                      </span>
+                      {book.originalPrice && (
+                        <span className="text-lg text-gray-400 line-through">
+                          ${book.originalPrice.toFixed(2)}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {/* Add to Cart Button - hidden for free books */}
+                {book.price !== 0 && (
+                  book.isShippingRequired === false || book.isInStock ? (
+                    <button className="btn-primary whitespace-nowrap">
+                      Add to Cart
+                    </button>
+                  ) : (
+                    <button className="btn-primary whitespace-allowed opacity-50 cursor-not-allowed" disabled>
+                      Out of Stock
+                    </button>
+                  )
+                )}
+              </div>
+            )}
 
             {/* Download Buttons */}
             <DownloadButtons book={book} />

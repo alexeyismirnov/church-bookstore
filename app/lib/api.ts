@@ -166,10 +166,31 @@ export function parseVariantPrice(variant: Variant): number {
 }
 
 /**
+ * Get the variant title in the preferred language
+ * Variants have a single title field from the backend (already localized)
+ * This is a pass-through for consistency with product title functions
+ */
+export function getVariantTitle(variant: Variant): string {
+  return variant.title || 'Untitled Variant';
+}
+
+/**
  * Convert Oscar product to the Book interface used by the frontend
  * This allows gradual migration of other pages
  */
 export function oscarProductToBook(product: OscarProduct): Book {
+  // Map variants with availability fields
+  const mappedVariants: Variant[] | undefined = product.variants?.map((variant: any) => ({
+    id: variant.id,
+    title: variant.title,
+    price: variant.price,
+    is_shipping_required: variant.is_shipping_required,
+    book_type: variant.book_type,
+    isAvailable: variant.is_available ?? true,
+    isInStock: variant.is_in_stock ?? true,
+    stockCount: variant.stock_count ?? 0,
+  }));
+
   return {
     id: product.id.toString(),
     title: getProductTitle(product),
@@ -189,12 +210,14 @@ export function oscarProductToBook(product: OscarProduct): Book {
     isShippingRequired: product.is_shipping_required,
     isParent: product.is_parent,
     parentId: product.parent_id,
-    variants: product.variants,
+    variants: mappedVariants,
     previewUrl: product.preview_url,
     downloadUrl: product.download_url,
     epubUrl: product.epub_url,
     translator: product.translator || undefined,
     pubDate: product.pub_date || undefined,
     language: getLanguageFromScript(product.text_script),
+    stockCount: product.stock_count,
+    isInStock: product.is_in_stock,
   };
 }

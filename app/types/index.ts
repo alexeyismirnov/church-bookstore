@@ -1,8 +1,12 @@
 export interface Variant {
   id: number;
+  title: string;
   price: string;
   is_shipping_required: boolean;
   book_type: "printed" | "ebook";
+  isAvailable: boolean;
+  isInStock: boolean;
+  stockCount: number;
 }
 
 export interface Book {
@@ -32,6 +36,8 @@ export interface Book {
   translator?: string;
   pubDate?: string;
   language?: string;
+  stockCount?: number;
+  isInStock?: boolean;
 }
 
 export interface CartItem extends Book {
@@ -137,11 +143,15 @@ export interface OscarProduct {
   is_parent?: boolean;
   parent_id?: number | null;
   variants?: Variant[];
-  
+
   // Download URLs for e-book versions
   preview_url?: string | null;
   download_url?: string | null;
   epub_url?: string | null;
+
+  // Stock information
+  stock_count?: number;
+  is_in_stock?: boolean;
 }
 
 /**
