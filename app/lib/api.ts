@@ -8,7 +8,15 @@ import { OscarProduct, OscarPaginationResponse, Variant, Book } from '../types';
 const getApiBase = () => {
   if (typeof window === 'undefined') {
     // Server-side: need absolute URL
-    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/oscar';
+    // Priority: NEXT_PUBLIC_API_URL > NEXT_PUBLIC_VERCEL_URL > localhost fallback
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return `${process.env.NEXT_PUBLIC_API_URL}/api/oscar`;
+    }
+    if (process.env.NEXT_PUBLIC_VERCEL_URL) {
+      return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/oscar`;
+    }
+    // Local development fallback
+    return 'http://localhost:3000/api/oscar';
   }
   // Client-side: relative URL works fine
   return '/api/oscar';
