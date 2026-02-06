@@ -26,7 +26,12 @@ export interface Book {
   isParent?: boolean;
   parentId?: number | null;
   variants?: Variant[];
+  previewUrl?: string | null;
   downloadUrl?: string | null;
+  epubUrl?: string | null;
+  translator?: string;
+  pubDate?: string;
+  language?: string;
 }
 
 export interface CartItem extends Book {
@@ -86,13 +91,27 @@ export interface OscarProduct {
   title_ru?: string;
   title_zh_hans?: string;
   title_zh_hant?: string;
-  
+
+  // Multi-language authors (optional, for detailed views)
+  author_en?: string;
+  author_ru?: string;
+  author_zh_hans?: string;
+  author_zh_hant?: string;
+
+  // Multi-language descriptions (optional, for detailed views)
+  description_en?: string;
+  description_ru?: string;
+  description_zh_hans?: string;
+  description_zh_hant?: string;
+
   // Additional fields that may be present
   description?: string;
   author?: string;
   publisher?: string;
   pub_date?: string;
   text_script?: string;
+  translator?: string;
+  num_pages?: number;
   category?: string;
   categories?: Array<{
     name: string;
@@ -119,8 +138,10 @@ export interface OscarProduct {
   parent_id?: number | null;
   variants?: Variant[];
   
-  // Download URL for free e-book (when printed book has free digital version)
+  // Download URLs for e-book versions
+  preview_url?: string | null;
   download_url?: string | null;
+  epub_url?: string | null;
 }
 
 /**

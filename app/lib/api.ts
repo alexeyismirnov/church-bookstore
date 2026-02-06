@@ -1,9 +1,19 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book } from '../types';
 
-const API_BASE = '/api/oscar';
+// Use environment variable or default to relative path for client-side
+// For server-side rendering, we need an absolute URL
+const getApiBase = () => {
+  if (typeof window === 'undefined') {
+    // Server-side: need absolute URL
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/oscar';
+  }
+  // Client-side: relative URL works fine
+  return '/api/oscar';
+};
+
 const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
 
 /**
@@ -12,7 +22,7 @@ const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
  * @returns Paginated product response
  */
 export async function getProducts(page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
-  const response = await fetch(`${API_BASE}/products/?page=${page}`, {
+  const response = await fetch(`${getApiBase()}/products/?page=${page}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -34,7 +44,7 @@ export async function getProducts(page: number = 1): Promise<OscarPaginationResp
  * @returns Product details
  */
 export async function getProductById(id: string): Promise<OscarProduct> {
-  const response = await fetch(`${API_BASE}/products/${id}/`, {
+  const response = await fetch(`${getApiBase()}/products/${id}/`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -76,19 +86,76 @@ export function getFullImageUrl(imageUrl: string | null | undefined): string {
 export function getProductTitle(product: OscarProduct, locale: string = 'en'): string {
   // If product has a direct title field, use it
   if (product.title) return product.title;
-  
+
   // Try the requested locale first
   if (locale === 'en' && product.title_en) return product.title_en;
   if (locale === 'ru' && product.title_ru) return product.title_ru;
   if (locale === 'zh-hans' && product.title_zh_hans) return product.title_zh_hans;
   if (locale === 'zh-hant' && product.title_zh_hant) return product.title_zh_hant;
-  
+
   // Fallback chain: en -> ru -> zh_hans -> zh_hant -> 'Untitled'
-  return product.title_en 
-    || product.title_ru 
-    || product.title_zh_hans 
-    || product.title_zh_hant 
+  return product.title_en
+    || product.title_ru
+    || product.title_zh_hans
+    || product.title_zh_hant
     || 'Untitled';
+}
+
+/**
+ * Get the author in the preferred language
+ * Falls back to English, then Russian, then Chinese (Simplified), then Chinese (Traditional)
+ */
+export function getProductAuthor(product: OscarProduct, locale: string = 'en'): string {
+  // If product has a direct author field, use it
+  if (product.author) return product.author;
+
+  // Try the requested locale first
+  if (locale === 'en' && product.author_en) return product.author_en;
+  if (locale === 'ru' && product.author_ru) return product.author_ru;
+  if (locale === 'zh-hans' && product.author_zh_hans) return product.author_zh_hans;
+  if (locale === 'zh-hant' && product.author_zh_hant) return product.author_zh_hant;
+
+  // Fallback chain: en -> ru -> zh_hans -> zh_hant -> 'Unknown Author'
+  return product.author_en
+    || product.author_ru
+    || product.author_zh_hans
+    || product.author_zh_hant
+    || 'Unknown Author';
+}
+
+/**
+ * Get the description in the preferred language
+ * Falls back to English, then Russian, then Chinese (Simplified), then Chinese (Traditional)
+ */
+export function getProductDescription(product: OscarProduct, locale: string = 'en'): string {
+  // If product has a direct description field, use it
+  if (product.description) return product.description;
+
+  // Try the requested locale first
+  if (locale === 'en' && product.description_en) return product.description_en;
+  if (locale === 'ru' && product.description_ru) return product.description_ru;
+  if (locale === 'zh-hans' && product.description_zh_hans) return product.description_zh_hans;
+  if (locale === 'zh-hant' && product.description_zh_hant) return product.description_zh_hant;
+
+  // Fallback chain: en -> ru -> zh_hans -> zh_hant -> ''
+  return product.description_en
+    || product.description_ru
+    || product.description_zh_hans
+    || product.description_zh_hant
+    || '';
+}
+
+/**
+ * Get language name from text_script field
+ * The text_script field contains human-readable language descriptions
+ * (e.g., "English", "简体中文", "繁體中文", "Русский", etc.)
+ */
+export function getLanguageFromScript(textScript: string | undefined): string {
+  if (!textScript) return 'Unknown';
+
+  // Return the text_script value as-is since it's already a human-readable
+  // language description from the database
+  return textScript;
 }
 
 /**
@@ -102,11 +169,11 @@ export function parseVariantPrice(variant: Variant): number {
  * Convert Oscar product to the Book interface used by the frontend
  * This allows gradual migration of other pages
  */
-export function oscarProductToBook(product: OscarProduct) {
+export function oscarProductToBook(product: OscarProduct): Book {
   return {
     id: product.id.toString(),
     title: getProductTitle(product),
-    author: product.author || 'Unknown Author',
+    author: getProductAuthor(product),
     price: parseFloat(product.price) || 0,
     rating: 4.5, // Default rating - Oscar doesn't provide this
     reviewCount: 0, // Default - Oscar doesn't provide this
@@ -114,8 +181,8 @@ export function oscarProductToBook(product: OscarProduct) {
     category: product.category || 'Uncategorized',
     publisher: product.publisher || '',
     year: product.pub_date ? new Date(product.pub_date).getFullYear() : new Date().getFullYear(),
-    pages: 0, // Not provided by Oscar
-    description: product.description || '',
+    pages: product.num_pages || 0,
+    description: getProductDescription(product),
     inStock: product.is_available !== false, // Default to true unless explicitly false
     isNew: product.is_new || false,
     isBestseller: product.is_bestseller || false,
@@ -123,6 +190,11 @@ export function oscarProductToBook(product: OscarProduct) {
     isParent: product.is_parent,
     parentId: product.parent_id,
     variants: product.variants,
+    previewUrl: product.preview_url,
     downloadUrl: product.download_url,
+    epubUrl: product.epub_url,
+    translator: product.translator || undefined,
+    pubDate: product.pub_date || undefined,
+    language: getLanguageFromScript(product.text_script),
   };
 }

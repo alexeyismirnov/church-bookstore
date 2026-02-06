@@ -10,6 +10,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ book }: ProductCardProps) {
+  // Product link without page param - browser back button will naturally return to catalog page
+  const productLink = `/product/${book.id}`;
+
   return (
     <div className="card group relative flex flex-col h-full">
       {/* Favorite Button */}
@@ -18,7 +21,7 @@ export default function ProductCard({ book }: ProductCardProps) {
       </button>
 
       {/* Image */}
-      <Link href={`/product/${book.id}`} className="block relative aspect-[3/4] overflow-hidden rounded-t-xl">
+      <Link href={productLink} className="block relative aspect-[3/4] overflow-hidden rounded-t-xl">
         <img
           src={book.coverImage}
           alt={book.title}
@@ -39,7 +42,7 @@ export default function ProductCard({ book }: ProductCardProps) {
       {/* Content */}
       <div className="p-4 flex flex-col flex-grow">
         {/* Title */}
-        <Link href={`/product/${book.id}`}>
+        <Link href={productLink}>
           <h3 className="font-semibold text-dark mb-1 line-clamp-2 group-hover:text-primary transition-colors">
             {book.title}
           </h3>

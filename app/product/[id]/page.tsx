@@ -1,23 +1,112 @@
 import Link from 'next/link';
-import { Heart, Star, Check, Truck, Shield, Minus, Plus } from 'lucide-react';
-import { getBookById, getRelatedBooks, reviews, books } from '../../lib/data';
-import ReviewCard from '../../components/ReviewCard';
-import ProductGrid from '../../components/ProductGrid';
-
-export function generateStaticParams() {
-  return books.map((book) => ({
-    id: book.id,
-  }));
-}
+import { Heart, Check, Truck, Shield, Minus, Plus, Download, FileText, BookOpen } from 'lucide-react';
+import { getProductById, oscarProductToBook } from '../../lib/api';
+import { Book } from '../../types';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
 }
 
+async function fetchBook(id: string): Promise<Book | null> {
+  try {
+    const product = await getProductById(id);
+    return oscarProductToBook(product);
+  } catch (error) {
+    console.error('Failed to fetch book:', error);
+    return null;
+  }
+}
+
+
+function DownloadButtons({ book }: { book: Book }) {
+  // If all URLs are null/empty, don't show any download buttons
+  if (!book.downloadUrl && !book.previewUrl && !book.epubUrl) {
+    return null;
+  }
+
+  const isPaidBook = book.downloadUrl?.includes('orthodoxpaidbooks');
+  const isFreeBook = book.downloadUrl?.includes('orthodoxbookshop');
+
+  // Paid book: show only PDF preview button
+  if (isPaidBook) {
+    if (!book.previewUrl) return null;
+    return (
+      <div className="flex flex-col gap-3 pt-4 border-t">
+        <span className="text-sm text-gray-500 font-medium">Digital Version</span>
+        <a
+          href={book.previewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition-colors"
+        >
+          <BookOpen className="w-4 h-4" />
+          <span>Preview PDF</span>
+        </a>
+        <p className="text-xs text-gray-500">
+          This is a paid e-book. Preview available, purchase required for full download.
+        </p>
+      </div>
+    );
+  }
+
+  // Free book from orthodoxbookshop: show PDF and EPUB buttons
+  if (isFreeBook) {
+    return (
+      <div className="flex flex-col gap-3 pt-4 border-t">
+        <span className="text-sm text-gray-500 font-medium">Free Download</span>
+        <div className="flex flex-wrap gap-3">
+          {book.downloadUrl && (
+            <a
+              href={book.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              <span>Download PDF</span>
+            </a>
+          )}
+          {book.epubUrl && (
+            <a
+              href={book.epubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              <span>Download EPUB</span>
+            </a>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Unknown source with download URL: show generic download button
+  if (book.downloadUrl) {
+    return (
+      <div className="flex flex-col gap-3 pt-4 border-t">
+        <span className="text-sm text-gray-500 font-medium">Download</span>
+        <a
+          href={book.downloadUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          <span>Download</span>
+        </a>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
-  const book = getBookById(id);
-  
+  const book = await fetchBook(id);
+
   if (!book) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -31,8 +120,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
     );
   }
-
-  const relatedBooks = getRelatedBooks(book.id);
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,19 +148,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           {/* Info */}
           <div className="space-y-6">
-            {/* Title & Rating */}
+            {/* Title */}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-dark mb-4">
                 {book.title}
               </h1>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold text-lg">{book.rating}</span>
-                </div>
-                <span className="text-gray-400">|</span>
-                <span className="text-gray-500">{book.reviewCount} reviews</span>
-              </div>
             </div>
 
             {/* Price */}
@@ -87,11 +166,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </span>
               )}
             </div>
-
-            {/* Description */}
-            <p className="text-gray-600 leading-relaxed">
-              {book.description}
-            </p>
 
             {/* Stock Status */}
             <div className="flex items-center gap-2">
@@ -124,6 +198,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </button>
             </div>
 
+            {/* Download Buttons */}
+            <DownloadButtons book={book} />
+
             {/* Features */}
             <div className="grid grid-cols-2 gap-4 pt-6 border-t">
               <div className="flex items-center gap-3">
@@ -144,44 +221,45 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   <dt className="text-gray-500">Author</dt>
                   <dd className="font-medium text-dark">{book.author}</dd>
                 </div>
+                {book.translator && (
+                  <div>
+                    <dt className="text-gray-500">Translator</dt>
+                    <dd className="font-medium text-dark">{book.translator}</dd>
+                  </div>
+                )}
                 <div>
                   <dt className="text-gray-500">Publisher</dt>
                   <dd className="font-medium text-dark">{book.publisher}</dd>
                 </div>
-                <div>
-                  <dt className="text-gray-500">Year</dt>
-                  <dd className="font-medium text-dark">{book.year}</dd>
-                </div>
+                {book.pubDate && (
+                  <div>
+                    <dt className="text-gray-500">Publication date</dt>
+                    <dd className="font-medium text-dark">{book.pubDate}</dd>
+                  </div>
+                )}
+                {book.language && (
+                  <div>
+                    <dt className="text-gray-500">Language</dt>
+                    <dd className="font-medium text-dark">{book.language}</dd>
+                  </div>
+                )}
                 <div>
                   <dt className="text-gray-500">Pages</dt>
                   <dd className="font-medium text-dark">{book.pages}</dd>
                 </div>
-                <div>
-                  <dt className="text-gray-500">Category</dt>
-                  <dd className="font-medium text-dark">{book.category}</dd>
-                </div>
               </dl>
+              {book.description && (
+                <div className="mt-6 pt-6 border-t">
+                  <div
+                    className="text-gray-600 leading-relaxed prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: book.description }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <section className="mb-16">
-          <h2 className="section-title">Customer Reviews ({reviews.length})</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
-            ))}
-          </div>
-        </section>
-
-        {/* Related Books */}
-        {relatedBooks.length > 0 && (
-          <section>
-            <h2 className="section-title">You May Also Like</h2>
-            <ProductGrid books={relatedBooks} />
-          </section>
-        )}
       </div>
     </div>
   );
