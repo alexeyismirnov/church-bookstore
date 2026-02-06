@@ -193,25 +193,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <button className="btn-primary flex-grow">
                 Add to Cart
               </button>
-              <button className="p-3 border-2 border-gray-200 rounded-lg hover:border-primary hover:text-primary transition-colors">
-                <Heart className="w-6 h-6" />
-              </button>
+
             </div>
 
             {/* Download Buttons */}
             <DownloadButtons book={book} />
 
-            {/* Features */}
-            <div className="grid grid-cols-2 gap-4 pt-6 border-t">
-              <div className="flex items-center gap-3">
-                <Truck className="w-5 h-5 text-primary" />
-                <span className="text-sm text-gray-600">Free shipping over $50</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-primary" />
-                <span className="text-sm text-gray-600">Secure checkout</span>
-              </div>
-            </div>
+
 
             {/* Characteristics */}
             <div className="bg-white rounded-xl p-6 shadow-sm">
