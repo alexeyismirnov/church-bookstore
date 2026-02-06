@@ -80,7 +80,7 @@ export default function ProductCard({ book }: ProductCardProps) {
             // Show variants if we have them (either real or synthetic)
             if (displayVariants.length > 0) {
               return (
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                <div className={`flex flex-col sm:flex-row sm:items-center gap-1 ${displayVariants.length === 2 ? 'sm:justify-between' : 'sm:gap-3'}`}>
                   {[...displayVariants]
                     .sort((a, b) => (b.is_shipping_required ? 1 : 0) - (a.is_shipping_required ? 1 : 0))
                     .map((variant) => (

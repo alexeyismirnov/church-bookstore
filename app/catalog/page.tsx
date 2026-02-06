@@ -180,10 +180,7 @@ export default function CatalogPage() {
                   </button>
                 </div>
                 
-                {/* Page info */}
-                <p className="text-center text-sm text-gray-500 mt-4">
-                  Showing {filteredBooks.length} of {totalCount} products
-                </p>
+
               </>
             ) : (
               <div className="text-center py-16">
