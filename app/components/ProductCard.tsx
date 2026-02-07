@@ -23,7 +23,7 @@ export default function ProductCard({ book }: ProductCardProps) {
   return (
     <Link
       href={productLink}
-      className="card group relative flex flex-col h-full"
+      className="card-link card group relative flex flex-col h-full"
       onClick={handleClick}
     >
       {/* Loading Overlay */}
@@ -34,7 +34,7 @@ export default function ProductCard({ book }: ProductCardProps) {
       )}
       {/* Favorite Button */}
       <button
-        className="absolute top-3 right-3 z-10 p-2 bg-white/90 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary hover:text-white"
+        className="absolute top-3 right-3 z-10 p-2 bg-white/90 rounded-full shadow-sm opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-primary hover:text-white"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -49,7 +49,7 @@ export default function ProductCard({ book }: ProductCardProps) {
         <img
           src={book.coverImage}
           alt={book.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
         />
         {book.isNew && (
           <span className="absolute top-3 left-3 bg-accent-green text-white text-xs font-semibold px-2 py-1 rounded">
@@ -66,7 +66,7 @@ export default function ProductCard({ book }: ProductCardProps) {
       {/* Content */}
       <div className="p-4 flex flex-col flex-grow">
         {/* Title */}
-        <h3 className="font-semibold text-dark mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+        <h3 className="card-title font-semibold text-dark mb-1 line-clamp-2 transition-colors">
           {book.title}
         </h3>
 

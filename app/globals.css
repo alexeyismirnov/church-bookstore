@@ -48,3 +48,74 @@ body {
     text-wrap: balance;
   }
 }
+
+/* ============================================
+   TOUCH DEVICE FIXES - Mobile Safari double-tap prevention
+   ============================================ */
+
+/* Only apply hover effects on devices that truly support hover (desktop with mouse/pen) */
+@media (hover: hover) {
+  /* Product card title hover effect */
+  .card-link:hover .card-title {
+    color: var(--color-primary, #8b2f2f);
+  }
+}
+
+/* Touch devices (non-hover): Use active states instead of hover */
+@media (hover: none) {
+  /* Disable hover-based visibility changes */
+  .card-link:active .card-title {
+    color: var(--color-primary, #8b2f2f);
+  }
+}
+
+/* ============================================
+   REPLACEMENT UTILITY CLASSES
+   Use these in components to replace group-hover
+   ============================================ */
+
+/* Unified hover/active class - works on both desktop and mobile */
+@media (hover: hover) {
+  .group-hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  
+  .group-hover-visible:hover {
+    opacity: 1;
+  }
+  
+  .group-hover-hidden:hover {
+    opacity: 0;
+  }
+  
+  .group-hover-scale:hover {
+    transform: scale(1.02);
+  }
+  
+  .group-hover-text-primary:hover {
+    color: var(--color-primary, #8b2f2f);
+  }
+}
+
+/* Touch feedback using active state */
+.group-hover-lift:active,
+.group-hover-visible:active,
+.group-hover-hidden:active,
+.group-hover-scale:active,
+.group-hover-text-primary:active {
+  opacity: 1;
+  transform: scale(0.98);
+}
+
+/* Touch-action manipulation to prevent double-tap zoom */
+.card {
+  touch-action: manipulation;
+}
+
+/* ============================================
+   CSS CUSTOM PROPERTIES FOR CONSISTENCY
+   ============================================ */
+
+:root {
+  --color-primary: #8b2f2f;
+}
