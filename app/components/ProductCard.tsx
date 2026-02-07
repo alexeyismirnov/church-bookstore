@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { Heart, Star, BookOpen } from 'lucide-react';
+import { Heart, Star, BookOpen, Loader2 } from 'lucide-react';
 import { SiAdobeacrobatreader } from 'react-icons/si';
 import { Book } from '../types';
 
@@ -10,18 +11,41 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ book }: ProductCardProps) {
+  const [isNavigating, setIsNavigating] = useState(false);
+
   // Product link without page param - browser back button will naturally return to catalog page
   const productLink = `/product/${book.id}`;
 
+  const handleClick = () => {
+    setIsNavigating(true);
+  };
+
   return (
-    <div className="card group relative flex flex-col h-full">
+    <Link
+      href={productLink}
+      className="card group relative flex flex-col h-full"
+      onClick={handleClick}
+    >
+      {/* Loading Overlay */}
+      {isNavigating && (
+        <div className="absolute inset-0 z-20 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        </div>
+      )}
       {/* Favorite Button */}
-      <button className="absolute top-3 right-3 z-10 p-2 bg-white/90 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary hover:text-white">
+      <button
+        className="absolute top-3 right-3 z-10 p-2 bg-white/90 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary hover:text-white"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          // Favorite button click handler will go here
+        }}
+      >
         <Heart className="w-4 h-4" />
       </button>
 
       {/* Image */}
-      <Link href={productLink} className="block relative aspect-[3/4] overflow-hidden rounded-t-xl">
+      <div className="block relative aspect-[3/4] overflow-hidden rounded-t-xl">
         <img
           src={book.coverImage}
           alt={book.title}
@@ -37,16 +61,14 @@ export default function ProductCard({ book }: ProductCardProps) {
             Sale
           </span>
         )}
-      </Link>
+      </div>
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-grow">
         {/* Title */}
-        <Link href={productLink}>
-          <h3 className="font-semibold text-dark mb-1 line-clamp-2 group-hover:text-primary transition-colors">
-            {book.title}
-          </h3>
-        </Link>
+        <h3 className="font-semibold text-dark mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+          {book.title}
+        </h3>
 
         {/* Author */}
         <p className="text-sm text-gray-500 mb-3">{book.author}</p>
@@ -156,6 +178,6 @@ export default function ProductCard({ book }: ProductCardProps) {
           })()}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
