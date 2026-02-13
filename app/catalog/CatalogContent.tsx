@@ -4,17 +4,23 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import ProductGrid from '../components/ProductGrid';
 import FilterSidebar from '../components/FilterSidebar';
-import { getProducts, oscarProductToBook } from '../lib/api';
+import { getProducts, getProductsByCategory, oscarProductToBook } from '../lib/api';
 import { Book } from '../types';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
-export default function CatalogContent() {
+interface CatalogContentProps {
+  categoryId?: string;
+}
+
+export default function CatalogContent({ categoryId }: CatalogContentProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   
   // Get page from URL query params, default to 1
   const pageFromUrl = parseInt(searchParams.get('page') || '1', 10);
+  // Extract category from URL for dependency tracking
+  const categoryParam = searchParams.get('category');
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
@@ -29,20 +35,41 @@ export default function CatalogContent() {
   const [totalCount, setTotalCount] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [hasPrevPage, setHasPrevPage] = useState(false);
+  
+  // Category ID for API-based filtering (passed from FilterSidebar)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId || null);
+  // Refresh counter to force re-fetch when category is re-selected
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Sync currentPage with URL when it changes externally (e.g., back button)
   useEffect(() => {
     setCurrentPage(pageFromUrl);
   }, [pageFromUrl]);
+ 
+  // Sync selectedCategoryId with categoryId prop when it changes (e.g., from URL)
+  useEffect(() => {
+    if (categoryId) {
+      setSelectedCategoryId(categoryId);
+    } else {
+      setSelectedCategoryId(null);
+    }
+  }, [categoryId]);
 
-  // Fetch products from API
+  // Fetch products from API - triggered by currentPage, selectedCategoryId, or categoryParam changes
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
       setError(null);
       
       try {
-        const response = await getProducts(currentPage);
+        let response;
+        if (selectedCategoryId) {
+          // Fetch products by category from /api/prodcat/<categoryId>/
+          response = await getProductsByCategory(selectedCategoryId, currentPage);
+        } else {
+          // Fetch all products from /api/oscar/products/
+          response = await getProducts(currentPage);
+        }
         
         // Convert Oscar products to Book format
         const convertedBooks = response.results.map(oscarProductToBook);
@@ -61,7 +88,7 @@ export default function CatalogContent() {
     }
 
     fetchProducts();
-  }, [currentPage]);
+  }, [currentPage, selectedCategoryId, categoryParam, refreshKey]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
@@ -69,6 +96,32 @@ export default function CatalogContent() {
         ? prev.filter((c) => c !== category)
         : [...prev, category]
     );
+  };
+
+  // Handle category selection from FilterSidebar and update URL
+  const handleCategorySelect = (categoryId: string | null) => {
+    setSelectedCategoryId(categoryId);
+    // Clear client-side category filters when using API-based filtering
+    setSelectedCategories([]);
+    // Increment refresh key to force re-fetch even if category ID is the same
+    setRefreshKey(prev => prev + 1);
+    
+    // Reset page to 1 when category changes
+    setCurrentPage(1);
+    
+    // Update URL with category parameter and reset page to 1
+    const params = new URLSearchParams(searchParams.toString());
+    if (categoryId) {
+      params.set('category', categoryId);
+    } else {
+      params.delete('category');
+    }
+    // Delete page first, then set to 1 to ensure proper reset
+    params.delete('page');
+    params.set('page', '1');
+    
+    // Use shallow routing with the current path - don't do full navigation
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   // Filter and sort books (client-side on current page)
@@ -100,7 +153,7 @@ export default function CatalogContent() {
     // Update URL with new page number
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
-    router.push(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     
     setCurrentPage(newPage);
     // Scroll to top of product grid
@@ -149,6 +202,7 @@ export default function CatalogContent() {
             onPriceChange={setPriceRange}
             inStock={inStock}
             onStockChange={setInStock}
+            onCategorySelect={handleCategorySelect}
           />
 
           {/* Product Grid */}
@@ -204,8 +258,13 @@ export default function CatalogContent() {
                 <button
                   onClick={() => {
                     setSelectedCategories([]);
+                    setSelectedCategoryId(null);
                     setPriceRange([0, 100]);
                     setInStock(false);
+                    // Clear category from URL
+                    const params = new URLSearchParams(searchParams);
+                    params.delete('category');
+                    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
                   }}
                   className="mt-4 text-primary hover:underline"
                 >

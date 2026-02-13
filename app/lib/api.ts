@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -23,6 +23,29 @@ const getApiBase = () => {
 };
 
 const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
+
+/**
+ * Fetch products by category from the API
+ * @param categoryId - Category ID
+ * @param page - Page number (1-based)
+ * @returns Paginated product response
+ */
+export async function getProductsByCategory(categoryId: string, page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
+  const response = await fetch(`${getApiBase()}/prodcat/${categoryId}/?page=${page}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store', // Ensure fresh data
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch products by category: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
 
 /**
  * Fetch paginated products from the Oscar API
@@ -66,6 +89,76 @@ export async function getProductById(id: string): Promise<OscarProduct> {
 
   const data = await response.json();
   return data;
+}
+
+/**
+ * API response for categories from /api/categories/
+ * Backend returns: { id, name, slug, num_products, children }
+ */
+interface ApiCategory {
+  id: number;
+  name: string;
+  slug: string;
+  num_products: number;
+  children?: ApiCategory[];
+}
+
+/**
+ * Fetch categories from the API
+ * @returns Array of categories with product counts (hierarchical)
+ */
+export async function getCategories(): Promise<Category[]> {
+  const response = await fetch(`${getApiBase()}/categories/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch categories: ${response.status} ${response.statusText}`);
+  }
+
+  const data: any = await response.json();
+  
+  // Handle paginated response (DRF default) or direct array
+  const categories: ApiCategory[] = Array.isArray(data) ? data : (data.results || []);
+  
+  // Map API response to Category interface with hierarchical children
+  return mapApiCategoriesToCategories(categories);
+}
+
+/**
+ * Map API category response to Category interface, including children
+ */
+function mapApiCategoriesToCategories(categories: ApiCategory[]): Category[] {
+  return categories.map((category) => {
+    const mapped: Category = {
+      id: category.id.toString(),
+      name: category.name,
+      slug: category.slug,
+      count: category.num_products,
+    };
+    
+    // Map children if present
+    if (category.children && category.children.length > 0) {
+      mapped.children = category.children.map((child) => ({
+        id: child.id.toString(),
+        name: child.name,
+        slug: child.slug,
+        count: child.num_products,
+        children: child.children ? child.children.map((gc) => ({
+          id: gc.id.toString(),
+          name: gc.name,
+          slug: gc.slug,
+          count: gc.num_products,
+        })) : undefined,
+      }));
+    }
+    
+    return mapped;
+  });
 }
 
 /**

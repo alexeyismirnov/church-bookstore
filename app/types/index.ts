@@ -58,6 +58,7 @@ export interface Category {
   name: string;
   slug: string;
   count: number;
+  children?: Category[];
 }
 
 export interface FilterState {

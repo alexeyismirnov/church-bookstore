@@ -1,7 +1,14 @@
 import { Suspense } from 'react';
 import CatalogContent from './CatalogContent';
 
-export default function CatalogPage() {
+interface PageProps {
+  searchParams: Promise<{ category?: string; page?: string }>;
+}
+
+export default async function CatalogPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const categoryId = searchParams.category;
+
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background">
@@ -13,7 +20,7 @@ export default function CatalogPage() {
         </div>
       </div>
     }>
-      <CatalogContent />
+      <CatalogContent categoryId={categoryId} />
     </Suspense>
   );
 }
