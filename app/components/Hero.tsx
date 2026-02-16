@@ -1,7 +1,15 @@
+// app/components/Hero.tsx
+// Hero component with translations
+
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { useTranslations } from '../i18n/LanguageContext';
 
 export default function Hero() {
+  const t = useTranslations('homepage.hero');
+
   return (
     <section className="relative bg-gradient-to-br from-background to-background-alt overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
@@ -9,20 +17,18 @@ export default function Hero() {
           {/* Content */}
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-dark leading-tight">
-              Orthodox Christian
+              {t('title')}
               <span className="block text-primary">Bookstore</span>
             </h1>
             <p className="text-lg text-gray-600 max-w-lg">
-              Discover a curated collection of Orthodox books, prayer books, 
-              lives of saints, and spiritual resources to deepen your faith 
-              and enrich your spiritual journey.
+              {t('subtitle')}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/catalog"
                 className="btn-primary inline-flex items-center gap-2"
               >
-                Browse Catalog
+                {t('cta')}
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link

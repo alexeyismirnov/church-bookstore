@@ -1,8 +1,12 @@
+// app/layout.tsx
+// Updated to include LanguageProvider and dynamic locale handling
+
 import type { Metadata } from 'next';
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { StripeProvider } from './providers/StripeProvider';
+import Providers from './components/Providers';
+import LocaleHandler from './components/LocaleHandler';
 
 export const metadata: Metadata = {
   title: 'Orthodox Church Bookstore',
@@ -15,13 +19,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col" suppressHydrationWarning>
-        <StripeProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col">
+        <Providers>
+          <LocaleHandler />
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />
-        </StripeProvider>
+        </Providers>
       </body>
     </html>
   );

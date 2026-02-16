@@ -24,6 +24,21 @@ const getApiBase = () => {
 
 const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
 
+// Get language from localStorage (set by LanguageContext)
+function getLanguagePreference(): string {
+  if (typeof window === 'undefined') return 'en';
+  return localStorage.getItem('locale') || 'en';
+}
+
+// Get common headers for API requests
+function getApiHeaders(): HeadersInit {
+  const lang = getLanguagePreference();
+  return {
+    'Content-Type': 'application/json',
+    'Accept-Language': lang,
+  };
+}
+
 /**
  * Fetch products by category from the API
  * @param categoryId - Category ID
@@ -33,9 +48,7 @@ const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
 export async function getProductsByCategory(categoryId: string, page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
   const response = await fetch(`${getApiBase()}/prodcat/${categoryId}/?page=${page}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getApiHeaders(),
     cache: 'no-store', // Ensure fresh data
   });
 
@@ -55,9 +68,7 @@ export async function getProductsByCategory(categoryId: string, page: number = 1
 export async function getProducts(page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
   const response = await fetch(`${getApiBase()}/products/?page=${page}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getApiHeaders(),
     cache: 'no-store', // Ensure fresh data
   });
 
@@ -77,9 +88,7 @@ export async function getProducts(page: number = 1): Promise<OscarPaginationResp
 export async function getProductById(id: string): Promise<OscarProduct> {
   const response = await fetch(`${getApiBase()}/products/${id}/`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getApiHeaders(),
     cache: 'no-store',
   });
 
@@ -110,9 +119,7 @@ interface ApiCategory {
 export async function getCategories(): Promise<Category[]> {
   const response = await fetch(`${getApiBase()}/categories/`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getApiHeaders(),
     cache: 'no-store',
   });
 
@@ -182,13 +189,15 @@ export function getFullImageUrl(imageUrl: string | null | undefined): string {
 
 /**
  * Get the title in the preferred language
- * Falls back to English, then Russian, then Chinese (Simplified), then Chinese (Traditional)
+ * Note: The API already returns localized title in the 'title' field based on Accept-Language header
+ * This function is kept for compatibility but mainly returns the API's localized title
  */
 export function getProductTitle(product: OscarProduct, locale: string = 'en'): string {
-  // If product has a direct title field, use it
+  // The API returns the title already localized based on Accept-Language header
+  // So we primarily use the 'title' field from the API
   if (product.title) return product.title;
 
-  // Try the requested locale first
+  // Fallback to specific locale fields if needed
   if (locale === 'en' && product.title_en) return product.title_en;
   if (locale === 'ru' && product.title_ru) return product.title_ru;
   if (locale === 'zh-hans' && product.title_zh_hans) return product.title_zh_hans;
@@ -216,12 +225,12 @@ export function getProductAuthor(product: OscarProduct, locale: string = 'en'): 
   if (locale === 'zh-hans' && product.author_zh_hans) return product.author_zh_hans;
   if (locale === 'zh-hant' && product.author_zh_hant) return product.author_zh_hant;
 
-  // Fallback chain: en -> ru -> zh_hans -> zh_hant -> 'Unknown Author'
+  // Fallback chain: en -> ru -> zh_hans -> zh_hant -> ''
   return product.author_en
     || product.author_ru
     || product.author_zh_hans
     || product.author_zh_hant
-    || 'Unknown Author';
+    || '';
 }
 
 /**
@@ -279,7 +288,7 @@ export function getVariantTitle(variant: Variant): string {
  * Convert Oscar product to the Book interface used by the frontend
  * This allows gradual migration of other pages
  */
-export function oscarProductToBook(product: OscarProduct): Book {
+export function oscarProductToBook(product: OscarProduct, locale: string = 'en'): Book {
   // Map variants with availability fields
   const mappedVariants: Variant[] | undefined = product.variants?.map((variant: any) => ({
     id: variant.id,
@@ -294,8 +303,8 @@ export function oscarProductToBook(product: OscarProduct): Book {
 
   return {
     id: product.id.toString(),
-    title: getProductTitle(product),
-    author: getProductAuthor(product),
+    title: getProductTitle(product, locale),
+    author: getProductAuthor(product, locale),
     price: parseFloat(product.price) || 0,
     rating: 4.5, // Default rating - Oscar doesn't provide this
     reviewCount: 0, // Default - Oscar doesn't provide this
@@ -304,7 +313,7 @@ export function oscarProductToBook(product: OscarProduct): Book {
     publisher: product.publisher || '',
     year: product.pub_date ? new Date(product.pub_date).getFullYear() : new Date().getFullYear(),
     pages: product.num_pages || 0,
-    description: getProductDescription(product),
+    description: getProductDescription(product, locale),
     inStock: product.is_available !== false, // Default to true unless explicitly false
     isNew: product.is_new || false,
     isBestseller: product.is_bestseller || false,

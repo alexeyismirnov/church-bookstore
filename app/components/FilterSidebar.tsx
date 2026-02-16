@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, ChevronUp } from 'lucide-react';
 import { getCategories } from '../lib/api';
 import { Category } from '../types';
+import { useTranslations } from '../i18n/LanguageContext';
+import { useApiLocale } from '../i18n/useApiLocale';
 
 interface FilterSidebarProps {
   selectedCategories: string[];
@@ -35,6 +37,12 @@ export default function FilterSidebar({
   onStockChange,
   onCategorySelect,
 }: FilterSidebarProps) {
+  const t = useTranslations();
+  const tCatalog = useTranslations('catalog');
+  
+  // Get current locale for API calls
+  const locale = useApiLocale();
+  
   const [expandedSections, setExpandedSections] = useState({
     availability: true,
     categories: true,
@@ -65,7 +73,7 @@ export default function FilterSidebar({
     };
 
     fetchCategories();
-  }, []);
+  }, [locale]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({
@@ -168,7 +176,7 @@ export default function FilterSidebar({
           className="flex items-center justify-between w-full font-semibold text-dark"
           onClick={() => toggleSection('availability')}
         >
-          Availability
+          {tCatalog('filter.availability')}
           {expandedSections.availability ? (
             <ChevronUp className="w-5 h-5" />
           ) : (
@@ -184,7 +192,7 @@ export default function FilterSidebar({
                 onChange={(e) => onStockChange(e.target.checked)}
                 className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
               />
-              <span className="text-sm text-gray-600">In Stock</span>
+              <span className="text-sm text-gray-600">{tCatalog('filter.inStockOnly')}</span>
             </label>
           </div>
         )}
@@ -196,7 +204,7 @@ export default function FilterSidebar({
           className="flex items-center justify-between w-full font-semibold text-dark"
           onClick={() => toggleSection('categories')}
         >
-          Categories
+          {tCatalog('filter.categories')}
           {expandedSections.categories ? (
             <ChevronUp className="w-5 h-5" />
           ) : (
@@ -205,7 +213,7 @@ export default function FilterSidebar({
         </button>
         {expandedSections.categories && (
           <div className="mt-3 space-y-1">
-            {loading && <p className="text-sm text-gray-400">Loading categories...</p>}
+            {loading && <p className="text-sm text-gray-400">{t('common.loading')}</p>}
             {error && <p className="text-sm text-red-500">{error}</p>}
             {!loading && !error && categories.map((category) => renderCategoryItem(category))}
           </div>
@@ -218,7 +226,7 @@ export default function FilterSidebar({
           className="flex items-center justify-between w-full font-semibold text-dark"
           onClick={() => toggleSection('price')}
         >
-          Price Range
+          {tCatalog('filter.priceRange')}
           {expandedSections.price ? (
             <ChevronUp className="w-5 h-5" />
           ) : (
@@ -235,7 +243,7 @@ export default function FilterSidebar({
                   onPriceChange([Number(e.target.value), priceRange[1]])
                 }
                 className="w-20 px-3 py-2 border rounded-lg text-sm"
-                placeholder="Min"
+                placeholder={tCatalog('filter.minPrice') || 'Min'}
               />
               <span className="text-gray-400">-</span>
               <input
@@ -245,7 +253,7 @@ export default function FilterSidebar({
                   onPriceChange([priceRange[0], Number(e.target.value)])
                 }
                 className="w-20 px-3 py-2 border rounded-lg text-sm"
-                placeholder="Max"
+                placeholder={tCatalog('filter.maxPrice') || 'Max'}
               />
             </div>
             <input
@@ -264,7 +272,7 @@ export default function FilterSidebar({
 
       {/* Apply Filters Button */}
       <button className="w-full btn-primary">
-        Apply Filters
+        {tCatalog('filter.apply')}
       </button>
     </aside>
   );

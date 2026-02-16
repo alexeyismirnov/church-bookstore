@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import ProductGrid from '../components/ProductGrid';
 import FilterSidebar from '../components/FilterSidebar';
 import { getProducts, getProductsByCategory, oscarProductToBook } from '../lib/api';
+import { useApiLocale } from '../i18n/useApiLocale';
+import { useTranslations } from '../i18n/LanguageContext';
 import { Book } from '../types';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
@@ -16,6 +19,11 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations();
+  const tCatalog = useTranslations('catalog');
+  
+  // Get current locale for API calls
+  const locale = useApiLocale();
   
   // Get page from URL query params, default to 1
   const pageFromUrl = parseInt(searchParams.get('page') || '1', 10);
@@ -71,8 +79,8 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
           response = await getProducts(currentPage);
         }
         
-        // Convert Oscar products to Book format
-        const convertedBooks = response.results.map(oscarProductToBook);
+        // Convert Oscar products to Book format with current locale
+        const convertedBooks = response.results.map((product) => oscarProductToBook(product, locale));
         setBooks(convertedBooks);
         
         // Update pagination state
@@ -88,7 +96,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
     }
 
     fetchProducts();
-  }, [currentPage, selectedCategoryId, categoryParam, refreshKey]);
+  }, [currentPage, selectedCategoryId, categoryParam, refreshKey, locale]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
@@ -165,19 +173,19 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <span>Home</span>
+          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
-          <span className="text-dark">Catalog</span>
+          <span className="text-dark">{tCatalog('title')}</span>
         </nav>
 
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-dark">Catalog</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-dark">{tCatalog('title')}</h1>
           
           {/* Sort Dropdown */}
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-500">
-              {loading ? 'Loading...' : `${totalCount} items`}
+              {loading ? t('common.loading') : `${totalCount} ${tCatalog('products')}`}
             </span>
             <select
               value={sortBy}
@@ -185,10 +193,10 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
               className="px-4 py-2 border rounded-lg bg-white text-sm"
               disabled={loading}
             >
-              <option value="newest">Newest First</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="popular">Most Popular</option>
+              <option value="newest">{tCatalog('sort.newest')}</option>
+              <option value="price-asc">{tCatalog('sort.priceAsc')}</option>
+              <option value="price-desc">{tCatalog('sort.priceDesc')}</option>
+              <option value="popular">{tCatalog('sort.popular')}</option>
             </select>
           </div>
         </div>
@@ -210,17 +218,17 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
             {loading ? (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                <span className="ml-3 text-gray-500">Loading products...</span>
+                <span className="ml-3 text-gray-500">{t('common.loading')}</span>
               </div>
             ) : error ? (
               <div className="text-center py-16">
-                <p className="text-red-500 text-lg mb-4">Error loading products</p>
+                <p className="text-red-500 text-lg mb-4">{t('common.error')}</p>
                 <p className="text-gray-500 text-sm mb-4">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
                   className="text-primary hover:underline"
                 >
-                  Try again
+                  {t('common.retry')}
                 </button>
               </div>
             ) : filteredBooks.length > 0 ? (
@@ -235,11 +243,11 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
                     className="flex items-center gap-2 px-4 py-2 border rounded-lg bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" />
-                    Previous
+                    {tCatalog('previous')}
                   </button>
                   
                   <span className="text-sm text-gray-600">
-                    Page {currentPage}
+                    {tCatalog('page')} {currentPage}
                   </span>
                   
                   <button
@@ -247,14 +255,14 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
                     disabled={!hasNextPage || loading}
                     className="flex items-center gap-2 px-4 py-2 border rounded-lg bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Next
+                    {tCatalog('next')}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
               </>
             ) : (
               <div className="text-center py-16">
-                <p className="text-gray-500 text-lg">No books found matching your criteria.</p>
+                <p className="text-gray-500 text-lg">{tCatalog('empty')}</p>
                 <button
                   onClick={() => {
                     setSelectedCategories([]);
@@ -268,7 +276,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
                   }}
                   className="mt-4 text-primary hover:underline"
                 >
-                  Clear all filters
+                  {tCatalog('filter.clearAll')}
                 </button>
               </div>
             )}

@@ -13,6 +13,9 @@ async function proxyToOscar(
   const cookieStore = await cookies();
   const sessionId = cookieStore.get('oscar-session-id')?.value;
   
+  // Get language from cookie (set by Django's set_language)
+  const languageCookie = cookieStore.get('django_language')?.value;
+  
   // Build the target URL
   const path = pathSegments.join('/');
   const searchParams = request.nextUrl.searchParams.toString();
@@ -25,6 +28,15 @@ async function proxyToOscar(
   
   if (sessionId) {
     headers['Session-Id'] = sessionId;
+  }
+
+  // Forward the language preference to Django API
+  // Django will use this to set LANGUAGE_CODE for localized responses
+  const acceptLanguageHeader = request.headers.get('Accept-Language');
+  const languageToUse = acceptLanguageHeader || languageCookie;
+  
+  if (languageToUse) {
+    headers['Accept-Language'] = languageToUse;
   }
 
   // Forward auth header if present (for logged-in users)

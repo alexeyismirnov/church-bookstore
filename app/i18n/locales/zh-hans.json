@@ -1,0 +1,204 @@
+{
+  "common": {
+    "search": "搜索",
+    "cart": "购物车",
+    "account": "账户",
+    "login": "登录",
+    "logout": "退出",
+    "register": "注册",
+    "loading": "加载中...",
+    "error": "发生错误",
+    "retry": "重试",
+    "viewAll": "查看全部",
+    "readMore": "阅读更多",
+    "addToCart": "加入购物车",
+    "outOfStock": "缺货",
+    "inStock": "有货",
+    "price": "价格",
+    "quantity": "数量",
+    "total": "总计",
+    "subtotal": "小计",
+    "shipping": "运费",
+    "free": "免费",
+    "checkout": "结账",
+    "continueShopping": "继续购物",
+    "remove": "删除",
+    "close": "关闭"
+  },
+  "nav": {
+    "catalog": "目录",
+    "books": "图书",
+    "media": "媒体",
+    "icons": "圣像",
+    "about": "关于我们",
+    "contact": "联系我们",
+    "home": "首页",
+    "myBooks": "我的书籍",
+    "favorites": "收藏夹",
+    "dashboard": "控制面板"
+  },
+  "homepage": {
+    "hero": {
+      "title": "欢迎来到东正教书店",
+      "subtitle": "您的东正教基督教书籍、祈祷书和属灵资源宝库",
+      "cta": "浏览目录"
+    },
+    "featured": {
+      "title": "精选产品",
+      "newArrivals": "新品到货",
+      "bestsellers": "畅销书"
+    },
+    "categories": {
+      "title": "浏览分类"
+    }
+  },
+  "catalog": {
+    "title": "目录",
+    "products": "产品",
+    "product": "产品",
+    "previous": "上一页",
+    "next": "下一页",
+    "page": "第",
+    "filter": {
+      "title": "筛选",
+      "categories": "分类",
+      "priceRange": "价格范围",
+      "minPrice": "最低",
+      "maxPrice": "最高",
+      "availability": "库存状态",
+      "inStockOnly": "有货",
+      "clearAll": "清除全部",
+      "apply": "应用筛选"
+    },
+    "sort": {
+      "title": "排序方式",
+      "newest": "最新",
+      "priceAsc": "价格：从低到高",
+      "priceDesc": "价格：从高到低",
+      "popular": "热门"
+    },
+    "empty": "未找到产品",
+    "showingResults": "显示 {start}-{end} 条结果，共 {total} 条"
+  },
+  "product": {
+    "details": "产品详情",
+    "bookDetails": "书籍详情",
+    "description": "描述",
+    "author": "作者",
+    "publisher": "出版社",
+    "year": "年份",
+    "publicationDate": "出版日期",
+    "pages": "页数",
+    "language": "语言",
+    "isbn": "ISBN",
+    "translator": "译者",
+    "format": "格式",
+    "printed": "印刷版",
+    "ebook": "电子版",
+    "relatedProducts": "相关产品",
+    "reviews": "评论",
+    "noReviews": "暂无评论",
+    "writeReview": "撰写评论",
+    "digitalVersion": "电子版",
+    "freeDownload": "免费下载",
+    "previewPdf": "预览PDF",
+    "downloadPdf": "下载PDF",
+    "downloadEpub": "下载EPUB",
+    "download": "下载",
+    "paidEbookNote": "这是付费电子书。可预览，购买后可下载完整版。",
+    "notFound": "书籍未找到",
+    "notFoundDesc": "您要找的书籍不存在。",
+    "browseCatalog": "浏览目录"
+  },
+  "cart": {
+    "title": "购物车",
+    "empty": "您的购物车是空的",
+    "items": "{count, plural, =0 {无商品} one {# 件商品} other {# 件商品}}",
+    "updateQuantity": "更新数量",
+    "proceedToCheckout": "去结账"
+  },
+  "checkout": {
+    "title": "结账",
+    "shipping": "配送信息",
+    "payment": "支付",
+    "review": "订单确认",
+    "placeOrder": "提交订单",
+    "orderSummary": "订单摘要",
+    "firstName": "名",
+    "lastName": "姓",
+    "email": "邮箱",
+    "phone": "电话",
+    "address": "地址",
+    "city": "城市",
+    "country": "国家",
+    "postalCode": "邮政编码",
+    "success": "订单提交成功！",
+    "confirmation": "订单确认"
+  },
+  "account": {
+    "title": "我的账户",
+    "profile": "个人资料",
+    "orders": "订单",
+    "addresses": "地址",
+    "wishlist": "愿望清单",
+    "settings": "设置"
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "email": "电子邮箱",
+      "password": "密码",
+      "rememberMe": "记住我",
+      "forgotPassword": "忘记密码？",
+      "submit": "登录",
+      "noAccount": "没有账户？",
+      "register": "注册"
+    },
+    "register": {
+      "title": "创建账户",
+      "firstName": "名",
+      "lastName": "姓",
+      "email": "电子邮箱",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "submit": "注册",
+      "hasAccount": "已有账户？",
+      "login": "登录"
+    }
+  },
+  "contact": {
+    "title": "联系我们",
+    "name": "您的姓名",
+    "email": "电子邮箱",
+    "subject": "主题",
+    "message": "留言",
+    "submit": "发送",
+    "success": "留言发送成功！",
+    "phone": "电话",
+    "address": "地址"
+  },
+  "about": {
+    "title": "关于我们",
+    "mission": "我们的使命",
+    "history": "我们的历史",
+    "team": "我们的团队"
+  },
+  "footer": {
+    "about": "关于",
+    "customerService": "客户服务",
+    "contact": "联系",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "copyright": "© {year} 东正教书店。保留所有权利。"
+  },
+  "errors": {
+    "notFound": "页面未找到",
+    "serverError": "服务器错误",
+    "unauthorized": "未授权",
+    "forbidden": "访问被拒绝"
+  },
+  "language": {
+    "select": "选择语言",
+    "current": "当前语言"
+  }
+}

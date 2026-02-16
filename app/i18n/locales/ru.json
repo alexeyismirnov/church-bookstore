@@ -1,0 +1,204 @@
+{
+  "common": {
+    "search": "Поиск",
+    "cart": "Корзина",
+    "account": "Аккаунт",
+    "login": "Вход",
+    "logout": "Выход",
+    "register": "Регистрация",
+    "loading": "Загрузка...",
+    "error": "Произошла ошибка",
+    "retry": "Повторить",
+    "viewAll": "Показать все",
+    "readMore": "Читать далее",
+    "addToCart": "В корзину",
+    "outOfStock": "Нет в наличии",
+    "inStock": "В наличии",
+    "price": "Цена",
+    "quantity": "Количество",
+    "total": "Итого",
+    "subtotal": "Подытог",
+    "shipping": "Доставка",
+    "free": "Бесплатно",
+    "checkout": "Оформить заказ",
+    "continueShopping": "Продолжить покупки",
+    "remove": "Удалить",
+    "close": "Закрыть"
+  },
+  "nav": {
+    "catalog": "Каталог",
+    "books": "Книги",
+    "media": "Медиа",
+    "icons": "Иконы",
+    "about": "О нас",
+    "contact": "Контакты",
+    "home": "Главная",
+    "myBooks": "Мои книги",
+    "favorites": "Избранное",
+    "dashboard": "Панель управления"
+  },
+  "homepage": {
+    "hero": {
+      "title": "Добро пожаловать в Православный книжный магазин",
+      "subtitle": "Ваш источник православных христианских книг, молитвословов и духовной литературы",
+      "cta": "Перейти в каталог"
+    },
+    "featured": {
+      "title": "Рекомендуемые товары",
+      "newArrivals": "Новинки",
+      "bestsellers": "Бестселлеры"
+    },
+    "categories": {
+      "title": "Категории"
+    }
+  },
+  "catalog": {
+    "title": "Каталог",
+    "products": "товаров",
+    "product": "Товар",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "page": "Страница",
+    "filter": {
+      "title": "Фильтры",
+      "categories": "Категории",
+      "priceRange": "Диапазон цен",
+      "minPrice": "Мин",
+      "maxPrice": "Макс",
+      "availability": "Наличие",
+      "inStockOnly": "В наличии",
+      "clearAll": "Сбросить все",
+      "apply": "Применить фильтры"
+    },
+    "sort": {
+      "title": "Сортировать по",
+      "newest": "Новинки",
+      "priceAsc": "Цена: по возрастанию",
+      "priceDesc": "Цена: по убыванию",
+      "popular": "Популярные"
+    },
+    "empty": "Товары не найдены",
+    "showingResults": "Показано {start}-{end} из {total} товаров"
+  },
+  "product": {
+    "details": "Информация о товаре",
+    "bookDetails": "Информация о книге",
+    "description": "Описание",
+    "author": "Автор",
+    "publisher": "Издательство",
+    "year": "Год",
+    "publicationDate": "Дата публикации",
+    "pages": "Страниц",
+    "language": "Язык",
+    "isbn": "ISBN",
+    "translator": "Переводчик",
+    "format": "Формат",
+    "printed": "Печатная",
+    "ebook": "Электронная",
+    "relatedProducts": "Похожие товары",
+    "reviews": "Отзывы",
+    "noReviews": "Отзывов пока нет",
+    "writeReview": "Написать отзыв",
+    "digitalVersion": "Электронная версия",
+    "freeDownload": "Бесплатная загрузка",
+    "previewPdf": "Предпросмотр PDF",
+    "downloadPdf": "Скачать PDF",
+    "downloadEpub": "Скачать EPUB",
+    "download": "Скачать",
+    "paidEbookNote": "Это платная электронная книга. Доступен предпросмотр, для полной загрузки требуется покупка.",
+    "notFound": "Книга не найдена",
+    "notFoundDesc": "Книга, которую вы ищете, не существует.",
+    "browseCatalog": "Перейти в каталог"
+  },
+  "cart": {
+    "title": "Корзина",
+    "empty": "Ваша корзина пуста",
+    "items": "{count, plural, =0 {Нет товаров} one {# товар} few {# товара} other {# товаров}}",
+    "updateQuantity": "Изменить количество",
+    "proceedToCheckout": "Оформить заказ"
+  },
+  "checkout": {
+    "title": "Оформление заказа",
+    "shipping": "Информация о доставке",
+    "payment": "Оплата",
+    "review": "Проверка заказа",
+    "placeOrder": "Оформить заказ",
+    "orderSummary": "Итого к оплате",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "email": "Email",
+    "phone": "Телефон",
+    "address": "Адрес",
+    "city": "Город",
+    "country": "Страна",
+    "postalCode": "Почтовый индекс",
+    "success": "Заказ успешно оформлен!",
+    "confirmation": "Подтверждение заказа"
+  },
+  "account": {
+    "title": "Мой аккаунт",
+    "profile": "Профиль",
+    "orders": "Заказы",
+    "addresses": "Адреса",
+    "wishlist": "Список желаний",
+    "settings": "Настройки"
+  },
+  "auth": {
+    "login": {
+      "title": "Вход",
+      "email": "Email",
+      "password": "Пароль",
+      "rememberMe": "Запомнить меня",
+      "forgotPassword": "Забыли пароль?",
+      "submit": "Войти",
+      "noAccount": "Нет аккаунта?",
+      "register": "Регистрация"
+    },
+    "register": {
+      "title": "Создать аккаунт",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "email": "Email",
+      "password": "Пароль",
+      "confirmPassword": "Подтвердите пароль",
+      "submit": "Зарегистрироваться",
+      "hasAccount": "Уже есть аккаунт?",
+      "login": "Войти"
+    }
+  },
+  "contact": {
+    "title": "Связаться с нами",
+    "name": "Ваше имя",
+    "email": "Email",
+    "subject": "Тема",
+    "message": "Сообщение",
+    "submit": "Отправить",
+    "success": "Сообщение отправлено!",
+    "phone": "Телефон",
+    "address": "Адрес"
+  },
+  "about": {
+    "title": "О нас",
+    "mission": "Наша миссия",
+    "history": "Наша история",
+    "team": "Наша команда"
+  },
+  "footer": {
+    "about": "О нас",
+    "customerService": "Обслуживание клиентов",
+    "contact": "Контакты",
+    "privacy": "Политика конфиденциальности",
+    "terms": "Условия использования",
+    "copyright": "© {year} Православный книжный магазин. Все права защищены."
+  },
+  "errors": {
+    "notFound": "Страница не найдена",
+    "serverError": "Ошибка сервера",
+    "unauthorized": "Не авторизован",
+    "forbidden": "Доступ запрещен"
+  },
+  "language": {
+    "select": "Выбрать язык",
+    "current": "Текущий язык"
+  }
+}

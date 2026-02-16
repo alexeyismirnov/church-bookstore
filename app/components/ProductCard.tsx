@@ -71,7 +71,9 @@ export default function ProductCard({ book }: ProductCardProps) {
         </h3>
 
         {/* Author */}
-        <p className="text-sm text-gray-500 mb-3">{book.author}</p>
+        {book.author && (
+          <p className="text-sm text-gray-500 mb-3">{book.author}</p>
+        )}
 
         {/* Price & Book Type Icon */}
         <div className="mt-auto">

@@ -1,17 +1,25 @@
+// app/components/Header.tsx
+// Updated to include language switcher and translations
+
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { Search, User, ShoppingCart, Menu, X, Heart } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslations } from '../i18n/LanguageContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount] = useState(2);
+  
+  // Get translations for navigation
+  const t = useTranslations('nav');
 
   const navLinks = [
-    { href: '/catalog', label: 'Catalog' },
-    { href: '/about', label: 'About Us' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/catalog', label: t('catalog') },
+    { href: '/about', label: t('about') },
+    { href: '/contact', label: t('contact') },
   ];
 
   return (
@@ -47,6 +55,11 @@ export default function Header() {
 
           {/* Right Side Icons */}
           <div className="flex items-center gap-2 md:gap-4">
+            {/* Language Switcher */}
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
+
             {/* Search */}
             <button className="p-2 hover:bg-background rounded-full transition-colors">
               <Search className="w-5 h-5 text-dark" />
@@ -110,19 +123,24 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {/* Language Switcher in Mobile Menu */}
+            <div className="px-4 py-3 border-t">
+              <p className="text-sm text-gray-500 mb-2">Language / 语言</p>
+              <LanguageSwitcher />
+            </div>
             <Link
               href="/favorites"
               className="px-4 py-3 text-dark hover:bg-background transition-colors sm:hidden"
               onClick={() => setIsMenuOpen(false)}
             >
-              Favorites
+              {t('favorites')}
             </Link>
             <Link
               href="/login"
               className="px-4 py-3 text-dark hover:bg-background transition-colors sm:hidden"
               onClick={() => setIsMenuOpen(false)}
             >
-              My Account
+              {t('account')}
             </Link>
           </nav>
         </div>

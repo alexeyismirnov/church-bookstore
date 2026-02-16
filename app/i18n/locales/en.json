@@ -1,0 +1,204 @@
+{
+  "common": {
+    "search": "Search",
+    "cart": "Cart",
+    "account": "Account",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "viewAll": "View All",
+    "readMore": "Read More",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "price": "Price",
+    "quantity": "Quantity",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "checkout": "Checkout",
+    "continueShopping": "Continue Shopping",
+    "remove": "Remove",
+    "close": "Close"
+  },
+  "nav": {
+    "catalog": "Catalog",
+    "books": "Books",
+    "media": "Media",
+    "icons": "Icons",
+    "about": "About Us",
+    "contact": "Contact",
+    "home": "Home",
+    "myBooks": "My Books",
+    "favorites": "Favorites",
+    "dashboard": "Dashboard"
+  },
+  "homepage": {
+    "hero": {
+      "title": "Welcome to Orthodox Bookstore",
+      "subtitle": "Your source for Orthodox Christian books, prayer books, and spiritual resources",
+      "cta": "Browse Catalog"
+    },
+    "featured": {
+      "title": "Featured Products",
+      "newArrivals": "New Arrivals",
+      "bestsellers": "Bestsellers"
+    },
+    "categories": {
+      "title": "Browse by Category"
+    }
+  },
+  "catalog": {
+    "title": "Catalog",
+    "products": "products",
+    "product": "Product",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "filter": {
+      "title": "Filters",
+      "categories": "Categories",
+      "priceRange": "Price Range",
+      "minPrice": "Min",
+      "maxPrice": "Max",
+      "availability": "Availability",
+      "inStockOnly": "In Stock",
+      "clearAll": "Clear All",
+      "apply": "Apply Filters"
+    },
+    "sort": {
+      "title": "Sort By",
+      "newest": "Newest",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "popular": "Most Popular"
+    },
+    "empty": "No products found",
+    "showingResults": "Showing {start}-{end} of {total} results"
+  },
+  "product": {
+    "details": "Product Details",
+    "bookDetails": "Book Details",
+    "description": "Description",
+    "author": "Author",
+    "publisher": "Publisher",
+    "year": "Year",
+    "publicationDate": "Publication date",
+    "pages": "Pages",
+    "language": "Language",
+    "isbn": "ISBN",
+    "translator": "Translator",
+    "format": "Format",
+    "printed": "Printed",
+    "ebook": "E-book",
+    "relatedProducts": "Related Products",
+    "reviews": "Reviews",
+    "noReviews": "No reviews yet",
+    "writeReview": "Write a Review",
+    "digitalVersion": "Digital Version",
+    "freeDownload": "Free Download",
+    "previewPdf": "Preview PDF",
+    "downloadPdf": "Download PDF",
+    "downloadEpub": "Download EPUB",
+    "download": "Download",
+    "paidEbookNote": "This is a paid e-book. Preview available, purchase required for full download.",
+    "notFound": "Book Not Found",
+    "notFoundDesc": "The book you're looking for doesn't exist.",
+    "browseCatalog": "Browse Catalog"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "items": "{count, plural, =0 {No items} one {# item} other {# items}}",
+    "updateQuantity": "Update Quantity",
+    "proceedToCheckout": "Proceed to Checkout"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping": "Shipping Information",
+    "payment": "Payment",
+    "review": "Review Order",
+    "placeOrder": "Place Order",
+    "orderSummary": "Order Summary",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "country": "Country",
+    "postalCode": "Postal Code",
+    "success": "Order placed successfully!",
+    "confirmation": "Order Confirmation"
+  },
+  "account": {
+    "title": "My Account",
+    "profile": "Profile",
+    "orders": "Orders",
+    "addresses": "Addresses",
+    "wishlist": "Wishlist",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email Address",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "register": "Register"
+    },
+    "register": {
+      "title": "Create Account",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "login": "Sign In"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Your Name",
+    "email": "Email Address",
+    "subject": "Subject",
+    "message": "Message",
+    "submit": "Send Message",
+    "success": "Message sent successfully!",
+    "phone": "Phone",
+    "address": "Address"
+  },
+  "about": {
+    "title": "About Us",
+    "mission": "Our Mission",
+    "history": "Our History",
+    "team": "Our Team"
+  },
+  "footer": {
+    "about": "About",
+    "customerService": "Customer Service",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© {year} Orthodox Bookstore. All rights reserved."
+  },
+  "errors": {
+    "notFound": "Page Not Found",
+    "serverError": "Server Error",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access Forbidden"
+  },
+  "language": {
+    "select": "Select Language",
+    "current": "Current Language"
+  }
+}

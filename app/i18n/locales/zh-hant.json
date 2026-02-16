@@ -1,0 +1,204 @@
+{
+  "common": {
+    "search": "搜尋",
+    "cart": "購物車",
+    "account": "帳戶",
+    "login": "登入",
+    "logout": "登出",
+    "register": "註冊",
+    "loading": "載入中...",
+    "error": "發生錯誤",
+    "retry": "重試",
+    "viewAll": "查看全部",
+    "readMore": "閱讀更多",
+    "addToCart": "加入購物車",
+    "outOfStock": "缺貨",
+    "inStock": "有貨",
+    "price": "價格",
+    "quantity": "數量",
+    "total": "總計",
+    "subtotal": "小計",
+    "shipping": "運費",
+    "free": "免費",
+    "checkout": "結帳",
+    "continueShopping": "繼續購物",
+    "remove": "刪除",
+    "close": "關閉"
+  },
+  "nav": {
+    "catalog": "目錄",
+    "books": "圖書",
+    "media": "媒體",
+    "icons": "聖像",
+    "about": "關於我們",
+    "contact": "聯絡我們",
+    "home": "首頁",
+    "myBooks": "我的書籍",
+    "favorites": "收藏夾",
+    "dashboard": "控制面板"
+  },
+  "homepage": {
+    "hero": {
+      "title": "歡迎來到東正教書局",
+      "subtitle": "您的東正教基督教書籍、祈禱書和屬靈資源寶庫",
+      "cta": "瀏覽目錄"
+    },
+    "featured": {
+      "title": "精選產品",
+      "newArrivals": "新品到貨",
+      "bestsellers": "暢銷書"
+    },
+    "categories": {
+      "title": "瀏覽分類"
+    }
+  },
+  "catalog": {
+    "title": "目錄",
+    "products": "產品",
+    "product": "產品",
+    "previous": "上一頁",
+    "next": "下一頁",
+    "page": "第",
+    "filter": {
+      "title": "篩選",
+      "categories": "分類",
+      "priceRange": "價格範圍",
+      "minPrice": "最低",
+      "maxPrice": "最高",
+      "availability": "庫存狀態",
+      "inStockOnly": "有貨",
+      "clearAll": "清除全部",
+      "apply": "應用篩選"
+    },
+    "sort": {
+      "title": "排序方式",
+      "newest": "最新",
+      "priceAsc": "價格：從低到高",
+      "priceDesc": "價格：從高到低",
+      "popular": "熱門"
+    },
+    "empty": "未找到產品",
+    "showingResults": "顯示 {start}-{end} 條結果，共 {total} 條"
+  },
+  "product": {
+    "details": "產品詳情",
+    "bookDetails": "書籍詳情",
+    "description": "描述",
+    "author": "作者",
+    "publisher": "出版社",
+    "year": "年份",
+    "publicationDate": "出版日期",
+    "pages": "頁數",
+    "language": "語言",
+    "isbn": "ISBN",
+    "translator": "譯者",
+    "format": "格式",
+    "printed": "印刷版",
+    "ebook": "電子版",
+    "relatedProducts": "相關產品",
+    "reviews": "評論",
+    "noReviews": "暫無評論",
+    "writeReview": "撰寫評論",
+    "digitalVersion": "電子版",
+    "freeDownload": "免費下載",
+    "previewPdf": "預覽PDF",
+    "downloadPdf": "下載PDF",
+    "downloadEpub": "下載EPUB",
+    "download": "下載",
+    "paidEbookNote": "這是付費電子書。可預覽，購買後可下載完整版。",
+    "notFound": "書籍未找到",
+    "notFoundDesc": "您要找的書籍不存在。",
+    "browseCatalog": "瀏覽目錄"
+  },
+  "cart": {
+    "title": "購物車",
+    "empty": "您的購物車是空的",
+    "items": "{count, plural, =0 {無商品} one {# 件商品} other {# 件商品}}",
+    "updateQuantity": "更新數量",
+    "proceedToCheckout": "去結帳"
+  },
+  "checkout": {
+    "title": "結帳",
+    "shipping": "配送資訊",
+    "payment": "付款",
+    "review": "訂單確認",
+    "placeOrder": "提交訂單",
+    "orderSummary": "訂單摘要",
+    "firstName": "名",
+    "lastName": "姓",
+    "email": "電子郵箱",
+    "phone": "電話",
+    "address": "地址",
+    "city": "城市",
+    "country": "國家",
+    "postalCode": "郵遞區號",
+    "success": "訂單提交成功！",
+    "confirmation": "訂單確認"
+  },
+  "account": {
+    "title": "我的帳戶",
+    "profile": "個人資料",
+    "orders": "訂單",
+    "addresses": "地址",
+    "wishlist": "願望清單",
+    "settings": "設定"
+  },
+  "auth": {
+    "login": {
+      "title": "登入",
+      "email": "電子郵箱",
+      "password": "密碼",
+      "rememberMe": "記住我",
+      "forgotPassword": "忘記密碼？",
+      "submit": "登入",
+      "noAccount": "沒有帳戶？",
+      "register": "註冊"
+    },
+    "register": {
+      "title": "建立帳戶",
+      "firstName": "名",
+      "lastName": "姓",
+      "email": "電子郵箱",
+      "password": "密碼",
+      "confirmPassword": "確認密碼",
+      "submit": "註冊",
+      "hasAccount": "已有帳戶？",
+      "login": "登入"
+    }
+  },
+  "contact": {
+    "title": "聯絡我們",
+    "name": "您的姓名",
+    "email": "電子郵箱",
+    "subject": "主題",
+    "message": "留言",
+    "submit": "發送",
+    "success": "留言發送成功！",
+    "phone": "電話",
+    "address": "地址"
+  },
+  "about": {
+    "title": "關於我們",
+    "mission": "我們的使命",
+    "history": "我們的歷史",
+    "team": "我們的團隊"
+  },
+  "footer": {
+    "about": "關於",
+    "customerService": "客戶服務",
+    "contact": "聯絡",
+    "privacy": "隱私政策",
+    "terms": "服務條款",
+    "copyright": "© {year} 東正教書局。保留所有權利。"
+  },
+  "errors": {
+    "notFound": "頁面未找到",
+    "serverError": "伺服器錯誤",
+    "unauthorized": "未授權",
+    "forbidden": "訪問被拒絕"
+  },
+  "language": {
+    "select": "選擇語言",
+    "current": "當前語言"
+  }
+}
