@@ -7,6 +7,7 @@ import ProductGrid from '../components/ProductGrid';
 import FilterSidebar from '../components/FilterSidebar';
 import { getProducts, getProductsByCategory, oscarProductToBook } from '../lib/api';
 import { useApiLocale } from '../i18n/useApiLocale';
+import { useCurrency } from '../i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
 import { Book } from '../types';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
@@ -21,6 +22,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   const pathname = usePathname();
   const t = useTranslations();
   const tCatalog = useTranslations('catalog');
+  const { isLoading: isCurrencyLoading, currency } = useCurrency();
   
   // Get current locale for API calls
   const locale = useApiLocale();
@@ -31,9 +33,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   const categoryParam = searchParams.get('category');
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [inStock, setInStock] = useState(false);
-  const [sortBy, setSortBy] = useState<'newest' | 'price-asc' | 'price-desc' | 'popular'>('newest');
   
   // API state
   const [books, setBooks] = useState<Book[]>([]);
@@ -64,7 +64,13 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   }, [categoryId]);
 
   // Fetch products from API - triggered by currentPage, selectedCategoryId, or categoryParam changes
+  // Also waits for currency to be loaded to avoid race condition
   useEffect(() => {
+    // Don't fetch until currency context is loaded
+    if (isCurrencyLoading) {
+      return;
+    }
+    
     async function fetchProducts() {
       setLoading(true);
       setError(null);
@@ -96,7 +102,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
     }
 
     fetchProducts();
-  }, [currentPage, selectedCategoryId, categoryParam, refreshKey, locale]);
+  }, [currentPage, selectedCategoryId, categoryParam, refreshKey, locale, isCurrencyLoading, currency]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
@@ -140,21 +146,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
         if (!selectedCategories.includes(categorySlug)) return false;
       }
       if (inStock && !book.inStock) return false;
-      if (book.price < priceRange[0] || book.price > priceRange[1]) return false;
       return true;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'price-asc':
-          return a.price - b.price;
-        case 'price-desc':
-          return b.price - a.price;
-        case 'popular':
-          return b.reviewCount - a.reviewCount;
-        case 'newest':
-        default:
-          return b.year - a.year;
-      }
     });
 
   const handlePageChange = (newPage: number) => {
@@ -187,17 +179,6 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
             <span className="text-sm text-gray-500">
               {loading ? t('common.loading') : `${totalCount} ${tCatalog('products')}`}
             </span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="px-4 py-2 border rounded-lg bg-white text-sm"
-              disabled={loading}
-            >
-              <option value="newest">{tCatalog('sort.newest')}</option>
-              <option value="price-asc">{tCatalog('sort.priceAsc')}</option>
-              <option value="price-desc">{tCatalog('sort.priceDesc')}</option>
-              <option value="popular">{tCatalog('sort.popular')}</option>
-            </select>
           </div>
         </div>
 
@@ -206,11 +187,10 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
           <FilterSidebar
             selectedCategories={selectedCategories}
             onCategoryChange={handleCategoryChange}
-            priceRange={priceRange}
-            onPriceChange={setPriceRange}
             inStock={inStock}
             onStockChange={setInStock}
             onCategorySelect={handleCategorySelect}
+            selectedCategoryId={selectedCategoryId}
           />
 
           {/* Product Grid */}
@@ -267,7 +247,6 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
                   onClick={() => {
                     setSelectedCategories([]);
                     setSelectedCategoryId(null);
-                    setPriceRange([0, 100]);
                     setInStock(false);
                     // Clear category from URL
                     const params = new URLSearchParams(searchParams);

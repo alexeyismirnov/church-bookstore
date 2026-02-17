@@ -30,12 +30,20 @@ function getLanguagePreference(): string {
   return localStorage.getItem('locale') || 'en';
 }
 
+// Get currency from localStorage (set by CurrencyContext)
+function getCurrencyPreference(): string {
+  if (typeof window === 'undefined') return 'USD';
+  return localStorage.getItem('currency') || 'USD';
+}
+
 // Get common headers for API requests
 function getApiHeaders(): HeadersInit {
   const lang = getLanguagePreference();
+  const currency = getCurrencyPreference();
   return {
     'Content-Type': 'application/json',
     'Accept-Language': lang,
+    'X-Currency': currency,
   };
 }
 

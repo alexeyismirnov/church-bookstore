@@ -7,6 +7,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Search, User, ShoppingCart, Menu, X, Heart } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
+import CurrencySelector from './CurrencySelector';
 import { useTranslations } from '../i18n/LanguageContext';
 
 export default function Header() {
@@ -58,6 +59,11 @@ export default function Header() {
             {/* Language Switcher */}
             <div className="hidden sm:block">
               <LanguageSwitcher />
+            </div>
+
+            {/* Currency Selector */}
+            <div className="hidden sm:block">
+              <CurrencySelector />
             </div>
 
             {/* Search */}
@@ -127,6 +133,11 @@ export default function Header() {
             <div className="px-4 py-3 border-t">
               <p className="text-sm text-gray-500 mb-2">Language / 语言</p>
               <LanguageSwitcher />
+            </div>
+            {/* Currency Selector in Mobile Menu */}
+            <div className="px-4 py-3 border-t">
+              <p className="text-sm text-gray-500 mb-2">Currency</p>
+              <CurrencySelector />
             </div>
             <Link
               href="/favorites"

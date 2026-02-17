@@ -39,6 +39,13 @@ async function proxyToOscar(
     headers['Accept-Language'] = languageToUse;
   }
 
+  // Forward the currency preference to Django API
+  // Django will use this to convert prices to the requested currency
+  const currencyHeader = request.headers.get('X-Currency');
+  if (currencyHeader) {
+    headers['X-Currency'] = currencyHeader;
+  }
+
   // Forward auth header if present (for logged-in users)
   const authHeader = request.headers.get('Authorization');
   if (authHeader) {

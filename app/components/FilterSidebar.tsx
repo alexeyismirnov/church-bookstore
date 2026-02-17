@@ -10,11 +10,10 @@ import { useApiLocale } from '../i18n/useApiLocale';
 interface FilterSidebarProps {
   selectedCategories: string[];
   onCategoryChange: (category: string) => void;
-  priceRange: [number, number];
-  onPriceChange: (range: [number, number]) => void;
   inStock: boolean;
   onStockChange: (value: boolean) => void;
   onCategorySelect?: (categoryId: string | null) => void;
+  selectedCategoryId?: string | null;
 }
 
 // Check if a category or any of its children is selected
@@ -31,11 +30,10 @@ function isCategoryOrChildSelected(category: Category, selectedCategories: strin
 export default function FilterSidebar({
   selectedCategories,
   onCategoryChange,
-  priceRange,
-  onPriceChange,
   inStock,
   onStockChange,
   onCategorySelect,
+  selectedCategoryId,
 }: FilterSidebarProps) {
   const t = useTranslations();
   const tCatalog = useTranslations('catalog');
@@ -46,7 +44,6 @@ export default function FilterSidebar({
   const [expandedSections, setExpandedSections] = useState({
     availability: true,
     categories: true,
-    price: true,
   });
   
   // Track expanded parent categories
@@ -123,12 +120,12 @@ export default function FilterSidebar({
   const renderCategoryItem = (category: Category, depth: number = 0) => {
     const hasChildren = category.children && category.children.length > 0;
     const isExpanded = expandedCategories.has(category.id);
-    const isSelected = selectedCategories.includes(category.slug);
+    const isSelected = selectedCategories.includes(category.slug) || category.id === selectedCategoryId;
     const isPartiallySelected = hasChildren && isCategoryOrChildSelected(category, selectedCategories) && !isSelected;
 
     return (
       <div key={category.id} style={{ marginLeft: `${depth * 12}px` }}>
-        <div className="flex items-center gap-2 cursor-pointer py-1">
+        <div className={`flex items-center gap-2 cursor-pointer py-1 px-2 rounded-lg transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-gray-100'}`}>
           {hasChildren ? (
             <button
               type="button"
@@ -137,7 +134,7 @@ export default function FilterSidebar({
                 e.stopPropagation();
                 toggleCategoryExpand(category.id);
               }}
-              className="p-0.5 hover:bg-gray-100 rounded"
+              className="p-0.5 hover:bg-gray-200 rounded"
             >
               {isExpanded ? (
                 <ChevronDown className="w-4 h-4 text-gray-500" />
@@ -151,7 +148,7 @@ export default function FilterSidebar({
           <button
             type="button"
             onClick={() => handleCategoryClick(category, !!hasChildren)}
-            className={`text-sm flex-grow text-left whitespace-nowrap ${isSelected || isPartiallySelected ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'}`}
+            className={`text-sm flex-grow text-left whitespace-nowrap ${isSelected ? 'text-primary font-bold' : isPartiallySelected ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'}`}
           >
             {category.name}
           </button>
@@ -219,61 +216,6 @@ export default function FilterSidebar({
           </div>
         )}
       </div>
-
-      {/* Price Range */}
-      <div className="bg-white rounded-xl p-4 shadow-sm">
-        <button
-          className="flex items-center justify-between w-full font-semibold text-dark"
-          onClick={() => toggleSection('price')}
-        >
-          {tCatalog('filter.priceRange')}
-          {expandedSections.price ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
-        </button>
-        {expandedSections.price && (
-          <div className="mt-3 space-y-4">
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                value={priceRange[0]}
-                onChange={(e) =>
-                  onPriceChange([Number(e.target.value), priceRange[1]])
-                }
-                className="w-20 px-3 py-2 border rounded-lg text-sm"
-                placeholder={tCatalog('filter.minPrice') || 'Min'}
-              />
-              <span className="text-gray-400">-</span>
-              <input
-                type="number"
-                value={priceRange[1]}
-                onChange={(e) =>
-                  onPriceChange([priceRange[0], Number(e.target.value)])
-                }
-                className="w-20 px-3 py-2 border rounded-lg text-sm"
-                placeholder={tCatalog('filter.maxPrice') || 'Max'}
-              />
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={priceRange[1]}
-              onChange={(e) =>
-                onPriceChange([priceRange[0], Number(e.target.value)])
-              }
-              className="w-full accent-primary"
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Apply Filters Button */}
-      <button className="w-full btn-primary">
-        {tCatalog('filter.apply')}
-      </button>
     </aside>
   );
 }

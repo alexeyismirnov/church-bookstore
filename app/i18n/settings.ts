@@ -21,3 +21,25 @@ export const languageFlags: Record<Locale, string> = {
   'zh-hans': '🇨🇳',
   'zh-hant': '🇭🇰',
 };
+
+// Currency settings - matches Oscar-3.1 backend X-Currency header
+export const currencies = ['USD', 'HKD', 'TWD', 'CNY'] as const;
+export type Currency = (typeof currencies)[number];
+
+export const defaultCurrency: Currency = 'USD';
+
+// Currency symbols for UI display
+export const currencySymbols: Record<Currency, string> = {
+  USD: '$',
+  HKD: 'HK$',
+  TWD: 'NT$',
+  CNY: '¥',
+};
+
+// Currency full names
+export const currencyNames: Record<Currency, string> = {
+  USD: 'US Dollar',
+  HKD: 'Hong Kong Dollar',
+  TWD: 'Taiwan Dollar',
+  CNY: 'Chinese Yuan',
+};

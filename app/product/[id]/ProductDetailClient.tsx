@@ -9,6 +9,7 @@ import { Download, FileText, BookOpen, Package, Monitor } from 'lucide-react';
 import { getProductById, oscarProductToBook, parseVariantPrice } from '../../lib/api';
 import { useApiLocale } from '../../i18n/useApiLocale';
 import { useTranslations } from '../../i18n/LanguageContext';
+import { useCurrency } from '../../i18n/CurrencyContext';
 import { Book, Variant } from '../../types';
 import { Loader2 } from 'lucide-react';
 
@@ -107,9 +108,16 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const locale = useApiLocale();
   const t = useTranslations();
   const tProduct = useTranslations('product');
+  const { symbol, currency } = useCurrency();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Format price with symbol - always single line format for product detail page
+  const formatPrice = (price: number): string => {
+    const formattedPrice = price.toFixed(2);
+    return `${symbol}${formattedPrice}`;
+  };
 
   useEffect(() => {
     async function fetchBook() {
@@ -127,7 +135,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
     }
 
     fetchBook();
-  }, [productId, locale]);
+  }, [productId, locale, currency]);
 
   if (loading) {
     return (
@@ -218,7 +226,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                           <span className="text-xl font-bold text-green-600">{t('common.free')}</span>
                         ) : (
                           <span className="text-xl font-bold text-dark">
-                            ${variantPrice.toFixed(2)}
+                            {formatPrice(variantPrice)}
                           </span>
                         )}
                       </div>
@@ -266,13 +274,13 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   ) : (
                     <>
                       <span className="text-2xl font-bold text-dark">
-                        ${book.price.toFixed(2)}
-                      </span>
-                      {book.originalPrice && (
-                        <span className="text-lg text-gray-400 line-through">
-                          ${book.originalPrice.toFixed(2)}
+                          {formatPrice(book.price)}
                         </span>
-                      )}
+                        {book.originalPrice && (
+                          <span className="text-lg text-gray-400 line-through">
+                            {formatPrice(book.originalPrice)}
+                          </span>
+                        )}
                     </>
                   )}
                 </div>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Heart, Star, BookOpen, Loader2 } from 'lucide-react';
 import { SiAdobeacrobatreader } from 'react-icons/si';
 import { Book } from '../types';
+import { useCurrency } from '../i18n/CurrencyContext';
 
 interface ProductCardProps {
   book: Book;
@@ -12,6 +13,28 @@ interface ProductCardProps {
 
 export default function ProductCard({ book }: ProductCardProps) {
   const [isNavigating, setIsNavigating] = useState(false);
+  const { symbol, currency } = useCurrency();
+
+  // Debug: Log currency value to help troubleshoot issues
+  // console.log('[ProductCard] Currency:', currency, 'Symbol:', symbol);
+
+  // Force 2-line format for HKD and TWD (which have wide symbols)
+  // Also add fallback: if currency is not available, default to 2-line format
+  const needsTwoLineFormat = !currency || currency === 'HKD' || currency === 'TWD';
+
+  // Format price with symbol - uses 2-line format for HKD/TWD
+  const formatPrice = (price: number): React.ReactNode => {
+    const formattedPrice = price.toFixed(2);
+    if (needsTwoLineFormat) {
+      return (
+        <span className="flex flex-col leading-tight">
+          <span>{symbol}</span>
+          <span>{formattedPrice}</span>
+        </span>
+      );
+    }
+    return `${symbol}${formattedPrice}`;
+  };
 
   // Product link without page param - browser back button will naturally return to catalog page
   const productLink = `/product/${book.id}`;
@@ -126,7 +149,7 @@ export default function ProductCard({ book }: ProductCardProps) {
                         </span>
                       ) : (
                         <span className="text-lg font-bold text-dark">
-                          ${parseFloat(variant.price).toFixed(2)}
+                          {formatPrice(parseFloat(variant.price))}
                         </span>
                       )}
                       {/* Book Type Indicator based on is_shipping_required */}
@@ -155,12 +178,12 @@ export default function ProductCard({ book }: ProductCardProps) {
                     </span>
                   ) : (
                     <span className="text-lg font-bold text-dark">
-                      ${book.price.toFixed(2)}
+                      {formatPrice(book.price)}
                     </span>
                   )}
                   {book.originalPrice && (
                     <span className="text-sm text-gray-400 line-through">
-                      ${book.originalPrice.toFixed(2)}
+                      {formatPrice(book.originalPrice)}
                     </span>
                   )}
                   {/* Book Type Indicator */}
