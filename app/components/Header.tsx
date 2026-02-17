@@ -66,10 +66,7 @@ export default function Header() {
               <CurrencySelector />
             </div>
 
-            {/* Search */}
-            <button className="p-2 hover:bg-background rounded-full transition-colors">
-              <Search className="w-5 h-5 text-dark" />
-            </button>
+
 
             {/* Favorites */}
             <Link

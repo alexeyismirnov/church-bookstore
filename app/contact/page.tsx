@@ -33,11 +33,7 @@ export default function ContactPage() {
       title: 'Address',
       details: ['123 Church Street', 'Holy City, HC 12345'],
     },
-    {
-      icon: Clock,
-      title: 'Hours',
-      details: ['Mon-Fri: 9AM - 6PM', 'Sat: 10AM - 4PM'],
-    },
+
   ];
 
   return (
@@ -55,7 +51,7 @@ export default function ContactPage() {
       {/* Contact Info Cards */}
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {contactInfo.map((info) => (
               <div key={info.title} className="bg-white rounded-xl p-6 shadow-sm text-center">
                 <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -184,25 +180,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Prayer Request Section */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="section-title">Prayer Requests</h2>
-          <p className="text-gray-600 text-lg mb-8">
-            We believe in the power of prayer. If you have a prayer request, please share it with us. 
-            Our community prays daily for all those who request our prayers.
-          </p>
-          <form className="max-w-lg mx-auto">
-            <textarea
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary h-32 resize-none mb-4"
-              placeholder="Share your prayer request..."
-            />
-            <button type="submit" className="btn-secondary">
-              Submit Prayer Request
-            </button>
-          </form>
-        </div>
-      </section>
+
     </div>
   );
 }
