@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { useTranslations } from '../i18n/LanguageContext';
 
 export default function RegisterPage() {
+  const t = useTranslations('auth.register');
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -12,13 +14,13 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    agreeTerms: false,
+
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      alert(t('passwordMismatch'));
       return;
     }
     // Handle registration
@@ -26,22 +28,22 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full mx-auto">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-dark mb-2">Create Account</h1>
-          <p className="text-gray-600">
-            Join our community of Orthodox readers
+          <h1 className="text-4xl font-bold text-dark mb-2">{t('title')}</h1>
+          <p className="text-gray-600 my-4">
+            {t('description')}
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-8">
+        <div className="bg-white rounded-2xl shadow-sm p-8 mt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name
+                  {t('firstName')}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -57,7 +59,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name
+                  {t('lastName')}
                 </label>
                 <input
                   type="text"
@@ -73,7 +75,7 @@ export default function RegisterPage() {
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
+                {t('email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -91,7 +93,7 @@ export default function RegisterPage() {
             {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
+                {t('password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -120,7 +122,7 @@ export default function RegisterPage() {
             {/* Confirm Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
+                {t('confirmPassword')}
               </label>
               <input
                 type="password"
@@ -132,30 +134,11 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Terms */}
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.agreeTerms}
-                onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
-                className="w-4 h-4 mt-1 rounded border-gray-300 text-primary focus:ring-primary"
-                required
-              />
-              <span className="text-sm text-gray-600">
-                I agree to the{' '}
-                <Link href="/terms" className="text-primary hover:underline">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-primary hover:underline">
-                  Privacy Policy
-                </Link>
-              </span>
-            </label>
+
 
             {/* Submit Button */}
             <button type="submit" className="btn-primary w-full">
-              Create Account
+              {t('submit')}
             </button>
           </form>
 
@@ -163,10 +146,10 @@ export default function RegisterPage() {
         </div>
 
         {/* Login Link */}
-        <p className="text-center text-gray-600">
-          Already have an account?{' '}
+        <p className="text-center text-gray-600 mt-6">
+          {t('hasAccount')}{' '}
           <Link href="/login" className="text-primary hover:underline font-medium">
-            Sign in
+            {t('login')}
           </Link>
         </p>
       </div>

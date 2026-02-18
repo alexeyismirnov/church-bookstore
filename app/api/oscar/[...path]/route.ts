@@ -19,7 +19,9 @@ async function proxyToOscar(
   // Build the target URL
   const path = pathSegments.join('/');
   const searchParams = request.nextUrl.searchParams.toString();
-  const targetUrl = `${OSCAR_API_BASE}/${path}${searchParams ? `?${searchParams}` : ''}`;
+  
+  // Ensure trailing slash for Django compatibility
+  const targetUrl = `${OSCAR_API_BASE}/${path}/${searchParams ? `?${searchParams}` : ''}`;
 
   // Prepare headers
   const headers: HeadersInit = {

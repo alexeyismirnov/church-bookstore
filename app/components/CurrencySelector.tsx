@@ -5,13 +5,27 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useCurrency } from '../i18n/CurrencyContext';
+import { useTranslations } from '../i18n/LanguageContext';
 import { currencies, currencyNames, type Currency } from '../i18n/settings';
+import { useAuth } from '../lib/AuthContext';
 import { ChevronDown } from 'lucide-react';
 
 export default function CurrencySelector() {
   const { currency, setCurrency } = useCurrency();
+  const t = useTranslations('nav');
+  const { isAuthenticated, profile, updateProfile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Sync with profile currency when profile changes and user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && profile?.currency) {
+      const profileCurrency = profile.currency as Currency;
+      if (currencies.includes(profileCurrency) && profileCurrency !== currency) {
+        setCurrency(profileCurrency);
+      }
+    }
+  }, [profile, isAuthenticated, currency, setCurrency]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -24,9 +38,18 @@ export default function CurrencySelector() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleCurrencySelect = (newCurrency: Currency) => {
+  const handleCurrencySelect = async (newCurrency: Currency) => {
     setCurrency(newCurrency);
     setIsOpen(false);
+    
+    // If user is authenticated, update profile with new currency
+    if (isAuthenticated) {
+      try {
+        await updateProfile({ currency: newCurrency });
+      } catch (error) {
+        console.error('Failed to update profile currency:', error);
+      }
+    }
   };
 
   return (
@@ -43,7 +66,7 @@ export default function CurrencySelector() {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
           <div className="px-4 py-2 text-xs text-gray-500 uppercase font-semibold border-b">
-            Select Currency
+            {t('selectCurrency')}
           </div>
           {currencies.map((curr) => (
             <button

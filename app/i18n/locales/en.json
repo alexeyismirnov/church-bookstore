@@ -26,6 +26,8 @@
     "close": "Close"
   },
   "nav": {
+    "selectLanguage": "Select Language",
+    "selectCurrency": "Select Currency",
     "catalog": "Catalog",
     "books": "Books",
     "media": "Media",
@@ -35,7 +37,10 @@
     "home": "Home",
     "myBooks": "My Books",
     "favorites": "Favorites",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "myProfile": "My Profile",
+    "myOrders": "My Orders",
+    "logout": "Logout"
   },
   "homepage": {
     "hero": {
@@ -151,19 +156,26 @@
       "rememberMe": "Remember me",
       "forgotPassword": "Forgot password?",
       "submit": "Sign In",
+      "loggingIn": "Logging in...",
       "noAccount": "Don't have an account?",
-      "register": "Register"
+      "register": "Register",
+      "failed": "Login failed. Please check your credentials.",
+      "description": "Sign in to your account to access your orders and favorites"
     },
     "register": {
       "title": "Create Account",
+      "description": "Join our community of Orthodox readers",
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email Address",
       "password": "Password",
       "confirmPassword": "Confirm Password",
       "submit": "Register",
+      "registering": "Registering...",
       "hasAccount": "Already have an account?",
-      "login": "Sign In"
+      "login": "Sign In",
+      "failed": "Registration failed. Please try again.",
+      "passwordMismatch": "Passwords do not match"
     }
   },
   "contact": {
@@ -200,5 +212,19 @@
   "language": {
     "select": "Select Language",
     "current": "Current Language"
+  },
+  "profile": {
+    "title": "My Profile",
+    "description": "Manage your account information",
+    "loading": "Loading profile...",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "newsletter": "Subscribe to newsletter",
+    "newsletterDescription": "Receive updates about new books and products",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "success": "Profile updated successfully!",
+    "error": "Failed to update profile. Please try again."
   }
 }

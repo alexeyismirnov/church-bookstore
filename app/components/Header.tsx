@@ -1,27 +1,51 @@
 // app/components/Header.tsx
-// Updated to include language switcher and translations
+// Updated to include authentication dropdown
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, User, ShoppingCart, Menu, X, Heart } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, User, ShoppingCart, Menu, X, Heart, LogOut, User as UserIcon } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 import { useTranslations } from '../i18n/LanguageContext';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Header() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [cartCount] = useState(2);
   
   // Get translations for navigation
   const t = useTranslations('nav');
+  const { isAuthenticated, user, logout } = useAuth();
 
   const navLinks = [
     { href: '/catalog', label: t('catalog') },
     { href: '/about', label: t('about') },
     { href: '/contact', label: t('contact') },
   ];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setIsDropdownOpen(false);
+    router.push('/');
+    router.refresh();
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
@@ -68,21 +92,56 @@ export default function Header() {
 
 
 
-            {/* Favorites */}
-            <Link
-              href="/favorites"
-              className="hidden sm:flex p-2 hover:bg-background rounded-full transition-colors"
-            >
-              <Heart className="w-5 h-5 text-dark" />
-            </Link>
+            {/* Account - Login or Dropdown */}
+            {isAuthenticated ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="hidden sm:flex p-2 hover:bg-background rounded-full transition-colors items-center gap-2"
+                >
+                  <User className="w-5 h-5 text-dark" />
+                  {user?.first_name && (
+                    <span className="text-sm text-dark">{user.first_name}</span>
+                  )}
+                </button>
 
-            {/* Account */}
-            <Link
-              href="/login"
-              className="hidden sm:flex p-2 hover:bg-background rounded-full transition-colors"
-            >
-              <User className="w-5 h-5 text-dark" />
-            </Link>
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border">
+                    <Link
+                      href="/profile"
+                      className="flex items-center gap-2 px-4 py-2 text-dark hover:bg-gray-50 transition-colors"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <UserIcon className="w-4 h-4" />
+                      {t('myProfile')}
+                    </Link>
+                    <Link
+                      href="/orders"
+                      className="flex items-center gap-2 px-4 py-2 text-dark hover:bg-gray-50 transition-colors"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <UserIcon className="w-4 h-4" />
+                      {t('myOrders')}
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors w-full"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      {t('logout')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden sm:flex p-2 hover:bg-background rounded-full transition-colors"
+              >
+                <User className="w-5 h-5 text-dark" />
+              </Link>
+            )}
 
             {/* Cart */}
             <Link
@@ -143,13 +202,42 @@ export default function Header() {
             >
               {t('favorites')}
             </Link>
-            <Link
-              href="/login"
-              className="px-4 py-3 text-dark hover:bg-background transition-colors sm:hidden"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('account')}
-            </Link>
+            {/* Mobile Account - Show login or profile/logout */}
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/profile"
+                  className="px-4 py-3 text-dark hover:bg-background transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('myProfile')}
+                </Link>
+                <Link
+                  href="/orders"
+                  className="px-4 py-3 text-dark hover:bg-background transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('myOrders')}
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="px-4 py-3 text-red-600 hover:bg-red-50 transition-colors text-left"
+                >
+                  {t('logout')}
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="px-4 py-3 text-dark hover:bg-background transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('account')}
+              </Link>
+            )}
           </nav>
         </div>
       )}

@@ -5,12 +5,28 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useLanguage, locales, languageNames, languageFlags, type Locale } from '../i18n/LanguageContext';
+import { useTranslations } from '../i18n/LanguageContext';
+import { useAuth } from '../lib/AuthContext';
 import { ChevronDown } from 'lucide-react';
 
 export default function LanguageSwitcher() {
   const { locale, setLocale } = useLanguage();
+  const t = useTranslations('nav');
+  const { isAuthenticated, profile, updateProfile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Sync with profile language when profile changes and user is authenticated
+  // Note: We intentionally DON'T include locale in deps to prevent loop
+  // The effect should only sync FROM profile TO context, not the other way around
+  useEffect(() => {
+    if (isAuthenticated && profile?.language) {
+      const profileLocale = profile.language as Locale;
+      if (locales.includes(profileLocale) && profileLocale !== locale) {
+        setLocale(profileLocale);
+      }
+    }
+  }, [profile, isAuthenticated, setLocale]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -23,9 +39,18 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLanguageSelect = (newLocale: Locale) => {
+  const handleLanguageSelect = async (newLocale: Locale) => {
     setLocale(newLocale);
     setIsOpen(false);
+    
+    // If user is authenticated, update profile with new language
+    if (isAuthenticated) {
+      try {
+        await updateProfile({ language: newLocale });
+      } catch (error) {
+        console.error('Failed to update profile language:', error);
+      }
+    }
   };
 
   return (
@@ -43,7 +68,7 @@ export default function LanguageSwitcher() {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
           <div className="px-4 py-2 text-xs text-gray-500 uppercase font-semibold border-b">
-            Select Language
+            {t('selectLanguage')}
           </div>
           {locales.map((loc) => (
             <button

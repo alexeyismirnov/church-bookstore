@@ -15,9 +15,6 @@ export default function ProductCard({ book }: ProductCardProps) {
   const [isNavigating, setIsNavigating] = useState(false);
   const { symbol, currency } = useCurrency();
 
-  // Debug: Log currency value to help troubleshoot issues
-  // console.log('[ProductCard] Currency:', currency, 'Symbol:', symbol);
-
   // Force 2-line format for HKD and TWD (which have wide symbols)
   // Also add fallback: if currency is not available, default to 2-line format
   const needsTwoLineFormat = !currency || currency === 'HKD' || currency === 'TWD';

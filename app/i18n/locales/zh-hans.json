@@ -26,6 +26,8 @@
     "close": "关闭"
   },
   "nav": {
+    "selectLanguage": "选择语言",
+    "selectCurrency": "选择货币",
     "catalog": "目录",
     "books": "图书",
     "media": "媒体",
@@ -35,7 +37,10 @@
     "home": "首页",
     "myBooks": "我的书籍",
     "favorites": "收藏夹",
-    "dashboard": "控制面板"
+    "dashboard": "控制面板",
+    "myProfile": "我的资料",
+    "myOrders": "我的订单",
+    "logout": "退出"
   },
   "homepage": {
     "hero": {
@@ -151,19 +156,26 @@
       "rememberMe": "记住我",
       "forgotPassword": "忘记密码？",
       "submit": "登录",
+      "loggingIn": "正在登录...",
       "noAccount": "没有账户？",
-      "register": "注册"
+      "register": "注册",
+      "failed": "登录失败，请检查您的凭据。",
+      "description": "登录您的账户以访问您的订单和收藏"
     },
     "register": {
       "title": "创建账户",
+      "description": "加入我们的东正教读者社区",
       "firstName": "名",
       "lastName": "姓",
       "email": "电子邮箱",
       "password": "密码",
       "confirmPassword": "确认密码",
       "submit": "注册",
+      "registering": "正在注册...",
       "hasAccount": "已有账户？",
-      "login": "登录"
+      "login": "登录",
+      "failed": "注册失败，请重试。",
+      "passwordMismatch": "密码不匹配"
     }
   },
   "contact": {
@@ -200,5 +212,19 @@
   "language": {
     "select": "选择语言",
     "current": "当前语言"
+  },
+  "profile": {
+    "title": "我的资料",
+    "description": "管理您的账户信息",
+    "loading": "正在加载资料...",
+    "email": "邮箱",
+    "firstName": "名",
+    "lastName": "姓",
+    "newsletter": "订阅通讯",
+    "newsletterDescription": "接收有关新书和产品的更新",
+    "saveChanges": "保存更改",
+    "saving": "保存中...",
+    "success": "资料更新成功！",
+    "error": "更新资料失败，请重试。"
   }
 }

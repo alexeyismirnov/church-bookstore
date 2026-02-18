@@ -26,6 +26,8 @@
     "close": "關閉"
   },
   "nav": {
+    "selectLanguage": "選擇語言",
+    "selectCurrency": "選擇貨幣",
     "catalog": "目錄",
     "books": "圖書",
     "media": "媒體",
@@ -35,7 +37,10 @@
     "home": "首頁",
     "myBooks": "我的書籍",
     "favorites": "收藏夾",
-    "dashboard": "控制面板"
+    "dashboard": "控制面板",
+    "myProfile": "我的資料",
+    "myOrders": "我的訂單",
+    "logout": "登出"
   },
   "homepage": {
     "hero": {
@@ -151,19 +156,26 @@
       "rememberMe": "記住我",
       "forgotPassword": "忘記密碼？",
       "submit": "登入",
+      "loggingIn": "正在登入...",
       "noAccount": "沒有帳戶？",
-      "register": "註冊"
+      "register": "註冊",
+      "failed": "登入失敗，請檢查您的憑據。",
+      "description": "登入您的帳戶以存取您的訂單和收藏"
     },
     "register": {
       "title": "建立帳戶",
+      "description": "加入我們的東正教讀者社區",
       "firstName": "名",
       "lastName": "姓",
       "email": "電子郵箱",
       "password": "密碼",
       "confirmPassword": "確認密碼",
       "submit": "註冊",
+      "registering": "正在註冊...",
       "hasAccount": "已有帳戶？",
-      "login": "登入"
+      "login": "登入",
+      "failed": "註冊失敗，請重試。",
+      "passwordMismatch": "密碼不相符"
     }
   },
   "contact": {
@@ -200,5 +212,19 @@
   "language": {
     "select": "選擇語言",
     "current": "當前語言"
+  },
+  "profile": {
+    "title": "我的資料",
+    "description": "管理您的帳戶資訊",
+    "loading": "正在載入資料...",
+    "email": "電子郵箱",
+    "firstName": "名",
+    "lastName": "姓",
+    "newsletter": "訂閱通訊",
+    "newsletterDescription": "接收有關新書和產品的更新",
+    "saveChanges": "儲存變更",
+    "saving": "儲存中...",
+    "success": "資料更新成功！",
+    "error": "更新資料失敗，請重試。"
   }
 }
