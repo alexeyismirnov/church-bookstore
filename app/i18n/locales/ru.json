@@ -40,6 +40,7 @@
     "dashboard": "Панель управления",
     "myProfile": "Мой профиль",
     "myOrders": "Мои заказы",
+    "bookshelf": "Моя полка",
     "logout": "Выход"
   },
   "homepage": {
@@ -212,6 +213,16 @@
   "language": {
     "select": "Выбрать язык",
     "current": "Текущий язык"
+  },
+  "bookshelf": {
+    "title": "Моя полка",
+    "empty": "Ваша полка пуста",
+    "emptyDescription": "Купите книги или загрузите бесплатные книги, чтобы увидеть их здесь.",
+    "browseCatalog": "Перейти в каталог",
+    "purchased": "Куплено",
+    "free": "БЕСПЛАТНО",
+    "bookCount": "книга",
+    "booksCount": "книг"
   },
   "profile": {
     "title": "Мой профиль",

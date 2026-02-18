@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -338,4 +338,101 @@ export function oscarProductToBook(product: OscarProduct, locale: string = 'en')
     stockCount: product.stock_count,
     isInStock: product.is_in_stock,
   };
+}
+
+// =============================================================================
+// Authentication helpers (for API functions that need auth)
+// =============================================================================
+
+const TOKEN_KEY = 'auth_token';
+const USER_KEY = 'auth_user';
+const REMEMBER_ME_KEY = 'remember_me';
+
+/**
+ * Get stored auth token from localStorage or sessionStorage
+ */
+function getStoredToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  
+  const rememberMe = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
+  
+  if (rememberMe) {
+    return localStorage.getItem(TOKEN_KEY);
+  }
+  
+  return sessionStorage.getItem(TOKEN_KEY);
+}
+
+/**
+ * Get stored user data from localStorage or sessionStorage
+ */
+function getStoredUser(): { email: string } | null {
+  if (typeof window === 'undefined') return null;
+  
+  const rememberMe = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
+  const storage = rememberMe ? localStorage : sessionStorage;
+  
+  const userData = storage.getItem(USER_KEY);
+  if (!userData) return null;
+  
+  try {
+    return JSON.parse(userData);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get headers with authentication token
+ */
+function getAuthHeaders(): HeadersInit {
+  const lang = getLanguagePreference();
+  const currency = getCurrencyPreference();
+  const token = getStoredToken();
+  
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    'Accept-Language': lang,
+    'X-Currency': currency,
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Token ${token}`;
+  }
+  
+  return headers;
+}
+
+/**
+ * Fetch user's purchased books (mybooks) from the API
+ * @returns Array of MyBook objects
+ * @throws Error if not authenticated or request fails
+ */
+export async function getMyBooks(): Promise<MyBook[]> {
+  const user = getStoredUser();
+  
+  if (!user || !user.email) {
+    throw new Error('User not authenticated. Please log in to view your books.');
+  }
+  
+  const response = await fetch(`${getApiBase()}/mybooks`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ email: user.email }),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error('Authentication failed. Please log in again.');
+    }
+    throw new Error(`Failed to fetch mybooks: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  // Handle paginated response (DRF default) or direct array
+  if (Array.isArray(data)) {
+    return data;
+  }
+  return data.results || [];
 }

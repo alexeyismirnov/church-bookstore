@@ -74,7 +74,7 @@ function DownloadButtons({ book }: { book: Book }) {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition-colors"
             >
-              <Download className="w-4 h-4" />
+              <BookOpen className="w-4 h-4" />
               <span>{t('downloadEpub')}</span>
             </a>
           )}
@@ -196,32 +196,29 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
 
             {/* Product Variants or Single Product Row */}
             {book.isParent && book.variants && book.variants.length > 0 ? (
-              /* Multiple Variants: Show one row per variant */
+              /* Multiple Variants: Show one row per variant with flex layout */
               <div className="space-y-3">
                 {book.variants.map((variant: Variant) => {
                   const variantPrice = parseVariantPrice(variant);
                   return (
-                    <div key={variant.id} className="flex items-center justify-between gap-4 bg-gray-50 rounded-xl p-4">
+                    <div key={variant.id} className="grid grid-cols-[120px_1fr_160px] items-center gap-4 bg-gray-50 rounded-xl p-4">
                       {/* Variant Title & Book Type */}
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                          {variant.book_type === 'ebook' ? (
-                            <>
-                              <Monitor className="w-5 h-5 text-blue-500" />
-                              <span className="text-blue-600 font-medium">{tProduct('ebook')}</span>
-                            </>
-                          ) : (
-                            <>
-                              <Package className="w-5 h-5 text-amber-600" />
-                              <span className="text-amber-700 font-medium">{tProduct('printed')}</span>
-                            </>
-                          )}
-                        </div>
-
+                      <div className="flex items-center gap-2">
+                        {variant.book_type === 'ebook' ? (
+                          <>
+                            <Monitor className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                            <span className="text-blue-600 font-medium">{tProduct('ebook')}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Package className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                            <span className="text-amber-700 font-medium">{tProduct('printed')}</span>
+                          </>
+                        )}
                       </div>
 
-                      {/* Price */}
-                      <div className="flex items-center gap-2">
+                      {/* Price - centered in the flexible middle column */}
+                      <div className="text-center">
                         {variantPrice === 0 ? (
                           <span className="text-xl font-bold text-green-600">{t('common.free')}</span>
                         ) : (
@@ -232,17 +229,19 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       </div>
 
                       {/* Add to Cart Button or FREE label */}
-                      {variantPrice === 0 ? (
-                        <span className="text-green-600 font-semibold whitespace-nowrap">{t('common.free')}</span>
-                      ) : variant.isAvailable === false ? (
-                        <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
-                          {t('common.outOfStock')}
-                        </button>
-                      ) : (
-                        <button className="btn-primary whitespace-nowrap">
-                          {t('common.addToCart')}
-                        </button>
-                      )}
+                      <div className="flex justify-end">
+                        {variantPrice === 0 ? (
+                          <span className="text-green-600 font-semibold whitespace-nowrap">{t('common.free')}</span>
+                        ) : variant.isAvailable === false ? (
+                          <button className="btn-primary w-full whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
+                            {t('common.outOfStock')}
+                          </button>
+                        ) : (
+                          <button className="btn-primary w-full whitespace-nowrap">
+                            {t('common.addToCart')}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

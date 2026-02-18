@@ -178,3 +178,19 @@ export interface OscarApiError {
   detail?: string;
   [key: string]: string | string[] | undefined;
 }
+
+/**
+ * MyBook - Purchased book from the backend
+ * Based on MyBooksSerializer in apps/api/serializers.py
+ */
+export interface MyBook {
+  book_id: number;
+  purchased: boolean;
+  title: string;
+  author_name: string;
+  cover_image: string | null;
+  num_pages: number | null;
+  description: string;
+  download_url: string | null;
+  epub_url: string | null;
+}

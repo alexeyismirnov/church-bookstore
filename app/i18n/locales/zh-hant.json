@@ -40,6 +40,7 @@
     "dashboard": "控制面板",
     "myProfile": "我的資料",
     "myOrders": "我的訂單",
+    "bookshelf": "我的書架",
     "logout": "登出"
   },
   "homepage": {
@@ -212,6 +213,16 @@
   "language": {
     "select": "選擇語言",
     "current": "當前語言"
+  },
+  "bookshelf": {
+    "title": "我的書架",
+    "empty": "您的書架是空的",
+    "emptyDescription": "購買書籍或下載免費書籍以在此處查看。",
+    "browseCatalog": "瀏覽目錄",
+    "purchased": "已購買",
+    "free": "免費",
+    "bookCount": "本書",
+    "booksCount": "本圖書"
   },
   "profile": {
     "title": "我的資料",

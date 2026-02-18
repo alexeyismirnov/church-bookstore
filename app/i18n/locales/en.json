@@ -40,6 +40,7 @@
     "dashboard": "Dashboard",
     "myProfile": "My Profile",
     "myOrders": "My Orders",
+    "bookshelf": "Bookshelf",
     "logout": "Logout"
   },
   "homepage": {
@@ -212,6 +213,16 @@
   "language": {
     "select": "Select Language",
     "current": "Current Language"
+  },
+  "bookshelf": {
+    "title": "My Bookshelf",
+    "empty": "Your bookshelf is empty",
+    "emptyDescription": "Purchase books or download free books to see them here.",
+    "browseCatalog": "Browse Catalog",
+    "purchased": "Purchased",
+    "free": "FREE",
+    "bookCount": "book",
+    "booksCount": "books"
   },
   "profile": {
     "title": "My Profile",

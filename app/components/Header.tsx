@@ -6,7 +6,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, User, ShoppingCart, Menu, X, Heart, LogOut, User as UserIcon } from 'lucide-react';
+import { Search, User, ShoppingCart, Menu, X, Heart, LogOut, User as UserIcon, BookOpen } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 import { useTranslations } from '../i18n/LanguageContext';
@@ -124,6 +124,14 @@ export default function Header() {
                       <UserIcon className="w-4 h-4" />
                       {t('myOrders')}
                     </Link>
+                    <Link
+                      href="/bookshelf"
+                      className="flex items-center gap-2 px-4 py-2 text-dark hover:bg-gray-50 transition-colors"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      {t('bookshelf')}
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors w-full"
@@ -218,6 +226,13 @@ export default function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('myOrders')}
+                </Link>
+                <Link
+                  href="/bookshelf"
+                  className="px-4 py-3 text-dark hover:bg-background transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('bookshelf')}
                 </Link>
                 <button
                   onClick={() => {
