@@ -41,7 +41,8 @@
     "myProfile": "我的資料",
     "myOrders": "我的訂單",
     "bookshelf": "我的書架",
-    "logout": "登出"
+    "logout": "登出",
+    "account": "帳戶"
   },
   "homepage": {
     "hero": {

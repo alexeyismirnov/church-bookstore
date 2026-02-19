@@ -110,12 +110,29 @@ body {
 /* Touch-action manipulation to prevent double-tap zoom */
 .card {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Product card link - ensure proper touch handling for navigation */
 .card-link {
   touch-action: manipulation;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iPad landscape fix - devices with fine pointer (touch + hover support) */
+@media (hover: hover) and (pointer: fine) {
+  .card-link:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+/* iPad specific - ensure tap triggers navigation */
+@supports (-webkit-touch-callout: none) {
+  .card-link {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* ============================================

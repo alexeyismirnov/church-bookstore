@@ -41,7 +41,8 @@
     "myProfile": "My Profile",
     "myOrders": "My Orders",
     "bookshelf": "Bookshelf",
-    "logout": "Logout"
+    "logout": "Logout",
+    "account": "Account"
   },
   "homepage": {
     "hero": {

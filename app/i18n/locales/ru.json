@@ -41,7 +41,8 @@
     "myProfile": "Мой профиль",
     "myOrders": "Мои заказы",
     "bookshelf": "Моя полка",
-    "logout": "Выход"
+    "logout": "Выход",
+    "account": "Аккаунт"
   },
   "homepage": {
     "hero": {

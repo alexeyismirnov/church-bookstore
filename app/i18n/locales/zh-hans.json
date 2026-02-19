@@ -41,7 +41,8 @@
     "myProfile": "我的资料",
     "myOrders": "我的订单",
     "bookshelf": "我的书架",
-    "logout": "退出"
+    "logout": "退出",
+    "account": "账户"
   },
   "homepage": {
     "hero": {

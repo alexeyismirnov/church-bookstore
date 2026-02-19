@@ -195,12 +195,12 @@ export default function Header() {
             ))}
             {/* Language Switcher in Mobile Menu */}
             <div className="px-4 py-3 border-t">
-              <p className="text-sm text-gray-500 mb-2">Language / 语言</p>
+              <p className="text-sm text-gray-500 mb-2">{t('selectLanguage')}</p>
               <LanguageSwitcher />
             </div>
             {/* Currency Selector in Mobile Menu */}
             <div className="px-4 py-3 border-t">
-              <p className="text-sm text-gray-500 mb-2">Currency</p>
+              <p className="text-sm text-gray-500 mb-2">{t('selectCurrency')}</p>
               <CurrencySelector />
             </div>
             <Link
