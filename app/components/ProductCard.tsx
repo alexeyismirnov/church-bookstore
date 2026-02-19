@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Heart, Star, BookOpen, Loader2 } from 'lucide-react';
+import { BookOpen, Loader2 } from 'lucide-react';
 import { SiAdobeacrobatreader } from 'react-icons/si';
 import { Book } from '../types';
 import { useCurrency } from '../i18n/CurrencyContext';
@@ -15,7 +14,6 @@ interface ProductCardProps {
 export default function ProductCard({ book }: ProductCardProps) {
   const [isNavigating, setIsNavigating] = useState(false);
   const { symbol, currency } = useCurrency();
-  const router = useRouter();
 
   // Force 2-line format for HKD and TWD (which have wide symbols)
   // Also add fallback: if currency is not available, default to 2-line format
@@ -42,18 +40,11 @@ export default function ProductCard({ book }: ProductCardProps) {
     setIsNavigating(true);
   };
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Use programmatic navigation for more reliable touch handling on iPad
-    e.preventDefault();
-    setIsNavigating(true);
-    router.push(productLink);
-  };
-
   return (
     <Link
       href={productLink}
       className="card-link card group relative flex flex-col h-full"
-      onClick={handleLinkClick}
+      onClick={handleClick}
     >
       {/* Loading Overlay */}
       {isNavigating && (
@@ -61,18 +52,6 @@ export default function ProductCard({ book }: ProductCardProps) {
           <Loader2 className="w-8 h-8 text-primary animate-spin" />
         </div>
       )}
-      {/* Favorite Button */}
-      <button
-        className="absolute top-3 right-3 z-10 p-2 bg-white/90 rounded-full shadow-sm opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-primary hover:text-white"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          // Favorite button click handler will go here
-        }}
-      >
-        <Heart className="w-4 h-4" />
-      </button>
-
       {/* Image */}
       <div className="block relative aspect-[3/4] overflow-hidden rounded-t-xl">
         <img
