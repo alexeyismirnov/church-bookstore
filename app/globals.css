@@ -112,6 +112,12 @@ body {
   touch-action: manipulation;
 }
 
+/* Product card link - ensure proper touch handling for navigation */
+.card-link {
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
 /* ============================================
    CSS CUSTOM PROPERTIES FOR CONSISTENCY
    ============================================ */

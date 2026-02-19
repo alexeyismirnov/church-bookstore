@@ -4,18 +4,22 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Loader2, FileText, BookOpen, Download } from 'lucide-react';
 import { getMyBooks, getFullImageUrl } from '../lib/api';
-import { useTranslations } from '../i18n/LanguageContext';
+import { useTranslations, useLanguage } from '../i18n/LanguageContext';
 import { MyBook } from '../types';
 
 export default function BookshelfPage() {
   const t = useTranslations();
   const tBookshelf = useTranslations('bookshelf');
+  const { locale, isLoading: contextLoading } = useLanguage();
   
   const [books, setBooks] = useState<MyBook[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Wait for language context to load before fetching
+    if (contextLoading) return;
+    
     async function fetchBooks() {
       try {
         const myBooks = await getMyBooks();
@@ -29,7 +33,7 @@ export default function BookshelfPage() {
     }
 
     fetchBooks();
-  }, []);
+  }, [locale, contextLoading]);
 
   // Filter books: show only purchased or free books
   const isFreeBook = (book: MyBook): boolean => {
@@ -106,13 +110,15 @@ export default function BookshelfPage() {
         {filteredBooks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredBooks.map((book) => (
-              <Link
+              <div
                 key={book.book_id}
-                href={`/product/${book.book_id}`}
                 className="card group relative flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
               >
-                {/* Cover Image */}
-                <div className="block relative aspect-[3/4] overflow-hidden rounded-t-xl">
+                {/* Cover Image - Clickable */}
+                <Link
+                  href={`/product/${book.book_id}`}
+                  className="block relative aspect-[3/4] overflow-hidden rounded-t-xl"
+                >
                   <img
                     src={getFullImageUrl(book.cover_image)}
                     alt={book.title}
@@ -128,14 +134,19 @@ export default function BookshelfPage() {
                       {tBookshelf('free')}
                     </span>
                   )}
-                </div>
+                </Link>
 
                 {/* Content */}
                 <div className="p-4 flex flex-col flex-grow">
-                  {/* Title */}
-                  <h3 className="font-semibold text-dark mb-1 line-clamp-2 transition-colors">
-                    {book.title}
-                  </h3>
+                  {/* Title - Clickable */}
+                  <Link
+                    href={`/product/${book.book_id}`}
+                    className="block"
+                  >
+                    <h3 className="font-semibold text-dark mb-1 line-clamp-2 transition-colors hover:text-primary">
+                      {book.title}
+                    </h3>
+                  </Link>
 
                   {/* Author */}
                   {book.author_name && (
@@ -172,7 +183,7 @@ export default function BookshelfPage() {
                     )}
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         ) : (

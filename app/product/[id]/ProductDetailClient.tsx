@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { Download, FileText, BookOpen, Package, Monitor } from 'lucide-react';
 import { getProductById, oscarProductToBook, parseVariantPrice } from '../../lib/api';
 import { useApiLocale } from '../../i18n/useApiLocale';
-import { useTranslations } from '../../i18n/LanguageContext';
+import { useLanguage, useTranslations } from '../../i18n/LanguageContext';
 import { useCurrency } from '../../i18n/CurrencyContext';
 import { Book, Variant } from '../../types';
 import { Loader2 } from 'lucide-react';
@@ -105,13 +105,21 @@ function DownloadButtons({ book }: { book: Book }) {
 }
 
 export default function ProductDetailClient({ productId }: ProductDetailClientProps) {
+  const { isLoading: contextLoading } = useLanguage();
   const locale = useApiLocale();
   const t = useTranslations();
   const tProduct = useTranslations('product');
-  const { symbol, currency } = useCurrency();
+  const { symbol, currency, isLoading: currencyIsLoading } = useCurrency();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [prevCurrency, setPrevCurrency] = useState(currency);
+
+  // Determine if we should show loading:
+  // 1. During initial load (loading state)
+  // 2. When currency context is initially loading (from localStorage)
+  // 3. When currency has changed (prevCurrency !== currency) - prevents showing old price with new symbol
+  const showLoading = loading || currencyIsLoading || (prevCurrency !== currency && currency !== undefined);
 
   // Format price with symbol - always single line format for product detail page
   const formatPrice = (price: number): string => {
@@ -120,6 +128,12 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   };
 
   useEffect(() => {
+    // Only fetch after language context is fully initialized
+    // This prevents double API call / flicker when locale is loaded from localStorage
+    if (contextLoading) {
+      return;
+    }
+
     async function fetchBook() {
       try {
         setLoading(true);
@@ -135,9 +149,16 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
     }
 
     fetchBook();
-  }, [productId, locale, currency]);
+  }, [productId, locale, currency, contextLoading]);
 
-  if (loading) {
+  // Update previous currency after loading completes to avoid infinite loop
+  useEffect(() => {
+    if (!loading && currency !== undefined) {
+      setPrevCurrency(currency);
+    }
+  }, [loading, currency]);
+
+  if (showLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
