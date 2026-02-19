@@ -197,70 +197,32 @@ export function getFullImageUrl(imageUrl: string | null | undefined): string {
 
 /**
  * Get the title in the preferred language
- * Note: The API already returns localized title in the 'title' field based on Accept-Language header
- * This function is kept for compatibility but mainly returns the API's localized title
+ * The API now returns the resolved title based on request.LANGUAGE_CODE
  */
 export function getProductTitle(product: OscarProduct, locale: string = 'en'): string {
   // The API returns the title already localized based on Accept-Language header
-  // So we primarily use the 'title' field from the API
-  if (product.title) return product.title;
-
-  // Fallback to specific locale fields if needed
-  if (locale === 'en' && product.title_en) return product.title_en;
-  if (locale === 'ru' && product.title_ru) return product.title_ru;
-  if (locale === 'zh-hans' && product.title_zh_hans) return product.title_zh_hans;
-  if (locale === 'zh-hant' && product.title_zh_hant) return product.title_zh_hant;
-
-  // Fallback chain: en -> ru -> zh_hans -> zh_hant -> 'Untitled'
-  return product.title_en
-    || product.title_ru
-    || product.title_zh_hans
-    || product.title_zh_hant
-    || 'Untitled';
+  // Just return the resolved title field from the API
+  return product.title || 'Untitled';
 }
 
 /**
  * Get the author in the preferred language
- * Falls back to English, then Russian, then Chinese (Simplified), then Chinese (Traditional)
+ * The API now returns the resolved author based on request.LANGUAGE_CODE
  */
 export function getProductAuthor(product: OscarProduct, locale: string = 'en'): string {
-  // If product has a direct author field, use it
-  if (product.author) return product.author;
-
-  // Try the requested locale first
-  if (locale === 'en' && product.author_en) return product.author_en;
-  if (locale === 'ru' && product.author_ru) return product.author_ru;
-  if (locale === 'zh-hans' && product.author_zh_hans) return product.author_zh_hans;
-  if (locale === 'zh-hant' && product.author_zh_hant) return product.author_zh_hant;
-
-  // Fallback chain: en -> ru -> zh_hans -> zh_hant -> ''
-  return product.author_en
-    || product.author_ru
-    || product.author_zh_hans
-    || product.author_zh_hant
-    || '';
+  // The API returns the author already localized based on Accept-Language header
+  // Just return the resolved author field from the API
+  return product.author || '';
 }
 
 /**
  * Get the description in the preferred language
- * Falls back to English, then Russian, then Chinese (Simplified), then Chinese (Traditional)
+ * The API now returns the resolved description based on request.LANGUAGE_CODE
  */
 export function getProductDescription(product: OscarProduct, locale: string = 'en'): string {
-  // If product has a direct description field, use it
-  if (product.description) return product.description;
-
-  // Try the requested locale first
-  if (locale === 'en' && product.description_en) return product.description_en;
-  if (locale === 'ru' && product.description_ru) return product.description_ru;
-  if (locale === 'zh-hans' && product.description_zh_hans) return product.description_zh_hans;
-  if (locale === 'zh-hant' && product.description_zh_hant) return product.description_zh_hant;
-
-  // Fallback chain: en -> ru -> zh_hans -> zh_hant -> ''
-  return product.description_en
-    || product.description_ru
-    || product.description_zh_hans
-    || product.description_zh_hant
-    || '';
+  // The API returns the description already localized based on Accept-Language header
+  // Just return the resolved description field from the API
+  return product.description || '';
 }
 
 /**
