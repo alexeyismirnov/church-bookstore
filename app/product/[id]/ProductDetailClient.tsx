@@ -113,17 +113,18 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Track the currency for which the currently displayed book data was fetched.
-  // This is only updated after a successful fetch completes, ensuring the loading
-  // spinner stays visible until the new-currency price is actually available.
-  const [fetchedForCurrency, setFetchedForCurrency] = useState<string | undefined>(undefined);
+  // Track the locale+currency combination for which the currently displayed book data
+  // was fetched. Only updated after a successful fetch completes, ensuring the loading
+  // spinner stays visible until the new-locale/currency data is actually in state.
+  const [fetchedForKey, setFetchedForKey] = useState<string | undefined>(undefined);
+  const currentKey = `${locale}:${currency}`;
 
   // Show loading spinner when:
   // 1. Initial load is in progress
   // 2. Currency context is loading from localStorage
-  // 3. The displayed book data was fetched for a different currency than the current one
+  // 3. The displayed book data was fetched for a different locale/currency than the current one
   //    (i.e., a new fetch is in-flight or hasn't started yet)
-  const showLoading = loading || currencyIsLoading || fetchedForCurrency !== currency;
+  const showLoading = loading || currencyIsLoading || fetchedForKey !== currentKey;
 
   // Format price with symbol - always single line format for product detail page
   const formatPrice = (price: number): string => {
@@ -149,9 +150,9 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
         if (abortController.signal.aborted) return;
         const convertedBook = oscarProductToBook(product, locale);
         setBook(convertedBook);
-        // Only mark the data as valid for this currency AFTER the fetch succeeds.
-        // This keeps showLoading=true until the correct price is in state.
-        setFetchedForCurrency(currency);
+        // Only mark the data as valid for this locale+currency AFTER the fetch succeeds.
+        // This keeps showLoading=true until the correct localized data is in state.
+        setFetchedForKey(currentKey);
       } catch (err) {
         if (abortController.signal.aborted) return; // Ignore aborted fetch errors
         console.error('Failed to fetch book:', err);

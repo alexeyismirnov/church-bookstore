@@ -65,13 +65,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
-    // Wrap in try-catch to handle Safari private browsing or disabled storage
+    // Write to localStorage BEFORE updating React state.
+    // This ensures that when the useEffect in ProductDetailClient fires (triggered by
+    // the locale state change), getApiHeaders() reads the correct new locale from
+    // localStorage — avoiding a race where the effect fires before localStorage is updated.
     try {
       localStorage.setItem('locale', newLocale);
     } catch (e) {
       console.warn('Could not save language preference to localStorage');
     }
+    setLocaleState(newLocale);
   }, []);
 
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
