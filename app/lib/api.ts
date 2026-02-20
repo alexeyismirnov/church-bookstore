@@ -93,11 +93,12 @@ export async function getProducts(page: number = 1): Promise<OscarPaginationResp
  * @param id - Product ID
  * @returns Product details
  */
-export async function getProductById(id: string): Promise<OscarProduct> {
+export async function getProductById(id: string, signal?: AbortSignal): Promise<OscarProduct> {
   const response = await fetch(`${getApiBase()}/products/${id}/`, {
     method: 'GET',
     headers: getApiHeaders(),
     cache: 'no-store',
+    signal,
   });
 
   if (!response.ok) {

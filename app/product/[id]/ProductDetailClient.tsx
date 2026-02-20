@@ -113,13 +113,17 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [prevCurrency, setPrevCurrency] = useState(currency);
+  // Track the currency for which the currently displayed book data was fetched.
+  // This is only updated after a successful fetch completes, ensuring the loading
+  // spinner stays visible until the new-currency price is actually available.
+  const [fetchedForCurrency, setFetchedForCurrency] = useState<string | undefined>(undefined);
 
-  // Determine if we should show loading:
-  // 1. During initial load (loading state)
-  // 2. When currency context is initially loading (from localStorage)
-  // 3. When currency has changed (prevCurrency !== currency) - prevents showing old price with new symbol
-  const showLoading = loading || currencyIsLoading || (prevCurrency !== currency && currency !== undefined);
+  // Show loading spinner when:
+  // 1. Initial load is in progress
+  // 2. Currency context is loading from localStorage
+  // 3. The displayed book data was fetched for a different currency than the current one
+  //    (i.e., a new fetch is in-flight or hasn't started yet)
+  const showLoading = loading || currencyIsLoading || fetchedForCurrency !== currency;
 
   // Format price with symbol - always single line format for product detail page
   const formatPrice = (price: number): string => {
@@ -134,29 +138,39 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
       return;
     }
 
+    // Create an AbortController so we can cancel stale in-flight requests
+    // when currency/locale changes before the previous fetch completes.
+    const abortController = new AbortController();
+
     async function fetchBook() {
       try {
         setLoading(true);
-        const product = await getProductById(productId);
+        const product = await getProductById(productId, abortController.signal);
+        if (abortController.signal.aborted) return;
         const convertedBook = oscarProductToBook(product, locale);
         setBook(convertedBook);
+        // Only mark the data as valid for this currency AFTER the fetch succeeds.
+        // This keeps showLoading=true until the correct price is in state.
+        setFetchedForCurrency(currency);
       } catch (err) {
+        if (abortController.signal.aborted) return; // Ignore aborted fetch errors
         console.error('Failed to fetch book:', err);
         setError(err instanceof Error ? err.message : 'Failed to load book');
       } finally {
-        setLoading(false);
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
 
     fetchBook();
-  }, [productId, locale, currency, contextLoading]);
 
-  // Update previous currency after loading completes to avoid infinite loop
-  useEffect(() => {
-    if (!loading && currency !== undefined) {
-      setPrevCurrency(currency);
-    }
-  }, [loading, currency]);
+    // Cleanup: abort the fetch if the effect re-runs (currency/locale changed)
+    // before the previous fetch completed.
+    return () => {
+      abortController.abort();
+    };
+  }, [productId, locale, currency, contextLoading]);
 
   if (showLoading) {
     return (

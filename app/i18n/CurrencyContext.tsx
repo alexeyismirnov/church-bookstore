@@ -36,13 +36,16 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setCurrency = useCallback((newCurrency: Currency) => {
-    setCurrencyState(newCurrency);
-    // Wrap in try-catch to handle Safari private browsing or disabled storage
+    // Write to localStorage BEFORE updating React state.
+    // This ensures that when the useEffect in ProductDetailClient fires (triggered by
+    // the currency state change), getApiHeaders() reads the correct new currency from
+    // localStorage — avoiding a race where the effect fires before localStorage is updated.
     try {
       localStorage.setItem('currency', newCurrency);
     } catch (e) {
       console.warn('Could not save currency preference to localStorage');
     }
+    setCurrencyState(newCurrency);
   }, []);
 
   const value: CurrencyContextType = {
