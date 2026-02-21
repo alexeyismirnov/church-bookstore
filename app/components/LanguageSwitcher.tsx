@@ -16,13 +16,23 @@ export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Sync with profile language when profile changes and user is authenticated
-  // Note: We intentionally DON'T include locale in deps to prevent loop
-  // The effect should only sync FROM profile TO context, not the other way around
+  // Keep a ref to the latest locale so the profile-sync effect always compares
+  // against the current locale, not a stale closure value.
+  // (locale is intentionally excluded from the effect's dep array to prevent a
+  // feedback loop, but that caused the guard `profileLocale !== locale` to use
+  // a stale value — this ref solves that without re-introducing the loop.)
+  const localeRef = useRef<Locale>(locale);
+  useEffect(() => {
+    localeRef.current = locale;
+  });
+
+  // Sync with profile language when profile changes and user is authenticated.
+  // Only syncs FROM profile TO context (not the other way around).
   useEffect(() => {
     if (isAuthenticated && profile?.language) {
       const profileLocale = profile.language as Locale;
-      if (locales.includes(profileLocale) && profileLocale !== locale) {
+      // Use the ref to get the current locale without adding it to deps
+      if (locales.includes(profileLocale) && profileLocale !== localeRef.current) {
         setLocale(profileLocale);
       }
     }
@@ -43,7 +53,11 @@ export default function LanguageSwitcher() {
     setLocale(newLocale);
     setIsOpen(false);
     
-    // If user is authenticated, update profile with new language
+    // If user is authenticated, update profile with new language.
+    // Note: rapid switching may cause out-of-order updateProfile responses.
+    // The localeRef guard in the profile-sync effect prevents the UI locale
+    // from being overwritten by a stale response, since localeRef.current will
+    // already reflect the latest selection by the time any response arrives.
     if (isAuthenticated) {
       try {
         await updateProfile({ language: newLocale });

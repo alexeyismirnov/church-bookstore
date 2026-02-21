@@ -17,15 +17,26 @@ export default function CurrencySelector() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Sync with profile currency when profile changes and user is authenticated
+  // Keep a ref to the latest currency so the profile-sync effect always compares
+  // against the current currency, not a stale closure value.
+  // (currency is intentionally excluded from the effect's dep array to prevent a
+  // feedback loop — this ref solves that without re-introducing the loop.)
+  const currencyRef = useRef<Currency>(currency);
+  useEffect(() => {
+    currencyRef.current = currency;
+  });
+
+  // Sync with profile currency when profile changes and user is authenticated.
+  // Only syncs FROM profile TO context (not the other way around).
   useEffect(() => {
     if (isAuthenticated && profile?.currency) {
       const profileCurrency = profile.currency as Currency;
-      if (currencies.includes(profileCurrency) && profileCurrency !== currency) {
+      // Use the ref to get the current currency without adding it to deps
+      if (currencies.includes(profileCurrency) && profileCurrency !== currencyRef.current) {
         setCurrency(profileCurrency);
       }
     }
-  }, [profile, isAuthenticated, currency, setCurrency]);
+  }, [profile, isAuthenticated, setCurrency]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -42,7 +53,10 @@ export default function CurrencySelector() {
     setCurrency(newCurrency);
     setIsOpen(false);
     
-    // If user is authenticated, update profile with new currency
+    // If user is authenticated, update profile with new currency.
+    // Note: rapid switching may cause out-of-order updateProfile responses.
+    // The currencyRef guard in the profile-sync effect prevents the UI currency
+    // from being overwritten by a stale response.
     if (isAuthenticated) {
       try {
         await updateProfile({ currency: newCurrency });

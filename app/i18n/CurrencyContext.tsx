@@ -3,7 +3,7 @@
 
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { Currency, defaultCurrency, currencies, currencySymbols, currencyNames } from './settings';
 
 interface CurrencyContextType {
@@ -16,24 +16,24 @@ interface CurrencyContextType {
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
-export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const [currency, setCurrencyState] = useState<Currency>(defaultCurrency);
-  const [isLoading, setIsLoading] = useState(true);
+interface CurrencyProviderProps {
+  children: ReactNode;
+  // initialCurrency is read server-side from the 'currency' cookie in layout.tsx.
+  // This allows the server to render with the correct currency from the start,
+  // eliminating the flash that occurred when currency was only available
+  // client-side via localStorage.
+  initialCurrency?: Currency;
+}
 
-  useEffect(() => {
-    // Load currency from localStorage
-    // Wrap in try-catch to handle Safari private browsing or disabled storage
-    try {
-      const savedCurrency = localStorage.getItem('currency') as Currency;
-      if (savedCurrency && currencies.includes(savedCurrency)) {
-        setCurrencyState(savedCurrency);
-      }
-    } catch (e) {
-      // localStorage not available, use default currency
-      console.warn('localStorage not available, using default currency');
-    }
-    setIsLoading(false);
-  }, []);
+export function CurrencyProvider({ children, initialCurrency }: CurrencyProviderProps) {
+  // Use the server-provided initialCurrency (from cookie) if available,
+  // otherwise fall back to defaultCurrency.
+  const [currency, setCurrencyState] = useState<Currency>(
+    initialCurrency && currencies.includes(initialCurrency) ? initialCurrency : defaultCurrency
+  );
+  // isLoading is always false because the currency is known from the first render
+  // (provided via the initialCurrency prop from the server-read cookie).
+  const isLoading = false;
 
   const setCurrency = useCallback((newCurrency: Currency) => {
     // Write to localStorage BEFORE updating React state.
@@ -44,6 +44,13 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('currency', newCurrency);
     } catch (e) {
       console.warn('Could not save currency preference to localStorage');
+    }
+    // Also write to cookie so the server can read it on the next request and
+    // render with the correct currency from the start (no flash).
+    try {
+      document.cookie = `currency=${newCurrency}; max-age=${60 * 60 * 24 * 365}; path=/; SameSite=Lax`;
+    } catch (e) {
+      console.warn('Could not save currency preference to cookie');
     }
     setCurrencyState(newCurrency);
   }, []);

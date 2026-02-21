@@ -3,7 +3,7 @@
 
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { Locale, defaultLocale, locales, languageNames, languageFlags } from './settings';
 
 // Import translations from JSON files
@@ -45,24 +45,26 @@ function interpolate(template: string, params?: Record<string, string | number>)
   });
 }
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
-  const [isLoading, setIsLoading] = useState(true);
+interface LanguageProviderProps {
+  children: ReactNode;
+  // initialLocale is read server-side from the 'locale' cookie in layout.tsx.
+  // This allows the server to render in the correct language from the start,
+  // eliminating the flash of English content that occurred when locale was only
+  // available client-side via localStorage.
+  initialLocale?: Locale;
+}
 
-  useEffect(() => {
-    // Load language from localStorage
-    // Wrap in try-catch to handle Safari private browsing or disabled storage
-    try {
-      const savedLocale = localStorage.getItem('locale') as Locale;
-      if (savedLocale && locales.includes(savedLocale)) {
-        setLocaleState(savedLocale);
-      }
-    } catch (e) {
-      // localStorage not available, use default language
-      console.warn('localStorage not available, using default language');
-    }
-    setIsLoading(false);
-  }, []);
+export function LanguageProvider({ children, initialLocale }: LanguageProviderProps) {
+  // Use the server-provided initialLocale (from cookie) if available,
+  // otherwise fall back to defaultLocale.
+  // Since the server reads the same cookie that the client writes, the first
+  // render already has the correct locale — no visible flash.
+  const [locale, setLocaleState] = useState<Locale>(
+    initialLocale && locales.includes(initialLocale) ? initialLocale : defaultLocale
+  );
+  // isLoading is always false because the locale is known from the first render
+  // (provided via the initialLocale prop from the server-read cookie).
+  const isLoading = false;
 
   const setLocale = useCallback((newLocale: Locale) => {
     // Write to localStorage BEFORE updating React state.
@@ -73,6 +75,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('locale', newLocale);
     } catch (e) {
       console.warn('Could not save language preference to localStorage');
+    }
+    // Also write to cookie so the server can read it on the next request and
+    // render in the correct language from the start (no flash).
+    try {
+      // Max-age: 1 year; SameSite=Lax; path=/
+      document.cookie = `locale=${newLocale}; max-age=${60 * 60 * 24 * 365}; path=/; SameSite=Lax`;
+    } catch (e) {
+      console.warn('Could not save language preference to cookie');
     }
     setLocaleState(newLocale);
   }, []);

@@ -44,6 +44,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
 const REMEMBER_ME_KEY = 'remember_me';
+// Caches the authenticated user's profile language and currency so the server
+// can read them on the next request (via layout.tsx) and render with the correct
+// settings from the start — avoiding a visible flash of default values.
+export const PROFILE_LOCALE_KEY = 'profile_locale';
+export const PROFILE_CURRENCY_KEY = 'profile_currency';
 
 // Helper to get the appropriate storage based on rememberMe setting
 const getStorage = (rememberMe: boolean): Storage => {
@@ -63,6 +68,30 @@ const getStoredToken = (): string | null => {
   // Otherwise, use sessionStorage only (no fallback to localStorage)
   return sessionStorage.getItem(TOKEN_KEY);
 };
+
+// Persist profile language and currency to both cookies (read server-side by
+// layout.tsx for SSR) and localStorage (client-side fallback).
+// Centralised here so any future change (e.g. adding Secure flag, changing
+// max-age) only needs to be made in one place.
+function cacheProfilePreferences(language?: string, currency?: string): void {
+  try {
+    const maxAge = 60 * 60 * 24 * 365; // 1 year
+    if (language) {
+      document.cookie = `${PROFILE_LOCALE_KEY}=${language}; max-age=${maxAge}; path=/; SameSite=Lax`;
+      document.cookie = `locale=${language}; max-age=${maxAge}; path=/; SameSite=Lax`;
+      localStorage.setItem(PROFILE_LOCALE_KEY, language);
+      localStorage.setItem('locale', language);
+    }
+    if (currency) {
+      document.cookie = `${PROFILE_CURRENCY_KEY}=${currency}; max-age=${maxAge}; path=/; SameSite=Lax`;
+      document.cookie = `currency=${currency}; max-age=${maxAge}; path=/; SameSite=Lax`;
+      localStorage.setItem(PROFILE_CURRENCY_KEY, currency);
+      localStorage.setItem('currency', currency);
+    }
+  } catch {
+    // Storage not available (e.g. Safari private browsing), ignore
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -172,6 +201,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(USER_KEY);
     localStorage.removeItem(REMEMBER_ME_KEY);
+    // Clear the cached profile locale and currency so the next page load doesn't
+    // use stale profile settings after the user has logged out.
+    localStorage.removeItem(PROFILE_LOCALE_KEY);
+    localStorage.removeItem(PROFILE_CURRENCY_KEY);
+    try {
+      // Expire the profile cookies so the server stops using them
+      document.cookie = `${PROFILE_LOCALE_KEY}=; max-age=0; path=/; SameSite=Lax`;
+      document.cookie = `${PROFILE_CURRENCY_KEY}=; max-age=0; path=/; SameSite=Lax`;
+    } catch {
+      // ignore
+    }
     setUser(null);
     setProfile(null);
   };
@@ -195,6 +235,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
       setProfile(data);
+      // Cache language and currency so the server renders correctly on next load.
+      cacheProfilePreferences(data.language, data.currency);
     } catch (err) {
       console.error('Failed to fetch profile:', err);
     }
@@ -219,6 +261,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const updatedProfile = await response.json();
       setProfile(updatedProfile);
+      // Cache updated language and currency so the server renders correctly on next load.
+      cacheProfilePreferences(updatedProfile.language, updatedProfile.currency);
       
       // Also update user data if names changed
       if (data.first_name || data.last_name) {
