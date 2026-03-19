@@ -54,6 +54,22 @@ export default function FilterSidebar({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Helper function to find all ancestor categories of a given category
+  const findCategoryAncestors = (cats: Category[], targetId: string, ancestors: string[] = []): string[] => {
+    for (const cat of cats) {
+      if (cat.id === targetId) {
+        return ancestors;
+      }
+      if (cat.children && cat.children.length > 0) {
+        const found = findCategoryAncestors(cat.children, targetId, [...ancestors, cat.id]);
+        if (found.length > 0 || cat.children.some(c => c.id === targetId)) {
+          return found;
+        }
+      }
+    }
+    return [];
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -71,6 +87,16 @@ export default function FilterSidebar({
 
     fetchCategories();
   }, [locale]);
+
+  // Auto-expand parent categories when selectedCategoryId changes on mount
+  useEffect(() => {
+    if (selectedCategoryId && categories.length > 0) {
+      const ancestors = findCategoryAncestors(categories, selectedCategoryId);
+      if (ancestors.length > 0) {
+        setExpandedCategories(new Set(ancestors));
+      }
+    }
+  }, [selectedCategoryId, categories]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({
@@ -148,7 +174,7 @@ export default function FilterSidebar({
           <button
             type="button"
             onClick={() => handleCategoryClick(category, !!hasChildren)}
-            className={`text-sm flex-grow text-left whitespace-nowrap ${isSelected ? 'text-primary font-bold' : isPartiallySelected ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'}`}
+            className={`text-sm flex-grow text-left whitespace-nowrap ${isSelected ? 'text-primary' : isPartiallySelected ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'}`}
           >
             {category.name}
           </button>

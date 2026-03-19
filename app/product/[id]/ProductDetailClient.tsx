@@ -269,7 +269,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                         {variantPrice === 0 ? (
                           <span className="text-green-600 font-semibold whitespace-nowrap">{t('common.free')}</span>
                         ) : variant.isAvailable === false ? (
-                          <button className="btn-primary w-full whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
+                          <button className="btn-primary w-full whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
                             {t('common.outOfStock')}
                           </button>
                         ) : (
@@ -327,7 +327,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       {t('common.addToCart')}
                     </button>
                   ) : (
-                    <button className="btn-primary whitespace-allowed opacity-50 cursor-not-allowed" disabled>
+                    <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
                       {t('common.outOfStock')}
                     </button>
                   )
