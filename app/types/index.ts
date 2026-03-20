@@ -277,3 +277,34 @@ export interface AddToBasketRequest {
 export interface UpdateBasketLineRequest {
   quantity: number;
 }
+
+// ============================================================================
+// Checkout Types
+// ============================================================================
+
+/**
+ * Country type for dropdown selection
+ * Used in shipping address form countries dropdown
+ */
+export interface Country {
+  code: string; // 2-letter ISO country code
+  name: string; // Country display name
+}
+
+/**
+ * Shipping address form data
+ * Based on django-oscar's AbstractAddress model
+ */
+export interface ShippingAddress {
+  first_name: string;       // First name (required)
+  last_name: string;        // Last name (required)
+  line1: string;            // Street address line 1 (required)
+  line2?: string;           // Street address line 2 (optional)
+  line3?: string;           // e.g., building name, floor (optional)
+  line4?: string;           // City (optional)
+  state?: string;           // State/province/region (optional)
+  postcode?: string;        // ZIP/postal code (optional)
+  country: string;          // 2-letter ISO country code (required)
+  phone_number?: string;    // Phone number (optional)
+  notes?: string;           // Delivery instructions (optional)
+}

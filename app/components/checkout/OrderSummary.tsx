@@ -1,7 +1,13 @@
-import { CartItem } from '@/app/types';
+interface OrderSummaryItem {
+  id: string;
+  title: string;
+  coverImage?: string;
+  price: number;
+  quantity: number;
+}
 
 interface OrderSummaryProps {
-  cartItems: CartItem[];
+  cartItems: OrderSummaryItem[];
   shipping?: number;
 }
 

@@ -48,22 +48,72 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 church-bookstore/
 ├── app/                    # Next.js App Router pages
 │   ├── components/         # Reusable React components
-│   ├── lib/               # Data and utilities
-│   ├── types/             # TypeScript type definitions
-│   ├── page.tsx           # Homepage
-│   ├── catalog/           # Catalog page
-│   ├── product/[id]/      # Product detail pages
-│   ├── cart/              # Shopping cart
-│   ├── checkout/          # Checkout page
-│   ├── login/             # Login page
-│   ├── register/          # Registration page
-│   ├── about/             # About us page
-│   ├── contact/           # Contact page
-│   └── favorites/         # Favorites page
+│   ├── lib/                # Data and utilities
+│   │   └── countries.json  # Static countries list for shipping
+│   ├── types/              # TypeScript type definitions
+│   ├── page.tsx            # Homepage
+│   ├── catalog/            # Catalog page
+│   ├── product/[id]/       # Product detail pages
+│   ├── cart/               # Shopping cart
+│   ├── checkout/           # Checkout page
+│   ├── login/              # Login page
+│   ├── register/           # Registration page
+│   ├── about/              # About us page
+│   ├── contact/            # Contact page
+│   └── favorites/          # Saved items
 ├── public/images/         # Static images (book covers, logo)
-├── dist/                  # Built static files (after npm run build)
-└── package.json           # Project dependencies
+├── dist/                   # Built static files (after npm run build)
+└── package.json            # Project dependencies
 ```
+
+## Updating the Countries List
+
+The countries list in [`app/lib/countries.json`](app/lib/countries.json:1) is pre-fetched from the django-oscar backend API and stored locally for instant loading (infinite caching). This allows the shipping country dropdown to load without waiting for an API request.
+
+### When to Update
+
+Update the countries list when:
+- New countries are added to the django-oscar backend
+- Existing countries' `is_shipping_country` values change
+- Countries are added or removed from the system
+
+### How to Update
+
+1. **Fetch countries from the API** (paginated, 20 per page):
+
+   ```bash
+   curl -H "Authorization: Token YOUR_TOKEN" "https://orthodoxbookshop.asia/api/countries/?page=1"
+   ```
+
+2. **Process the response**: For each shipping country (`is_shipping_country=true`), extract:
+   - `code`: The 2-letter ISO country code (from the URL field)
+   - `name`: The `printable_name` field
+
+3. **Combine all pages** and sort alphabetically by `name`
+
+4. **Replace the contents** of [`app/lib/countries.json`](app/lib/countries.json:1) with the new sorted list
+
+### Example API Response
+
+```json
+{
+  "count": 50,
+  "next": "https://orthodoxbookshop.asia/api/countries/?page=2",
+  "results": [
+    {
+      "url": "https://orthodoxbookshop.asia/api/countries/CN/",
+      "code": "CN",
+      "name": "China",
+      "printable_name": "China",
+      "is_shipping_country": true
+    }
+  ]
+}
+```
+
+### Note About Caching
+
+Changes to `countries.json` won't take effect until the app is redeployed. The file is bundled at build time for optimal performance.
 
 ## Pages
 

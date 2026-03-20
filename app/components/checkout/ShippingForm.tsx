@@ -1,18 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { ShippingAddress } from '@/app/types';
+import { CountryAutocomplete } from './CountryAutocomplete';
 
-export interface ShippingAddress {
-  first_name: string;
-  last_name: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  state: string;
-  postcode: string;
-  country: string;
-  phone_number?: string;
-}
+// Re-export ShippingAddress for use by CheckoutForm
+export type { ShippingAddress };
 
 interface ShippingFormProps {
   onComplete: (address: ShippingAddress) => void;
@@ -24,24 +17,24 @@ export function ShippingForm({ onComplete }: ShippingFormProps) {
     last_name: '',
     line1: '',
     line2: '',
-    city: '',
+    line3: '',
+    line4: '',
     state: '',
     postcode: '',
     country: 'US',
     phone_number: '',
+    notes: '',
   });
 
-  const [errors, setErrors] = useState<Partial<ShippingAddress>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof ShippingAddress, string>>>({});
 
   const validate = (): boolean => {
-    const newErrors: Partial<ShippingAddress> = {};
+    const newErrors: Partial<Record<keyof ShippingAddress, string>> = {};
 
     if (!address.first_name.trim()) newErrors.first_name = 'First name is required';
     if (!address.last_name.trim()) newErrors.last_name = 'Last name is required';
-    if (!address.line1.trim()) newErrors.line1 = 'Address is required';
-    if (!address.city.trim()) newErrors.city = 'City is required';
-    if (!address.state.trim()) newErrors.state = 'State is required';
-    if (!address.postcode.trim()) newErrors.postcode = 'ZIP code is required';
+    if (!address.line1.trim()) newErrors.line1 = 'Street address is required';
+    if (!address.country.trim()) newErrors.country = 'Country is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -62,20 +55,24 @@ export function ShippingForm({ onComplete }: ShippingFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2 className="text-xl font-semibold mb-6 text-dark">Shipping Address</h2>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <h2 className="text-xl font-semibold text-gray-900">Shipping Address</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Name Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* First Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            First Name *
+          <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+            First Name <span className="text-red-500">*</span>
           </label>
           <input
+            id="first_name"
             type="text"
             value={address.first_name}
             onChange={(e) => handleChange('first_name', e.target.value)}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+            required
+            placeholder="John"
+            className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
               errors.first_name ? 'border-red-500' : 'border-gray-300'
             }`}
           />
@@ -86,14 +83,17 @@ export function ShippingForm({ onComplete }: ShippingFormProps) {
 
         {/* Last Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Last Name *
+          <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+            Last Name <span className="text-red-500">*</span>
           </label>
           <input
+            id="last_name"
             type="text"
             value={address.last_name}
             onChange={(e) => handleChange('last_name', e.target.value)}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+            required
+            placeholder="Doe"
+            className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
               errors.last_name ? 'border-red-500' : 'border-gray-300'
             }`}
           />
@@ -104,16 +104,18 @@ export function ShippingForm({ onComplete }: ShippingFormProps) {
       </div>
 
       {/* Address Line 1 */}
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Address *
+      <div>
+        <label htmlFor="line1" className="block text-sm font-medium text-gray-700 mb-1">
+          Street Address <span className="text-red-500">*</span>
         </label>
         <input
+          id="line1"
           type="text"
           value={address.line1}
           onChange={(e) => handleChange('line1', e.target.value)}
-          placeholder="Street address"
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+          required
+          placeholder="123 Main Street"
+          className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
             errors.line1 ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -123,92 +125,124 @@ export function ShippingForm({ onComplete }: ShippingFormProps) {
       </div>
 
       {/* Address Line 2 */}
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Apartment, suite, etc. (optional)
+      <div>
+        <label htmlFor="line2" className="block text-sm font-medium text-gray-700 mb-1">
+          Apartment, Suite, etc.
         </label>
         <input
+          id="line2"
           type="text"
           value={address.line2}
           onChange={(e) => handleChange('line2', e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+          placeholder="Apt 4B"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      {/* Address Line 3 */}
+      <div>
+        <label htmlFor="line3" className="block text-sm font-medium text-gray-700 mb-1">
+          Building Name, Floor, etc.
+        </label>
+        <input
+          id="line3"
+          type="text"
+          value={address.line3}
+          onChange={(e) => handleChange('line3', e.target.value)}
+          placeholder="Tower A, 5th Floor"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+        />
+      </div>
+
+      {/* City, State, ZIP Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* City */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            City *
+          <label htmlFor="line4" className="block text-sm font-medium text-gray-700 mb-1">
+            City
           </label>
           <input
+            id="line4"
             type="text"
-            value={address.city}
-            onChange={(e) => handleChange('city', e.target.value)}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-              errors.city ? 'border-red-500' : 'border-gray-300'
-            }`}
+            value={address.line4}
+            onChange={(e) => handleChange('line4', e.target.value)}
+            placeholder="San Francisco"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
           />
-          {errors.city && (
-            <p className="mt-1 text-sm text-red-500">{errors.city}</p>
-          )}
         </div>
 
         {/* State */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            State *
+          <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+            State / Province / Region
           </label>
           <input
+            id="state"
             type="text"
             value={address.state}
             onChange={(e) => handleChange('state', e.target.value)}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-              errors.state ? 'border-red-500' : 'border-gray-300'
-            }`}
+            placeholder="California"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
           />
-          {errors.state && (
-            <p className="mt-1 text-sm text-red-500">{errors.state}</p>
-          )}
         </div>
 
         {/* ZIP Code */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            ZIP Code *
+          <label htmlFor="postcode" className="block text-sm font-medium text-gray-700 mb-1">
+            ZIP / Postal Code
           </label>
           <input
+            id="postcode"
             type="text"
             value={address.postcode}
             onChange={(e) => handleChange('postcode', e.target.value)}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-              errors.postcode ? 'border-red-500' : 'border-gray-300'
-            }`}
+            placeholder="94102"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
           />
-          {errors.postcode && (
-            <p className="mt-1 text-sm text-red-500">{errors.postcode}</p>
-          )}
         </div>
       </div>
 
-      {/* Phone */}
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Phone (optional)
+      {/* Country */}
+      <CountryAutocomplete
+        value={address.country}
+        onChange={(code) => handleChange('country', code)}
+        error={errors.country}
+      />
+
+      {/* Phone Number */}
+      <div>
+        <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-1">
+          Phone Number
         </label>
         <input
+          id="phone_number"
           type="tel"
           value={address.phone_number}
           onChange={(e) => handleChange('phone_number', e.target.value)}
-          placeholder="For delivery updates"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+          placeholder="+1 (555) 123-4567"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
         />
       </div>
 
-      {/* Submit */}
+      {/* Delivery Instructions */}
+      <div>
+        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+          Delivery Instructions
+        </label>
+        <textarea
+          id="notes"
+          value={address.notes}
+          onChange={(e) => handleChange('notes', e.target.value)}
+          placeholder="Leave at door, ring doorbell, etc."
+          rows={3}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none"
+        />
+      </div>
+
+      {/* Submit Button */}
       <button
         type="submit"
-        className="mt-6 w-full btn-primary"
+        className="w-full btn-primary py-3 text-base font-medium"
       >
         Continue to Payment
       </button>
