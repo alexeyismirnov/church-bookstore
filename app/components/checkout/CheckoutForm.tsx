@@ -47,7 +47,7 @@ export function CheckoutForm({
             address: {
               line1: shippingAddress.line1,
               line2: shippingAddress.line2 || '',
-              city: shippingAddress.city,
+              city: shippingAddress.line4 || '',
               state: shippingAddress.state,
               postal_code: shippingAddress.postcode,
               country: shippingAddress.country,
@@ -87,7 +87,7 @@ export function CheckoutForm({
               {shippingAddress.line2 && `, ${shippingAddress.line2}`}
             </p>
             <p className="text-sm text-gray-600">
-              {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postcode}
+              {shippingAddress.line4}, {shippingAddress.state} {shippingAddress.postcode}
             </p>
           </div>
           <button
