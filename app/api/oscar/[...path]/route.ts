@@ -73,7 +73,29 @@ async function proxyToOscar(
   // Make the request to Django
   const oscarResponse = await fetch(targetUrl, fetchOptions);
   
-  // Parse response
+  // Handle no-content responses (204, 205, 304) - these cannot have a body
+  const noContentStatus = oscarResponse.status === 204
+    || oscarResponse.status === 205
+    || oscarResponse.status === 304;
+  
+  if (noContentStatus) {
+    const response = new NextResponse(null, { status: oscarResponse.status });
+    
+    // Still capture Session-Id cookie if present
+    const newSessionId = oscarResponse.headers.get('Session-Id');
+    if (newSessionId) {
+      response.cookies.set('oscar-session-id', newSessionId, {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+      });
+    }
+    
+    return response;
+  }
+  
+  // Parse response for normal responses
   let data;
   const contentType = oscarResponse.headers.get('content-type');
   if (contentType?.includes('application/json')) {
@@ -83,9 +105,9 @@ async function proxyToOscar(
   }
 
   // Build Next.js response
-  const response = typeof data === 'string' 
+  const response = typeof data === 'string' && data
     ? new NextResponse(data, { status: oscarResponse.status })
-    : NextResponse.json(data, { status: oscarResponse.status });
+    : NextResponse.json(data ?? null, { status: oscarResponse.status });
 
   // Capture and forward Session-Id as httpOnly cookie
   const newSessionId = oscarResponse.headers.get('Session-Id');

@@ -23,7 +23,9 @@
     "checkout": "结账",
     "continueShopping": "继续购物",
     "remove": "删除",
-    "close": "关闭"
+    "close": "关闭",
+    "adding": "添加中...",
+    "added": "已添加！"
   },
   "nav": {
     "selectLanguage": "选择语言",

@@ -23,7 +23,9 @@
     "checkout": "Checkout",
     "continueShopping": "Continue Shopping",
     "remove": "Remove",
-    "close": "Close"
+    "close": "Close",
+    "adding": "Adding...",
+    "added": "Added!"
   },
   "nav": {
     "selectLanguage": "Select Language",

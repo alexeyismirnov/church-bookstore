@@ -11,13 +11,14 @@ import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 import { useTranslations } from '../i18n/LanguageContext';
 import { useAuth } from '../lib/AuthContext';
+import { useCart } from '../lib/CartContext';
 
 export default function Header() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [cartCount] = useState(2);
+  const { cartCount, isCartLoading } = useCart();
   
   // Get translations for navigation
   const t = useTranslations('nav');

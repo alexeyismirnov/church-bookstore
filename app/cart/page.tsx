@@ -1,35 +1,163 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Loader2 } from 'lucide-react';
 import CartItem from '../components/CartItem';
-import { books } from '../lib/data';
-import { CartItem as CartItemType } from '../types';
+import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems, getStoredToken } from '../lib/api';
+import { useCart } from '../lib/CartContext';
+import { Basket } from '../types';
+
+interface CartItemDisplay {
+  id: string;
+  basketLineId: number;
+  title: string;
+  author: string;
+  price: number;
+  quantity: number;
+  coverImage: string;
+  linePrice: number;
+  variantTitle?: string;
+}
 
 export default function CartPage() {
-  // Mock cart data
-  const [cartItems, setCartItems] = useState<CartItemType[]>([
-    { ...books[0], quantity: 1 },
-    { ...books[1], quantity: 2 },
-  ]);
+  const { refreshCart } = useCart();
+  const [basket, setBasket] = useState<Basket | null>(null);
+  const [cartItems, setCartItems] = useState<CartItemDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const updateQuantity = (id: string, quantity: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+  // Fetch basket on mount
+  const fetchBasket = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const basketData = await getBasket();
+      setBasket(basketData);
+      const items = await basketToCartItems(basketData);
+      setCartItems(items);
+    } catch (err) {
+      console.error('Failed to fetch basket:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load cart');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    // Temporarily disable browser scroll restoration to prevent it from overriding our scroll
+    const scrollRestoration = history.scrollRestoration;
+    history.scrollRestoration = 'manual';
+    
+    // Scroll to top immediately when component mounts
+    window.scrollTo(0, 0);
+    
+    return () => {
+      history.scrollRestoration = scrollRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchBasket();
+  }, [fetchBasket]);
+
+  const updateQuantity = async (basketLineId: number, quantity: number) => {
+    if (!basket?.id || isUpdating) return;
+    
+    try {
+      setIsUpdating(true);
+      // updateBasketLine returns the updated line, NOT the basket
+      await updateBasketLine(basket.id, basketLineId, quantity);
+      // Re-fetch the entire basket to get updated state
+      await fetchBasket();
+      // Notify Header to refresh cart count
+      await refreshCart();
+    } catch (err) {
+      console.error('Failed to update quantity:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update quantity');
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+  const removeItem = async (basketLineId: number) => {
+    if (!basket?.id || isUpdating) return;
+    
+    try {
+      setIsUpdating(true);
+      // removeBasketLine returns the updated line, NOT the basket
+      await removeBasketLine(basket.id, basketLineId);
+      // Re-fetch the entire basket to get updated state
+      await fetchBasket();
+      // Notify Header to refresh cart count
+      await refreshCart();
+    } catch (err) {
+      console.error('Failed to remove item:', err);
+      setError(err instanceof Error ? err.message : 'Failed to remove item');
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Check if user is authenticated
+  const isAuthenticated = !!getStoredToken();
+
+  // Calculate totals
+  const subtotal = cartItems.reduce((sum, item) => sum + item.linePrice, 0);
   const shipping = subtotal > 50 ? 0 : 5.99;
   const total = subtotal + shipping;
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-gray-500">Loading your cart...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Not authenticated state
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-6" />
+            <h1 className="text-2xl font-bold text-dark mb-4">Please Sign In</h1>
+            <p className="text-gray-500 mb-8">
+              You need to sign in to view your cart and make purchases.
+            </p>
+            <Link href="/login?redirect=/cart" className="btn-primary">
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-dark mb-4">Something went wrong</h1>
+            <p className="text-gray-500 mb-8">{error}</p>
+            <button onClick={fetchBasket} className="btn-primary">
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty cart state
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-background">
@@ -68,11 +196,11 @@ export default function CartPage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm">
               {cartItems.map((item, index) => (
-                <div key={item.id}>
+                <div key={`${item.id}-${item.basketLineId}-${index}`}>
                   <CartItem
                     item={item}
-                    onUpdateQuantity={updateQuantity}
-                    onRemove={removeItem}
+                    onUpdateQuantityByDelta={(delta: number) => updateQuantity(item.basketLineId, Math.max(1, item.quantity + delta))}
+                    onRemoveByBasketLineId={() => removeItem(item.basketLineId)}
                   />
                   {index < cartItems.length - 1 && (
                     <hr className="border-gray-100" />

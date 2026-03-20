@@ -5,11 +5,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Download, FileText, BookOpen, Package, Monitor } from 'lucide-react';
-import { getProductById, oscarProductToBook, parseVariantPrice } from '../../lib/api';
+import { useRouter } from 'next/navigation';
+import { Download, FileText, BookOpen, Package, Monitor, ShoppingCart, Check } from 'lucide-react';
+import { getProductById, oscarProductToBook, parseVariantPrice, addToBasket, getStoredToken } from '../../lib/api';
 import { useApiLocale } from '../../i18n/useApiLocale';
 import { useLanguage, useTranslations } from '../../i18n/LanguageContext';
 import { useCurrency } from '../../i18n/CurrencyContext';
+import { useCart } from '../../lib/CartContext';
 import { Book, Variant } from '../../types';
 import { Loader2 } from 'lucide-react';
 
@@ -110,6 +112,8 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const t = useTranslations();
   const tProduct = useTranslations('product');
   const { symbol, currency, isLoading: currencyIsLoading } = useCurrency();
+  const { refreshCart } = useCart();
+  const router = useRouter();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -118,6 +122,11 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   // spinner stays visible until the new-locale/currency data is actually in state.
   const [fetchedForKey, setFetchedForKey] = useState<string | undefined>(undefined);
   const currentKey = `${locale}:${currency}`;
+  
+  // Add to cart state - track per-variant ID instead of global boolean
+  const [addingToCartVariantId, setAddingToCartVariantId] = useState<number | null>(null);
+  const [addedToCartVariantId, setAddedToCartVariantId] = useState<number | null>(null);
+  const [addToCartError, setAddToCartError] = useState<string | null>(null);
 
   // Show loading spinner when:
   // 1. Initial load is in progress
@@ -172,6 +181,41 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
       abortController.abort();
     };
   }, [productId, locale, currency, contextLoading]);
+
+  // Handle add to cart
+  const handleAddToCart = async (variantId: number) => {
+    if (!book) return; // Safety check
+
+    // Check if user is authenticated
+    const token = getStoredToken();
+    if (!token) {
+      // Redirect to login with return URL
+      router.push(`/login?redirect=/product/${productId}`);
+      return;
+    }
+
+    try {
+      setAddingToCartVariantId(variantId);
+      setAddToCartError(null);
+      
+      // For products with variants, we need to pass the VARIANT ID (child product ID),
+      // not the parent product ID. Oscar's pricing is on the variants, not the parent.
+      // The Oscar API add-product endpoint expects the product URL.
+      
+      await addToBasket(variantId, 1);
+      setAddedToCartVariantId(variantId);
+      // Notify Header to refresh cart count
+      await refreshCart();
+      // Reset success state after 2 seconds
+      setTimeout(() => setAddedToCartVariantId(null), 2000);
+    } catch (err) {
+      console.error('[handleAddToCart] Error adding to cart:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add to cart';
+      setAddToCartError(errorMessage);
+    } finally {
+      setAddingToCartVariantId(null);
+    }
+  };
 
   if (showLoading) {
     return (
@@ -272,8 +316,26 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                           <button className="btn-primary w-full whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
                             {t('common.outOfStock')}
                           </button>
+                        ) : addingToCartVariantId === variant.id ? (
+                          <button className="btn-primary w-full whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
+                            <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
+                            {t('common.adding')}
+                          </button>
+                        ) : addedToCartVariantId === variant.id ? (
+                          <button className="btn-primary w-full whitespace-nowrap bg-green-600 hover:bg-green-600">
+                            <Check className="w-4 h-4 inline mr-2" />
+                            {t('common.added')}
+                          </button>
+                        ) : addToCartError && addingToCartVariantId === null ? (
+                          <button className="btn-primary w-full whitespace-nowrap bg-red-500 hover:bg-red-600">
+                            {t('common.error')}
+                          </button>
                         ) : (
-                          <button className="btn-primary w-full whitespace-nowrap">
+                          <button
+                            className="btn-primary w-full whitespace-nowrap"
+                            onClick={() => handleAddToCart(variant.id)}
+                          >
+                            <ShoppingCart className="w-4 h-4 inline mr-2" />
                             {t('common.addToCart')}
                           </button>
                         )}
@@ -284,53 +346,81 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
               </div>
             ) : (
               /* Single Product: Show one row with book type, price, add to cart */
-              <div className="flex items-center justify-between gap-4 bg-gray-50 rounded-xl p-4">
-                {/* Book Type */}
-                <div className="flex items-center gap-2">
-                  {book.isShippingRequired === false ? (
-                    <>
-                      <Monitor className="w-5 h-5 text-blue-500" />
-                      <span className="text-blue-600 font-medium">{tProduct('ebook')}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Package className="w-5 h-5 text-amber-600" />
-                      <span className="text-amber-700 font-medium">{tProduct('printed')}</span>
-                    </>
-                  )}
-                </div>
+              <div className="flex flex-col gap-3 bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center justify-between gap-4">
+                  {/* Book Type */}
+                  <div className="flex items-center gap-2">
+                    {book.isShippingRequired === false ? (
+                      <>
+                        <Monitor className="w-5 h-5 text-blue-500" />
+                        <span className="text-blue-600 font-medium">{tProduct('ebook')}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Package className="w-5 h-5 text-amber-600" />
+                        <span className="text-amber-700 font-medium">{tProduct('printed')}</span>
+                      </>
+                    )}
+                  </div>
 
-                {/* Price */}
-                <div className="flex items-center gap-2">
-                  {book.price === 0 ? (
-                    <span className="text-2xl font-bold text-green-600">
-                      {t('common.free')}
-                    </span>
-                  ) : (
-                    <>
-                      <span className="text-2xl font-bold text-dark">
-                          {formatPrice(book.price)}
-                        </span>
-                        {book.originalPrice && (
-                          <span className="text-lg text-gray-400 line-through">
-                            {formatPrice(book.originalPrice)}
+                  {/* Price */}
+                  <div className="flex items-center gap-2">
+                    {book.price === 0 ? (
+                      <span className="text-2xl font-bold text-green-600">
+                        {t('common.free')}
+                      </span>
+                    ) : (
+                      <>
+                        <span className="text-2xl font-bold text-dark">
+                            {formatPrice(book.price)}
                           </span>
-                        )}
-                    </>
+                          {book.originalPrice && (
+                            <span className="text-lg text-gray-400 line-through">
+                              {formatPrice(book.originalPrice)}
+                            </span>
+                          )}
+                      </>
+                    )}
+                  </div>
+
+                  {/* Add to Cart Button - hidden for free books */}
+                  {book.price !== 0 && (
+                    book.isShippingRequired === false || book.isInStock ? (
+                      addingToCartVariantId === parseInt(book.id) ? (
+                        <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
+                          <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
+                          {t('common.adding')}
+                        </button>
+                      ) : addedToCartVariantId === parseInt(book.id) ? (
+                        <button className="btn-primary whitespace-nowrap bg-green-600 hover:bg-green-600">
+                          <Check className="w-4 h-4 inline mr-2" />
+                          {t('common.added')}
+                        </button>
+                      ) : addToCartError ? (
+                        <button className="btn-primary whitespace-nowrap bg-red-500 hover:bg-red-600">
+                          {addToCartError}
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-primary whitespace-nowrap"
+                          onClick={() => handleAddToCart(parseInt(book.id))}
+                        >
+                          <ShoppingCart className="w-4 h-4 inline mr-2" />
+                          {t('common.addToCart')}
+                        </button>
+                      )
+                    ) : (
+                      <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
+                        {t('common.outOfStock')}
+                      </button>
+                    )
                   )}
                 </div>
-
-                {/* Add to Cart Button - hidden for free books */}
-                {book.price !== 0 && (
-                  book.isShippingRequired === false || book.isInStock ? (
-                    <button className="btn-primary whitespace-nowrap">
-                      {t('common.addToCart')}
-                    </button>
-                  ) : (
-                    <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
-                      {t('common.outOfStock')}
-                    </button>
-                  )
+                {/* Error message display */}
+                {addToCartError && (
+                  <div className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+                    {addToCartError}
+                  </div>
                 )}
               </div>
             )}

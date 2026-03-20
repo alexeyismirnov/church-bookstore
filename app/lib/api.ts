@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -314,7 +314,7 @@ const REMEMBER_ME_KEY = 'remember_me';
 /**
  * Get stored auth token from localStorage or sessionStorage
  */
-function getStoredToken(): string | null {
+export function getStoredToken(): string | null {
   if (typeof window === 'undefined') return null;
   
   const rememberMe = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
@@ -348,7 +348,7 @@ function getStoredUser(): { email: string } | null {
 /**
  * Get headers with authentication token
  */
-function getAuthHeaders(): HeadersInit {
+export function getAuthHeaders(): HeadersInit {
   const lang = getLanguagePreference();
   const currency = getCurrencyPreference();
   const token = getStoredToken();
@@ -398,4 +398,410 @@ export async function getMyBooks(): Promise<MyBook[]> {
     return data;
   }
   return data.results || [];
+}
+
+// =============================================================================
+// Basket API Functions (Oscar API)
+// =============================================================================
+
+/**
+ * Fetch the current user's basket
+ * GET /basket/ - Returns the user's basket
+ * @returns Basket object with lines
+ */
+export async function getBasket(): Promise<Basket> {
+  const response = await fetch(`${getApiBase()}/basket/`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      // No basket exists yet - return empty basket structure
+      return {
+        id: '',
+        lines: [],
+        owner: null,
+        status: 'Open',
+        total_excl_tax: '0.00',
+        total_incl_tax: '0.00',
+        currency: 'USD',
+        creation_date: new Date().toISOString(),
+        last_modification_date: new Date().toISOString(),
+      };
+    }
+    throw new Error(`Failed to fetch basket: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  // Handle paginated response or direct basket object
+  if (Array.isArray(data)) {
+    return data[0] || null;
+  }
+  // Oscar API typically returns the basket directly or in results
+  return data.results?.[0] || data;
+}
+
+/**
+ * Add a product to the basket
+ * POST /basket/add-product/
+ * @param productId - Product ID to add
+ * @param quantity - Quantity to add
+ * @returns Updated basket
+ */
+export async function addToBasket(productId: number, quantity: number): Promise<Basket> {
+  // Build the product URL that Oscar API expects
+  // Oscar API uses HyperlinkedRelatedField which needs the ACTUAL Oscar API URL,
+  // not our proxy URL. The serializer validates against Product.objects.
+  // Format: https://orthodoxbookshop.asia/api/products/{id}/
+  const oscarApiBase = 'https://orthodoxbookshop.asia/api';
+  const productUrl = `${oscarApiBase}/products/${productId}/`;
+
+  const response = await fetch(`${getApiBase()}/basket/add-product/`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      url: productUrl,
+      quantity: quantity,
+    }),
+    cache: 'no-store',
+  });
+
+  // Read response body - could be JSON or HTML (error page)
+  const responseText = await response.text();
+  
+  // Check if response is JSON
+  const contentType = response.headers.get('content-type');
+  const isJson = contentType?.includes('application/json');
+  
+  if (!response.ok) {
+    // Try to parse as JSON, but if it fails, provide a clean error message
+    let errorMessage;
+    if (isJson) {
+      try {
+        const errorData = JSON.parse(responseText);
+        errorMessage = errorData.detail || errorData.message || errorData.reason || `Failed to add to basket: ${response.status}`;
+      } catch {
+        errorMessage = `Failed to add to basket: ${response.status}`;
+      }
+    } else {
+      // Response is HTML or plain text - don't show HTML in UI
+      console.error('[addToBasket] Oscar API returned non-JSON response:', responseText.substring(0, 200));
+      errorMessage = `Server error (${response.status}). Please try again later.`;
+    }
+    throw new Error(errorMessage);
+  }
+
+  const data = JSON.parse(responseText);
+  return data;
+}
+
+/**
+ * Update a basket line's quantity
+ * PATCH /baskets/{basketId}/lines/{lineId}/
+ * @param basketId - Basket ID
+ * @param lineId - Line ID to update
+ * @param quantity - New quantity
+ * @returns Updated basket
+ */
+export async function updateBasketLine(
+  basketId: string,
+  lineId: number,
+  quantity: number
+): Promise<Basket> {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[updateBasketLine] Updating basket:', basketId, 'line:', lineId, 'to quantity:', quantity);
+  }
+  
+  // Oscar API uses: /baskets/{basketId}/lines/{lineId}/
+  const endpoint = `${getApiBase()}/baskets/${basketId}/lines/${lineId}/`;
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[updateBasketLine] Using endpoint:', endpoint);
+  }
+  
+  const response = await fetch(endpoint, {
+    method: 'PATCH',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      quantity: quantity,
+    }),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const responseText = await response.text();
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[updateBasketLine] Error response:', responseText.substring(0, 500));
+    }
+    const errorData = JSON.parse(responseText).catch(() => ({}));
+    const errorMessage = errorData.detail || errorData.message || `Failed to update basket: ${response.status}`;
+    throw new Error(errorMessage);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+/**
+ * Remove a line from the basket
+ * DELETE /baskets/{basketId}/lines/{lineId}/
+ * @param basketId - Basket ID
+ * @param lineId - Line ID to remove
+ * @returns Updated basket
+ */
+export async function removeBasketLine(basketId: string, lineId: number): Promise<Basket> {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[removeBasketLine] Removing basket:', basketId, 'line:', lineId);
+  }
+  
+  // Oscar API uses: /baskets/{basketId}/lines/{lineId}/
+  const endpoint = `${getApiBase()}/baskets/${basketId}/lines/${lineId}/`;
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[removeBasketLine] Using endpoint:', endpoint);
+  }
+  
+  const response = await fetch(endpoint, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const errorMessage = errorData.detail || errorData.message || `Failed to remove from basket: ${response.status}`;
+    throw new Error(errorMessage);
+  }
+
+  // DELETE returns empty body on success - refetch basket
+  return getBasket();
+}
+
+/**
+ * Oscar API Basket Line as returned by the actual API
+ * Note: Oscar's basket line response has minimal product info - just the URL
+ * Some Oscar API versions use 'id' or 'line_id' for the line identifier
+ */
+interface OscarBasketLine {
+  id: number;
+  line_id?: number; // Alternative field name some Oscar API versions use
+  url: string;
+  product: string; // Product URL
+  quantity: number;
+  price_currency: string;
+  price_excl_tax: string;
+  price_incl_tax: string;
+  price_incl_tax_excl_discounts: string;
+  price_excl_tax_excl_discounts: string;
+  is_tax_known: boolean;
+  warning: string | null;
+  basket: string;
+  stockrecord: string;
+  date_created: string;
+  date_updated: string;
+  // Note: Oscar doesn't include product_title, product_author, product_image on basket lines
+  // We need to fetch product details separately if needed
+}
+
+/**
+ * Fetch basket lines from a URL (HyperlinkedRelatedField)
+ * Oscar API returns lines as a URL that must be fetched separately
+ * We must route through our proxy to avoid CORS issues
+ */
+async function fetchBasketLines(linesUrl: string): Promise<OscarBasketLine[]> {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[fetchBasketLines] Original lines URL:', linesUrl);
+  }
+  
+  // Convert Oscar API URL to our proxy URL
+  // e.g., https://orthodoxbookshop.asia/api/baskets/9752442/lines/ -> /api/oscar/baskets/9752442/lines/
+  const oscarApiBase = 'https://orthodoxbookshop.asia/api';
+  let proxyUrl: string;
+  
+  if (linesUrl.startsWith(oscarApiBase)) {
+    proxyUrl = linesUrl.replace(oscarApiBase, '/api/oscar');
+  } else {
+    proxyUrl = linesUrl;
+  }
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[fetchBasketLines] Proxy lines URL:', proxyUrl);
+  }
+  
+  const response = await fetch(proxyUrl, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    console.error('[fetchBasketLines] Failed to fetch lines:', response.status);
+    return [];
+  }
+
+  const data = await response.json();
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[fetchBasketLines] Raw response type:', typeof data, Array.isArray(data) ? 'is array' : 'is object');
+    console.log('[fetchBasketLines] Raw response keys:', typeof data === 'object' && data !== null ? Object.keys(data) : 'not an object');
+  }
+  
+  // Handle paginated response or direct array
+  if (Array.isArray(data)) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[fetchBasketLines] Returning array with', data.length, 'items');
+    }
+    return data;
+  }
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[fetchBasketLines] Returning results with', (data.results || []).length, 'items');
+  }
+  return data.results || [];
+}
+
+/**
+ * Fetch product details by ID to get title, author, image for basket display
+ * If the product is a variant (child), fetch the parent instead and include variant info
+ */
+async function fetchProductDetails(productId: string): Promise<{
+  title: string;
+  author: string;
+  coverImage: string;
+  variantTitle?: string;
+} | null> {
+  try {
+    const product = await getProductById(productId);
+    
+    // If this is a variant (child product), fetch the parent instead
+    // Oscar products with variants have is_parent=false on children
+    // Children have a parent_id set, parents have is_parent=true
+    if (!product.is_parent && product.parent_id) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[fetchProductDetails] Product', productId, 'is a variant, fetching parent', product.parent_id);
+      }
+      const parentProduct = await getProductById(product.parent_id.toString());
+      // Return parent info but also include variant title (e.g., "E-book" or "Printed book")
+      return {
+        title: parentProduct.title || 'Unknown Product',
+        author: parentProduct.author || '',
+        coverImage: parentProduct.image_url ? getFullImageUrl(parentProduct.image_url) : '/images/placeholder-book.jpg',
+        variantTitle: product.title || undefined, // This is the variant title like "E-book"
+      };
+    }
+    
+    return {
+      title: product.title || 'Unknown Product',
+      author: product.author || '',
+      coverImage: product.image_url ? getFullImageUrl(product.image_url) : '/images/placeholder-book.jpg',
+    };
+  } catch (err) {
+    console.error('[fetchProductDetails] Failed to fetch product:', productId, err);
+    return null;
+  }
+}
+
+/**
+ * Convert Oscar Basket to CartItem format for UI display
+ * Oscar's basket lines only contain product URL and price info, not expanded product details
+ */
+export async function basketToCartItems(basket: Basket): Promise<Array<{
+  id: string;
+  basketLineId: number;
+  title: string;
+  author: string;
+  price: number;
+  quantity: number;
+  coverImage: string;
+  linePrice: number;
+}>> {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[basketToCartItems] basket.id:', basket.id);
+    console.log('[basketToCartItems] basket.lines type:', typeof basket.lines, Array.isArray(basket.lines) ? 'is array' : 'not array');
+    console.log('[basketToCartItems] basket.lines:', JSON.stringify(basket.lines, null, 2));
+  }
+  
+  let lines: OscarBasketLine[] = [];
+  
+  // Handle different lines formats
+  if (typeof basket.lines === 'string') {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[basketToCartItems] lines is a string URL, fetching...');
+    }
+    lines = await fetchBasketLines(basket.lines);
+  } else if (Array.isArray(basket.lines)) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[basketToCartItems] lines is an array, using directly');
+    }
+    lines = basket.lines as unknown as OscarBasketLine[];
+  } else if (basket.lines && typeof basket.lines === 'object') {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[basketToCartItems] lines is an object, extracting results');
+    }
+    const linesResponse = basket.lines as unknown as { results?: OscarBasketLine[] };
+    lines = linesResponse.results || [];
+  } else {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[basketToCartItems] lines format not recognized');
+    }
+  }
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[basketToCartItems] extracted lines count:', lines.length);
+    console.log('[basketToCartItems] extracted lines:', JSON.stringify(lines, null, 2));
+  }
+  
+  // Fetch product details for each line
+  const cartItems = await Promise.all(
+    lines.map(async (line: OscarBasketLine) => {
+      // Extract product ID from URL
+      const productId = extractProductIdFromUrl(line.product);
+      
+      // Use line price as both unit price and line price since Oscar doesn't give separate unit price
+      const linePrice = parseFloat(line.price_incl_tax) || 0;
+      const unitPrice = line.quantity > 0 ? linePrice / line.quantity : 0;
+      
+      // Fetch product details for title, author, image
+      const productDetails = await fetchProductDetails(productId);
+      
+      // Oscar API basket lines don't have 'id' or 'line_id' fields directly
+      // The line ID is embedded in the 'url' field (e.g., /baskets/9752442/lines/1188/)
+      const lineId = extractLineIdFromUrl(line.url) || (line as any).id || (line as any).line_id;
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[basketToCartItems] Extracted lineId:', lineId, 'from url:', line.url);
+      }
+      
+      return {
+        id: productId,
+        basketLineId: lineId,
+        title: productDetails?.title || 'Unknown Product',
+        author: productDetails?.author || '',
+        price: unitPrice,
+        quantity: line.quantity,
+        coverImage: productDetails?.coverImage || '/images/placeholder-book.jpg',
+        linePrice: linePrice,
+        variantTitle: productDetails?.variantTitle,
+      };
+    })
+  );
+  
+  return cartItems;
+}
+
+/**
+ * Extract product ID from Oscar API product URL
+ * e.g., "http://127.0.0.1:8000/api/products/1/" -> "1"
+ */
+function extractProductIdFromUrl(productUrl: string): string {
+  if (!productUrl) return '';
+  const match = productUrl.match(/\/products\/(\d+)\/?$/);
+  return match ? match[1] : productUrl;
+}
+
+/**
+ * Extract line ID from Oscar API basket line URL
+ * e.g., "https://orthodoxbookshop.asia/api/baskets/9752442/lines/1188/" -> 1188
+ */
+function extractLineIdFromUrl(lineUrl: string): number {
+  if (!lineUrl) return 0;
+  const match = lineUrl.match(/\/lines\/(\d+)\/?$/);
+  return match ? parseInt(match[1], 10) : 0;
 }

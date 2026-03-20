@@ -194,3 +194,86 @@ export interface MyBook {
   download_url: string | null;
   epub_url: string | null;
 }
+
+// ============================================================================
+// Oscar Basket API Types
+// ============================================================================
+
+/**
+ * Oscar API Basket Line (individual item in basket)
+ * Based on oscarapi/basketserializer.py
+ */
+export interface BasketLine {
+  id: number;
+  product: string; // Product URL, e.g., "http://127.0.0.1:8000/api/products/1/"
+  product_title: string;
+  product_author?: string;
+  product_image?: string;
+  quantity: number;
+  unit_price_excl_tax: string;
+  unit_price_incl_tax: string;
+  line_price_excl_tax: string;
+  line_price_incl_tax: string;
+  is_shipping_required: boolean;
+  stock_record?: {
+    partner: string;
+    partner_sku: string;
+    num_in_stock: number | null;
+  };
+  warning?: string;
+  options?: Array<{
+    name: string;
+    value: string;
+  }>;
+}
+
+/**
+ * Oscar API Basket Lines response (paginated)
+ */
+export interface BasketLinesResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: BasketLine[];
+}
+
+/**
+ * Oscar API Basket response
+ * Based on oscarapi/basketserializer.py
+ */
+export interface Basket {
+  id: string;
+  lines: BasketLine[] | BasketLinesResponse; // Can be direct array or paginated response
+  owner: number | null; // User ID or null for anonymous
+  status: string; // e.g., "Open", "Frozen", "Submitted"
+  total_excl_tax: string;
+  total_incl_tax: string;
+  currency: string;
+  creation_date: string;
+  last_modification_date: string;
+  // Anonymous basket support
+  anonymous_id?: string;
+  num_items?: number;
+  num_items_without_gifting?: number;
+}
+
+/**
+ * Oscar API Add to Basket Request
+ */
+export interface AddToBasketRequest {
+  product: number; // Product ID
+  quantity: number;
+  optional?: {
+    options?: Array<{
+      name: string;
+      value: string;
+    }>;
+  };
+}
+
+/**
+ * Oscar API Update Basket Line Request
+ */
+export interface UpdateBasketLineRequest {
+  quantity: number;
+}

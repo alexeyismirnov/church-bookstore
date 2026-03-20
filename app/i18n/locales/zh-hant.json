@@ -23,7 +23,9 @@
     "checkout": "結帳",
     "continueShopping": "繼續購物",
     "remove": "刪除",
-    "close": "關閉"
+    "close": "關閉",
+    "adding": "添加中...",
+    "added": "已添加！"
   },
   "nav": {
     "selectLanguage": "選擇語言",

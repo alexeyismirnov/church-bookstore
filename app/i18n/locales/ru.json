@@ -23,7 +23,9 @@
     "checkout": "Оформить заказ",
     "continueShopping": "Продолжить покупки",
     "remove": "Удалить",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "adding": "Добавляем...",
+    "added": "Добавлено!"
   },
   "nav": {
     "selectLanguage": "Выбрать язык",
