@@ -6,8 +6,9 @@ import { ArrowLeft, ShoppingBag, CheckCircle } from 'lucide-react';
 import { ShippingForm } from '@/app/components/checkout/ShippingForm';
 import { OrderSummary } from '@/app/components/checkout/OrderSummary';
 import { useRouter } from 'next/navigation';
-import { ShippingAddress } from '@/app/types';
-import { getBasket, basketToCartItems } from '@/app/lib/api';
+import { ShippingAddress, ShippingMethod } from '@/app/types';
+import { getBasket, basketToCartItems, getShippingMethods } from '@/app/lib/api';
+import { useCurrency } from '@/app/i18n/CurrencyContext';
 
 interface CartItemForDisplay {
   id: string;
@@ -23,11 +24,14 @@ interface CartItemForDisplay {
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { currency, symbol } = useCurrency();
   const [cartItems, setCartItems] = useState<CartItemForDisplay[]>([]);
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState<ShippingMethod | null>(null);
 
   // Load cart from Oscar API on mount
   useEffect(() => {
@@ -47,10 +51,40 @@ export default function CheckoutPage() {
     };
 
     loadCart();
-  }, []);
+  }, [currency]);
+
+  // Calculate total quantity for useEffect dependency
+  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Fetch shipping methods when currency or cart items change
+  useEffect(() => {
+    const fetchShippingMethods = async () => {
+      try {
+        const methods = await getShippingMethods();
+        setShippingMethods(methods);
+        if (methods.length > 0) {
+          // If we already have a selected method, update it with new price data
+          if (selectedShippingMethod) {
+            const updatedMethod = methods.find(m => m.code === selectedShippingMethod.code) || methods[0];
+            setSelectedShippingMethod(updatedMethod);
+          } else {
+            // Default to the first shipping method
+            setSelectedShippingMethod(methods[0]);
+          }
+        }
+      } catch (shippingErr) {
+        console.error('Failed to fetch shipping methods:', shippingErr);
+        // Continue without shipping methods - will use fallback calculation
+      }
+    };
+    fetchShippingMethods();
+  }, [currency, totalQuantity]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal > 50 ? 0 : 5.99;
+  // Use shipping cost from selected shipping method (price is a string, parse to float)
+  const shipping = selectedShippingMethod 
+    ? parseFloat(selectedShippingMethod.price.incl_tax) 
+    : 0;
   const total = subtotal + shipping;
 
   // Handle shipping form completion
@@ -156,7 +190,7 @@ export default function CheckoutPage() {
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
-            <OrderSummary cartItems={cartItems} shipping={shipping} />
+            <OrderSummary cartItems={cartItems} shipping={shipping} currencySymbol={symbol} />
           </div>
         </div>
       </div>

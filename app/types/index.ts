@@ -308,3 +308,18 @@ export interface ShippingAddress {
   phone_number?: string;    // Phone number (optional)
   notes?: string;           // Delivery instructions (optional)
 }
+
+/**
+ * Shipping Method from the backend API
+ * Represents available shipping options with their prices
+ */
+export interface ShippingMethod {
+  code: string;
+  name: string;
+  price: {
+    currency: string;
+    excl_tax: string;
+    incl_tax: string;
+    tax: string;
+  };
+}

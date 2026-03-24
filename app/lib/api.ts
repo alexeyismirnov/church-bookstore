@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -804,4 +804,28 @@ function extractLineIdFromUrl(lineUrl: string): number {
   if (!lineUrl) return 0;
   const match = lineUrl.match(/\/lines\/(\d+)\/?$/);
   return match ? parseInt(match[1], 10) : 0;
+}
+
+// =============================================================================
+// Shipping Methods API Functions
+// =============================================================================
+
+/**
+ * Fetch available shipping methods from the backend
+ * GET /api/basket/shipping-methods/
+ * @returns Array of available shipping methods
+ */
+export async function getShippingMethods(): Promise<ShippingMethod[]> {
+  const response = await fetch(`${getApiBase()}/basket/shipping-methods/`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch shipping methods: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
 }

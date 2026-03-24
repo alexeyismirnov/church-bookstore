@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag, Loader2 } from 'lucide-react';
 import CartItem from '../components/CartItem';
-import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems, getStoredToken } from '../lib/api';
+import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems, getStoredToken, getShippingMethods } from '../lib/api';
 import { useCart } from '../lib/CartContext';
-import { Basket } from '../types';
+import { useCurrency } from '../i18n/CurrencyContext';
+import { Basket, ShippingMethod } from '../types';
 
 interface CartItemDisplay {
   id: string;
@@ -22,11 +23,14 @@ interface CartItemDisplay {
 
 export default function CartPage() {
   const { refreshCart } = useCart();
+  const { currency, symbol } = useCurrency();
   const [basket, setBasket] = useState<Basket | null>(null);
   const [cartItems, setCartItems] = useState<CartItemDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState<ShippingMethod | null>(null);
 
   // Fetch basket on mount
   const fetchBasket = useCallback(async () => {
@@ -60,7 +64,34 @@ export default function CartPage() {
 
   useEffect(() => {
     fetchBasket();
-  }, [fetchBasket]);
+  }, [fetchBasket, currency]);
+
+  // Calculate total quantity for useEffect dependency
+  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Fetch shipping methods when currency or cart items change
+  useEffect(() => {
+    const fetchShippingMethods = async () => {
+      try {
+        const methods = await getShippingMethods();
+        setShippingMethods(methods);
+        if (methods.length > 0) {
+          // If we already have a selected method, update it with new price data
+          if (selectedShippingMethod) {
+            const updatedMethod = methods.find(m => m.code === selectedShippingMethod.code) || methods[0];
+            setSelectedShippingMethod(updatedMethod);
+          } else {
+            // Default to the first shipping method
+            setSelectedShippingMethod(methods[0]);
+          }
+        }
+      } catch (shippingErr) {
+        console.error('Failed to fetch shipping methods:', shippingErr);
+        // Continue without shipping methods - will use fallback calculation
+      }
+    };
+    fetchShippingMethods();
+  }, [currency, totalQuantity]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateQuantity = async (basketLineId: number, quantity: number) => {
     if (!basket?.id || isUpdating) return;
@@ -105,7 +136,10 @@ export default function CartPage() {
 
   // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => sum + item.linePrice, 0);
-  const shipping = subtotal > 50 ? 0 : 5.99;
+  // Use shipping cost from selected shipping method (price is a string, parse to float)
+  const shipping = selectedShippingMethod 
+    ? parseFloat(selectedShippingMethod.price.incl_tax) 
+    : 0;
   const total = subtotal + shipping;
 
   // Loading state
@@ -188,7 +222,7 @@ export default function CartPage() {
         </nav>
 
         <h1 className="text-3xl md:text-4xl font-bold text-dark mb-8">
-          Shopping Cart ({cartItems.length} items)
+          Shopping Cart
         </h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -226,21 +260,16 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{symbol}{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                  <span>{shipping === 0 ? 'Free' : `${symbol}${shipping.toFixed(2)}`}</span>
                 </div>
-                {shipping > 0 && (
-                  <p className="text-sm text-gray-400">
-                    Free shipping on orders over $50
-                  </p>
-                )}
                 <hr className="border-gray-100" />
                 <div className="flex justify-between text-lg font-bold text-dark">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{symbol}{total.toFixed(2)}</span>
                 </div>
               </div>
 

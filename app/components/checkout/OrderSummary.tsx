@@ -9,9 +9,10 @@ interface OrderSummaryItem {
 interface OrderSummaryProps {
   cartItems: OrderSummaryItem[];
   shipping?: number;
+  currencySymbol?: string;
 }
 
-export function OrderSummary({ cartItems, shipping = 0 }: OrderSummaryProps) {
+export function OrderSummary({ cartItems, shipping = 0, currencySymbol = '$' }: OrderSummaryProps) {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + shipping;
 
@@ -37,7 +38,7 @@ export function OrderSummary({ cartItems, shipping = 0 }: OrderSummaryProps) {
               <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
             </div>
             <div className="text-sm font-medium text-dark">
-              ${(item.price * item.quantity).toFixed(2)}
+              {currencySymbol}{(item.price * item.quantity).toFixed(2)}
             </div>
           </div>
         ))}
@@ -47,17 +48,17 @@ export function OrderSummary({ cartItems, shipping = 0 }: OrderSummaryProps) {
       <div className="border-t border-gray-100 pt-4 space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Subtotal</span>
-          <span className="text-dark">${subtotal.toFixed(2)}</span>
+          <span className="text-dark">{currencySymbol}{subtotal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Shipping</span>
           <span className="text-dark">
-            {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+            {shipping === 0 ? 'Free' : `${currencySymbol}${shipping.toFixed(2)}`}
           </span>
         </div>
         <div className="flex justify-between font-semibold text-lg pt-2 border-t border-gray-100">
           <span className="text-dark">Total</span>
-          <span className="text-dark">${total.toFixed(2)}</span>
+          <span className="text-dark">{currencySymbol}{total.toFixed(2)}</span>
         </div>
       </div>
     </div>
