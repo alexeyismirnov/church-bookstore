@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { BookOpen, Loader2 } from 'lucide-react';
-import { SiAdobeacrobatreader } from 'react-icons/si';
+import { BsFilePdf } from 'react-icons/bs';
 import { Book } from '../types';
 import { useCurrency } from '../i18n/CurrencyContext';
 
@@ -144,7 +144,7 @@ export default function ProductCard({ book }: ProductCardProps) {
                         </span>
                       ) : (
                         <span title="E-book (PDF)">
-                          <SiAdobeacrobatreader className="w-4 h-4 text-red-500 ml-1" />
+                          <BsFilePdf className="w-4 h-4 text-red-500 ml-1" />
                         </span>
                       )}
                     </div>
@@ -179,7 +179,7 @@ export default function ProductCard({ book }: ProductCardProps) {
                   )}
                   {book.isShippingRequired === false && (
                     <span title="E-book (PDF)">
-                      <SiAdobeacrobatreader className="w-4 h-4 text-red-500 ml-1" />
+                      <BsFilePdf className="w-4 h-4 text-red-500 ml-1" />
                     </span>
                   )}
                 </div>

@@ -13,9 +13,7 @@ function getStripe(): Stripe {
     if (!secretKey) {
       throw new Error('STRIPE_SECRET_KEY is not set');
     }
-    stripe = new Stripe(secretKey, {
-      apiVersion: '2026-01-28.clover',
-    });
+    stripe = new Stripe(secretKey);
   }
   return stripe;
 }
