@@ -1,32 +1,150 @@
 'use client';
 
-import { useState } from 'react';
-import { ShippingAddress } from '@/app/types';
+import { useState, useEffect, useRef } from 'react';
+import { ShippingAddress, ShippingMethod } from '@/app/types';
 import { CountryAutocomplete } from './CountryAutocomplete';
+import { getShippingMethods } from '@/app/lib/api';
 
 // Re-export ShippingAddress for use by CheckoutForm
 export type { ShippingAddress };
 
 interface ShippingFormProps {
   onComplete: (address: ShippingAddress) => void;
+  initialData?: ShippingAddress;
+  onShippingMethodsChange?: (methods: ShippingMethod[]) => void;
+  onSelectedMethodChange?: (method: ShippingMethod | null) => void;
+  selectedShippingMethod?: ShippingMethod | null;
+  currency?: string;
 }
 
-export function ShippingForm({ onComplete }: ShippingFormProps) {
-  const [address, setAddress] = useState<ShippingAddress>({
-    first_name: '',
-    last_name: '',
-    line1: '',
-    line2: '',
-    line3: '',
-    line4: '',
-    state: '',
-    postcode: '',
-    country: 'US',
-    phone_number: '',
-    notes: '',
-  });
+export function ShippingForm({ 
+  onComplete, 
+  initialData,
+  onShippingMethodsChange,
+  onSelectedMethodChange,
+  selectedShippingMethod,
+  currency,
+}: ShippingFormProps) {
+  const [address, setAddress] = useState<ShippingAddress>(
+    initialData || {
+      first_name: '',
+      last_name: '',
+      line1: '',
+      line2: '',
+      line3: '',
+      line4: '',
+      state: '',
+      postcode: '',
+      country: 'US',
+      phone_number: '',
+      notes: '',
+    }
+  );
+
+  // Update form when initialData changes (e.g., when going back to edit)
+  useEffect(() => {
+    if (initialData) {
+      setAddress(initialData);
+    }
+  }, [initialData]);
 
   const [errors, setErrors] = useState<Partial<Record<keyof ShippingAddress, string>>>({});
+  const [isLoadingShippingMethods, setIsLoadingShippingMethods] = useState(false);
+  const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
+  const [shippingError, setShippingError] = useState<string | null>(null);
+  
+  // Track previous currency to detect currency changes
+  const prevCurrencyRef = useRef(currency);
+
+  // Track whether the address is incomplete (for showing appropriate message)
+  const isAddressIncomplete = !address.country ||
+    !address.first_name.trim() ||
+    !address.last_name.trim() ||
+    !address.line1.trim();
+
+  // Fetch shipping methods when country or currency changes
+  useEffect(() => {
+    const fetchShippingMethods = async () => {
+      // Detect if currency changed - we need to force re-select when it does
+      const currencyChanged = prevCurrencyRef.current !== currency;
+      prevCurrencyRef.current = currency;
+      
+      if (!address.country) return;
+      
+      // Check if address has minimum required fields for shipping calculation
+      // The backend requires at least country, and for accurate shipping, we need
+      // a complete address. Only call POST with address if we have required fields.
+      const hasRequiredFields = address.country &&
+        address.first_name.trim() &&
+        address.last_name.trim() &&
+        address.line1.trim();
+      
+      if (!hasRequiredFields) {
+        // Address is incomplete - don't call the API yet
+        // Clear any previous shipping methods and wait for user to fill the form
+        setShippingMethods([]);
+        if (onShippingMethodsChange) {
+          onShippingMethodsChange([]);
+        }
+        if (onSelectedMethodChange) {
+          onSelectedMethodChange(null);
+        }
+        return;
+      }
+      
+      setIsLoadingShippingMethods(true);
+      setShippingError(null);
+      
+      try {
+        // Pass the full shipping address to the backend API
+        const methods = await getShippingMethods(address);
+        setShippingMethods(methods);
+        
+        // Notify parent of available shipping methods
+        if (onShippingMethodsChange) {
+          onShippingMethodsChange(methods);
+        }
+        
+        // Auto-select first method if available
+        if (methods.length > 0 && onSelectedMethodChange) {
+          // When currency changes, ALWAYS re-select to get updated prices
+          // Otherwise, only auto-select if there's no selected method or if the selected one isn't in the new list
+          const isSelectedAvailable = selectedShippingMethod &&
+            methods.some(m => m.code === selectedShippingMethod.code);
+          
+          // Re-select if currency changed OR if the selected method isn't available
+          if (currencyChanged || !isSelectedAvailable) {
+            onSelectedMethodChange(methods[0]);
+          }
+        } else if (methods.length === 0 && onSelectedMethodChange) {
+          // No methods available - clear selection
+          onSelectedMethodChange(null);
+        }
+      } catch (err) {
+        console.error('Failed to fetch shipping methods:', err);
+        setShippingError('Unable to load shipping options for this country. Please try another country.');
+        setShippingMethods([]);
+        if (onShippingMethodsChange) {
+          onShippingMethodsChange([]);
+        }
+        if (onSelectedMethodChange) {
+          onSelectedMethodChange(null);
+        }
+      } finally {
+        setIsLoadingShippingMethods(false);
+      }
+    };
+    
+    fetchShippingMethods();
+  }, [address.country, address.first_name, address.last_name, address.line1, currency]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Handle shipping method selection
+  const handleShippingMethodChange = (methodCode: string) => {
+    const method = shippingMethods.find(m => m.code === methodCode);
+    if (method && onSelectedMethodChange) {
+      onSelectedMethodChange(method);
+    }
+  };
 
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof ShippingAddress, string>> = {};
@@ -239,13 +357,42 @@ export function ShippingForm({ onComplete }: ShippingFormProps) {
         />
       </div>
 
+      {/* Shipping Method Selection - Hidden, auto-select first method */}
+      {isLoadingShippingMethods && (
+        <div className="flex items-center justify-center py-4">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+          <span className="ml-2 text-gray-600">Loading shipping options...</span>
+        </div>
+      )}
+      {shippingError && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          {shippingError}
+        </div>
+      )}
+      {!isLoadingShippingMethods && !shippingError && !isAddressIncomplete && shippingMethods.length === 0 && (
+        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+          No shipping methods available for the selected country. Please select a different country or contact us for assistance.
+        </div>
+      )}
+
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full btn-primary py-3 text-base font-medium"
+        disabled={shippingMethods.length === 0 || isLoadingShippingMethods}
+        className={`w-full py-3 text-base font-medium rounded-lg transition-colors ${
+          shippingMethods.length === 0 || isLoadingShippingMethods
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-primary text-white hover:bg-primary-dark'
+        }`}
       >
-        Continue to Payment
+        {isLoadingShippingMethods ? 'Loading...' : 'Continue to Payment'}
       </button>
+      
+      {shippingMethods.length === 0 && !isLoadingShippingMethods && !shippingError && address.country && !isAddressIncomplete && (
+        <p className="text-sm text-center text-yellow-700 mt-2">
+          Cannot proceed: No shipping options available for the selected country.
+        </p>
+      )}
     </form>
   );
 }

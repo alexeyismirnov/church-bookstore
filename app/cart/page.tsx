@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag, Loader2 } from 'lucide-react';
 import CartItem from '../components/CartItem';
-import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems, getStoredToken, getShippingMethods } from '../lib/api';
+import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems, getStoredToken } from '../lib/api';
 import { useCart } from '../lib/CartContext';
 import { useCurrency } from '../i18n/CurrencyContext';
-import { Basket, ShippingMethod } from '../types';
+import { Basket } from '../types';
 
 interface CartItemDisplay {
   id: string;
@@ -29,8 +29,6 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState<ShippingMethod | null>(null);
 
   // Fetch basket on mount
   const fetchBasket = useCallback(async () => {
@@ -65,33 +63,6 @@ export default function CartPage() {
   useEffect(() => {
     fetchBasket();
   }, [fetchBasket, currency]);
-
-  // Calculate total quantity for useEffect dependency
-  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-  // Fetch shipping methods when currency or cart items change
-  useEffect(() => {
-    const fetchShippingMethods = async () => {
-      try {
-        const methods = await getShippingMethods();
-        setShippingMethods(methods);
-        if (methods.length > 0) {
-          // If we already have a selected method, update it with new price data
-          if (selectedShippingMethod) {
-            const updatedMethod = methods.find(m => m.code === selectedShippingMethod.code) || methods[0];
-            setSelectedShippingMethod(updatedMethod);
-          } else {
-            // Default to the first shipping method
-            setSelectedShippingMethod(methods[0]);
-          }
-        }
-      } catch (shippingErr) {
-        console.error('Failed to fetch shipping methods:', shippingErr);
-        // Continue without shipping methods - will use fallback calculation
-      }
-    };
-    fetchShippingMethods();
-  }, [currency, totalQuantity]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateQuantity = async (basketLineId: number, quantity: number) => {
     if (!basket?.id || isUpdating) return;
@@ -134,13 +105,8 @@ export default function CartPage() {
   // Check if user is authenticated
   const isAuthenticated = !!getStoredToken();
 
-  // Calculate totals
+  // Calculate subtotal
   const subtotal = cartItems.reduce((sum, item) => sum + item.linePrice, 0);
-  // Use shipping cost from selected shipping method (price is a string, parse to float)
-  const shipping = selectedShippingMethod 
-    ? parseFloat(selectedShippingMethod.price.incl_tax) 
-    : 0;
-  const total = subtotal + shipping;
 
   // Loading state
   if (loading) {
@@ -264,12 +230,12 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `${symbol}${shipping.toFixed(2)}`}</span>
+                  <span>TBD</span>
                 </div>
                 <hr className="border-gray-100" />
-                <div className="flex justify-between text-lg font-bold text-dark">
-                  <span>Total</span>
-                  <span>{symbol}{total.toFixed(2)}</span>
+                <div className="flex justify-between text-sm text-gray-500 italic">
+                  <span></span>
+                  <span>Shipping calculated at checkout</span>
                 </div>
               </div>
 

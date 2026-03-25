@@ -1,20 +1,28 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, Package, Truck, Home } from 'lucide-react';
+import { CheckCircle, Package, Truck } from 'lucide-react';
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const paymentIntentId = searchParams.get('payment_intent');
+  const redirectStatus = searchParams.get('redirect_status');
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    
+    // If payment failed, redirect back to checkout with error
+    if (redirectStatus === 'failed') {
+      router.replace('/checkout');
+    }
+  }, [redirectStatus, router]);
 
-  if (!mounted) {
+  // Show loading while checking payment status or redirecting
+  if (!mounted || redirectStatus === 'failed') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
@@ -38,13 +46,6 @@ function ConfirmationContent() {
           <p className="text-gray-600 mb-8 max-w-md mx-auto">
             Thank you for your purchase. We've received your order and will send you a confirmation email shortly.
           </p>
-
-          {paymentIntentId && (
-            <div className="bg-gray-50 rounded-lg p-4 mb-8 max-w-sm mx-auto">
-              <p className="text-sm text-gray-500 mb-1">Payment Reference</p>
-              <p className="font-mono text-sm text-dark">{paymentIntentId}</p>
-            </div>
-          )}
 
           {/* Order Status Steps */}
           <div className="grid grid-cols-3 gap-4 mb-10 max-w-lg mx-auto">
@@ -78,7 +79,7 @@ function ConfirmationContent() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
-                <span>Your order will be processed within 1-2 business days</span>
+                <span>Your order will be processed within a few business days</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
@@ -88,12 +89,8 @@ function ConfirmationContent() {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/" className="btn-primary inline-flex items-center justify-center gap-2">
-              <Home className="w-4 h-4" />
-              Back to Home
-            </Link>
-            <Link href="/catalog" className="btn-secondary inline-flex items-center justify-center">
+          <div className="flex justify-center">
+            <Link href="/catalog" className="btn-primary inline-flex items-center justify-center">
               Continue Shopping
             </Link>
           </div>

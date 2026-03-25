@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod, ShippingAddress } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -510,15 +510,8 @@ export async function updateBasketLine(
   lineId: number,
   quantity: number
 ): Promise<Basket> {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[updateBasketLine] Updating basket:', basketId, 'line:', lineId, 'to quantity:', quantity);
-  }
-  
   // Oscar API uses: /baskets/{basketId}/lines/{lineId}/
   const endpoint = `${getApiBase()}/baskets/${basketId}/lines/${lineId}/`;
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[updateBasketLine] Using endpoint:', endpoint);
-  }
   
   const response = await fetch(endpoint, {
     method: 'PATCH',
@@ -531,10 +524,12 @@ export async function updateBasketLine(
 
   if (!response.ok) {
     const responseText = await response.text();
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[updateBasketLine] Error response:', responseText.substring(0, 500));
+    let errorData: { detail?: string; message?: string } = {};
+    try {
+      errorData = JSON.parse(responseText);
+    } catch {
+      // Invalid JSON - use empty object
     }
-    const errorData = JSON.parse(responseText).catch(() => ({}));
     const errorMessage = errorData.detail || errorData.message || `Failed to update basket: ${response.status}`;
     throw new Error(errorMessage);
   }
@@ -551,15 +546,8 @@ export async function updateBasketLine(
  * @returns Updated basket
  */
 export async function removeBasketLine(basketId: string, lineId: number): Promise<Basket> {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[removeBasketLine] Removing basket:', basketId, 'line:', lineId);
-  }
-  
   // Oscar API uses: /baskets/{basketId}/lines/{lineId}/
   const endpoint = `${getApiBase()}/baskets/${basketId}/lines/${lineId}/`;
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[removeBasketLine] Using endpoint:', endpoint);
-  }
   
   const response = await fetch(endpoint, {
     method: 'DELETE',
@@ -609,10 +597,6 @@ interface OscarBasketLine {
  * We must route through our proxy to avoid CORS issues
  */
 async function fetchBasketLines(linesUrl: string): Promise<OscarBasketLine[]> {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[fetchBasketLines] Original lines URL:', linesUrl);
-  }
-  
   // Convert Oscar API URL to our proxy URL
   // e.g., https://orthodoxbookshop.asia/api/baskets/9752442/lines/ -> /api/oscar/baskets/9752442/lines/
   const oscarApiBase = 'https://orthodoxbookshop.asia/api';
@@ -622,10 +606,6 @@ async function fetchBasketLines(linesUrl: string): Promise<OscarBasketLine[]> {
     proxyUrl = linesUrl.replace(oscarApiBase, '/api/oscar');
   } else {
     proxyUrl = linesUrl;
-  }
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[fetchBasketLines] Proxy lines URL:', proxyUrl);
   }
   
   const response = await fetch(proxyUrl, {
@@ -640,20 +620,10 @@ async function fetchBasketLines(linesUrl: string): Promise<OscarBasketLine[]> {
   }
 
   const data = await response.json();
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[fetchBasketLines] Raw response type:', typeof data, Array.isArray(data) ? 'is array' : 'is object');
-    console.log('[fetchBasketLines] Raw response keys:', typeof data === 'object' && data !== null ? Object.keys(data) : 'not an object');
-  }
   
   // Handle paginated response or direct array
   if (Array.isArray(data)) {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[fetchBasketLines] Returning array with', data.length, 'items');
-    }
     return data;
-  }
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[fetchBasketLines] Returning results with', (data.results || []).length, 'items');
   }
   return data.results || [];
 }
@@ -675,9 +645,6 @@ async function fetchProductDetails(productId: string): Promise<{
     // Oscar products with variants have is_parent=false on children
     // Children have a parent_id set, parents have is_parent=true
     if (!product.is_parent && product.parent_id) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[fetchProductDetails] Product', productId, 'is a variant, fetching parent', product.parent_id);
-      }
       const parentProduct = await getProductById(product.parent_id.toString());
       // Return parent info but also include variant title (e.g., "E-book" or "Printed book")
       return {
@@ -713,40 +680,16 @@ export async function basketToCartItems(basket: Basket): Promise<Array<{
   coverImage: string;
   linePrice: number;
 }>> {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[basketToCartItems] basket.id:', basket.id);
-    console.log('[basketToCartItems] basket.lines type:', typeof basket.lines, Array.isArray(basket.lines) ? 'is array' : 'not array');
-    console.log('[basketToCartItems] basket.lines:', JSON.stringify(basket.lines, null, 2));
-  }
-  
   let lines: OscarBasketLine[] = [];
   
   // Handle different lines formats
   if (typeof basket.lines === 'string') {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[basketToCartItems] lines is a string URL, fetching...');
-    }
     lines = await fetchBasketLines(basket.lines);
   } else if (Array.isArray(basket.lines)) {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[basketToCartItems] lines is an array, using directly');
-    }
     lines = basket.lines as unknown as OscarBasketLine[];
   } else if (basket.lines && typeof basket.lines === 'object') {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[basketToCartItems] lines is an object, extracting results');
-    }
     const linesResponse = basket.lines as unknown as { results?: OscarBasketLine[] };
     lines = linesResponse.results || [];
-  } else {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[basketToCartItems] lines format not recognized');
-    }
-  }
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[basketToCartItems] extracted lines count:', lines.length);
-    console.log('[basketToCartItems] extracted lines:', JSON.stringify(lines, null, 2));
   }
   
   // Fetch product details for each line
@@ -765,9 +708,6 @@ export async function basketToCartItems(basket: Basket): Promise<Array<{
       // Oscar API basket lines don't have 'id' or 'line_id' fields directly
       // The line ID is embedded in the 'url' field (e.g., /baskets/9752442/lines/1188/)
       const lineId = extractLineIdFromUrl(line.url) || (line as any).id || (line as any).line_id;
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[basketToCartItems] Extracted lineId:', lineId, 'from url:', line.url);
-      }
       
       return {
         id: productId,
@@ -812,14 +752,46 @@ function extractLineIdFromUrl(lineUrl: string): number {
 
 /**
  * Fetch available shipping methods from the backend
- * GET /api/basket/shipping-methods/
+ * - With address (checkout page): POST /api/basket/shipping-methods/ with address body
+ * - Without address (cart page): GET /api/basket/shipping-methods/ for default methods
+ * @param shippingAddr - Optional full shipping address object
  * @returns Array of available shipping methods
  */
-export async function getShippingMethods(): Promise<ShippingMethod[]> {
-  const response = await fetch(`${getApiBase()}/basket/shipping-methods/`, {
-    method: 'GET',
-    headers: getAuthHeaders(),
+export async function getShippingMethods(shippingAddr?: ShippingAddress): Promise<ShippingMethod[]> {
+  const url = `${getApiBase()}/basket/shipping-methods/`;
+  const headers = getAuthHeaders();
+  
+  // Use GET when no address is provided (cart page), POST with address body otherwise
+  if (!shippingAddr) {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch shipping methods: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  }
+  
+  // Convert country code to URL format expected by Django REST Framework's HyperlinkedRelatedField
+  // The backend expects: "country": "https://orthodoxbookshop.asia/api/countries/US/"
+  // The frontend sends: "country": "US"
+  const OSCAR_API_BASE = 'https://orthodoxbookshop.asia/api';
+  const addressWithCountryUrl = {
+    ...shippingAddr,
+    country: `${OSCAR_API_BASE}/countries/${shippingAddr.country}/`,
+  };
+  
+  // POST with full shipping address for accurate shipping calculation (checkout page)
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
     cache: 'no-store',
+    body: JSON.stringify(addressWithCountryUrl),
   });
 
   if (!response.ok) {

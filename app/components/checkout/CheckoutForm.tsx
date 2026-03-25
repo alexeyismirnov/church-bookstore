@@ -7,6 +7,8 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { ShippingAddress } from './ShippingForm';
+import countries from '@/app/lib/countries.json';
+import { useCurrency } from '@/app/i18n/CurrencyContext';
 
 interface CheckoutFormProps {
   orderTotal: number;
@@ -23,6 +25,7 @@ export function CheckoutForm({
 }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
+  const { symbol } = useCurrency();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +43,8 @@ export function CheckoutForm({
     const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/checkout/confirmation`,
+        // Return to checkout page - it will handle redirect_status and forward to confirmation on success
+        return_url: `${window.location.origin}/checkout`,
         payment_method_data: {
           billing_details: {
             name: `${shippingAddress.first_name} ${shippingAddress.last_name}`,
@@ -88,6 +92,9 @@ export function CheckoutForm({
             </p>
             <p className="text-sm text-gray-600">
               {shippingAddress.line4}, {shippingAddress.state} {shippingAddress.postcode}
+            </p>
+            <p className="text-sm text-gray-600">
+              {countries.find(c => c.code === shippingAddress.country)?.name || shippingAddress.country}
             </p>
           </div>
           <button
@@ -149,7 +156,7 @@ export function CheckoutForm({
             Processing...
           </>
         ) : (
-          `Pay $${orderTotal.toFixed(2)}`
+          `Pay ${symbol}${orderTotal.toFixed(2)}`
         )}
       </button>
 

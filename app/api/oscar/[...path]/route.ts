@@ -22,10 +22,11 @@ async function proxyToOscar(
   
   // Ensure trailing slash for Django compatibility
   const targetUrl = `${OSCAR_API_BASE}/${path}/${searchParams ? `?${searchParams}` : ''}`;
-
+  
   // Prepare headers
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   };
   
   if (sessionId) {
