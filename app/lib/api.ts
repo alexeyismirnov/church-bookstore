@@ -587,6 +587,7 @@ interface OscarBasketLine {
   stockrecord: string;
   date_created: string;
   date_updated: string;
+  is_shipping_required?: boolean; // Added by custom serializer
   // Note: Oscar doesn't include product_title, product_author, product_image on basket lines
   // We need to fetch product details separately if needed
 }
@@ -679,6 +680,8 @@ export async function basketToCartItems(basket: Basket): Promise<Array<{
   quantity: number;
   coverImage: string;
   linePrice: number;
+  variantTitle?: string;
+  is_shipping_required: boolean;
 }>> {
   let lines: OscarBasketLine[] = [];
   
@@ -719,6 +722,7 @@ export async function basketToCartItems(basket: Basket): Promise<Array<{
         coverImage: productDetails?.coverImage || '/images/placeholder-book.jpg',
         linePrice: linePrice,
         variantTitle: productDetails?.variantTitle,
+        is_shipping_required: line.is_shipping_required ?? true, // Default to true if not provided
       };
     })
   );

@@ -13,6 +13,7 @@ interface OrderSummaryProps {
   shipping?: number;
   currencySymbol?: string;
   selectedShippingMethod?: ShippingMethod | null;
+  isShippingRequired?: boolean;
 }
 
 /**
@@ -52,7 +53,8 @@ export function OrderSummary({
   cartItems,
   shipping = 0,
   currencySymbol = '$',
-  selectedShippingMethod
+  selectedShippingMethod,
+  isShippingRequired = true
 }: OrderSummaryProps) {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + shipping;
@@ -101,11 +103,13 @@ export function OrderSummary({
             )}
           </span>
           <span className="text-dark">
-            {!selectedShippingMethod
-              ? 'TBD'
-              : shipping === 0
-                ? 'Free'
-                : `${currencySymbol}${shipping.toFixed(2)}`}
+            {!isShippingRequired
+              ? 'Free'
+              : !selectedShippingMethod
+                ? 'TBD'
+                : shipping === 0
+                  ? 'Free'
+                  : `${currencySymbol}${shipping.toFixed(2)}`}
           </span>
         </div>
         <div className="flex justify-between font-semibold text-lg pt-2 border-t border-gray-100">

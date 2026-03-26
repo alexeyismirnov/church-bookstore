@@ -27,6 +27,7 @@ interface CartItemForDisplay {
   coverImage: string;
   linePrice: number;
   variantTitle?: string;
+  is_shipping_required: boolean;
 }
 
 // Session storage keys for checkout state persistence
@@ -46,8 +47,11 @@ function CheckoutContent() {
   const { currency, symbol } = useCurrency();
   const redirectStatus = searchParams.get('redirect_status');
   const [cartItems, setCartItems] = useState<CartItemForDisplay[]>([]);
+  const [basket, setBasket] = useState<{ lines: any[] | { results: any[] } } | null>(null);
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isBasketLoaded, setIsBasketLoaded] = useState(false);
+  const [isStepDetermined, setIsStepDetermined] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>('shipping');
   const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
@@ -55,6 +59,9 @@ function CheckoutContent() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [paymentFailed, setPaymentFailed] = useState(false);
+  
+  // Calculate if shipping is required based on cartItems (use cartItems which has is_shipping_required from fetched lines)
+  const isShippingRequired = cartItems.some(item => item.is_shipping_required === true);
 
   // Handle failed payment redirect from Stripe
   useEffect(() => {
@@ -72,6 +79,7 @@ function CheckoutContent() {
           setPaymentIntentId(checkoutState.paymentIntentId);
           setSelectedShippingMethod(checkoutState.selectedShippingMethod);
           setCheckoutStep('payment');
+          setIsStepDetermined(true); // Step is already determined from restored state
           // Clear the saved state after restoring
           sessionStorage.removeItem(CHECKOUT_STATE_KEY);
         }
@@ -92,14 +100,17 @@ function CheckoutContent() {
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const basket = await getBasket();
-        const items = await basketToCartItems(basket);
+        const basketData = await getBasket();
+        setBasket(basketData);
+        const items = await basketToCartItems(basketData);
         setCartItems(items);
+        setIsBasketLoaded(true);
       } catch (err) {
         console.error('Error loading cart from API:', err);
         setError('Failed to load cart. Please try again.');
         // Set empty cart on error - will redirect to cart page
         setCartItems([]);
+        setIsBasketLoaded(true);
       } finally {
         setIsLoading(false);
       }
@@ -107,6 +118,55 @@ function CheckoutContent() {
 
     loadCart();
   }, [currency]);
+
+  // Determine the correct step after basket is loaded
+  useEffect(() => {
+    // Only run once basket is loaded and step not yet determined
+    if (!isBasketLoaded || isStepDetermined) return;
+    
+    if (!isShippingRequired && checkoutStep === 'shipping') {
+      // No shipping required - go directly to payment
+      // Create payment intent immediately without shipping address
+      const createPaymentIntent = async () => {
+        // Calculate subtotal from cartItems (no shipping cost for digital-only orders)
+        const orderTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        
+        try {
+          const response = await fetch('/api/stripe/create-payment-intent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              amount: orderTotal, // No shipping cost for digital-only orders
+              currency: currency.toLowerCase(),
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to initialize payment');
+          }
+
+          const data = await response.json();
+          setClientSecret(data.clientSecret);
+          setPaymentIntentId(data.paymentIntentId);
+          setShippingAddress(null); // No shipping address needed
+          setSelectedShippingMethod(null); // No shipping method needed
+          setCheckoutStep('payment');
+          setIsStepDetermined(true);
+        } catch (err) {
+          console.error('Error creating payment intent for non-shipping order:', err);
+          setError('Failed to initialize payment. Please try again.');
+          setIsStepDetermined(true); // Mark as determined even on error to avoid infinite loading
+        }
+      };
+      
+      createPaymentIntent();
+    } else {
+      // Shipping required - stay on shipping step, mark step as determined
+      setIsStepDetermined(true);
+    }
+  }, [isBasketLoaded, isStepDetermined, isShippingRequired, checkoutStep, cartItems, currency]);
 
   // Handle currency change - re-fetch basket and refresh payment intent if needed
   const prevCurrencyRef = useRef(currency);
@@ -301,8 +361,8 @@ function CheckoutContent() {
     }
   }, [isLoading, cartItems.length, router]);
 
-  // Loading state
-  if (isLoading) {
+  // Loading state - show spinner while basket is being loaded AND step is determined
+  if (isLoading || !isBasketLoaded || !isStepDetermined) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
@@ -341,7 +401,7 @@ function CheckoutContent() {
           {/* Main Form Area */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm p-6">
-              {checkoutStep === 'payment' && clientSecret && shippingAddress ? (
+              {checkoutStep === 'payment' && clientSecret && (isShippingRequired ? shippingAddress : true) ? (
                 // Payment step with Stripe Elements
                 // key={clientSecret} forces re-mount when currency changes, ensuring fresh Payment Element
                 <Elements
@@ -354,8 +414,9 @@ function CheckoutContent() {
                   <CheckoutForm
                     orderTotal={total}
                     shippingAddress={shippingAddress}
+                    isShippingRequired={isShippingRequired}
                     onSuccess={handlePaymentSuccess}
-                    onBack={handleBackToShipping}
+                    onBack={isShippingRequired ? handleBackToShipping : undefined}
                   />
                 </Elements>
               ) : checkoutStep === 'shipping' ? (
@@ -394,6 +455,7 @@ function CheckoutContent() {
               shipping={shipping} 
               currencySymbol={symbol}
               selectedShippingMethod={selectedShippingMethod}
+              isShippingRequired={isShippingRequired}
             />
           </div>
         </div>

@@ -19,6 +19,7 @@ interface CartItemDisplay {
   coverImage: string;
   linePrice: number;
   variantTitle?: string;
+  is_shipping_required: boolean;
 }
 
 export default function CartPage() {
@@ -107,6 +108,9 @@ export default function CartPage() {
 
   // Calculate subtotal
   const subtotal = cartItems.reduce((sum, item) => sum + item.linePrice, 0);
+
+  // Check if any item requires shipping (use cartItems which has is_shipping_required from fetched lines)
+  const isShippingRequired = cartItems.some(item => item.is_shipping_required === true);
 
   // Loading state
   if (loading) {
@@ -230,13 +234,17 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>TBD</span>
+                  <span>{isShippingRequired ? 'TBD' : 'Free'}</span>
                 </div>
-                <hr className="border-gray-100" />
-                <div className="flex justify-between text-sm text-gray-500 italic">
-                  <span></span>
-                  <span>Shipping calculated at checkout</span>
-                </div>
+                {isShippingRequired && (
+                  <>
+                    <hr className="border-gray-100" />
+                    <div className="flex justify-between text-sm text-gray-500 italic">
+                      <span></span>
+                      <span>Shipping calculated at checkout</span>
+                    </div>
+                  </>
+                )}
               </div>
 
               <Link

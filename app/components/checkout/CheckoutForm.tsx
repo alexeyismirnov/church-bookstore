@@ -12,14 +12,16 @@ import { useCurrency } from '@/app/i18n/CurrencyContext';
 
 interface CheckoutFormProps {
   orderTotal: number;
-  shippingAddress: ShippingAddress;
+  shippingAddress: ShippingAddress | null;
+  isShippingRequired: boolean;
   onSuccess: (paymentIntentId: string) => void;
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 export function CheckoutForm({
   orderTotal,
   shippingAddress,
+  isShippingRequired,
   onSuccess,
   onBack,
 }: CheckoutFormProps) {
@@ -39,26 +41,33 @@ export function CheckoutForm({
     setIsProcessing(true);
     setError(null);
 
+    // Build confirm params - include billing details from shipping address if available
+    const confirmParams: any = {
+      // Return to checkout page - it will handle redirect_status and forward to confirmation on success
+      return_url: `${window.location.origin}/checkout`,
+    };
+
+    // Only include billing details from shipping address if shipping is required and address exists
+    if (isShippingRequired && shippingAddress) {
+      confirmParams.payment_method_data = {
+        billing_details: {
+          name: `${shippingAddress.first_name} ${shippingAddress.last_name}`,
+          address: {
+            line1: shippingAddress.line1,
+            line2: shippingAddress.line2 || '',
+            city: shippingAddress.line4 || '',
+            state: shippingAddress.state,
+            postal_code: shippingAddress.postcode,
+            country: shippingAddress.country,
+          },
+        },
+      };
+    }
+
     // Confirm payment with Stripe
     const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
       elements,
-      confirmParams: {
-        // Return to checkout page - it will handle redirect_status and forward to confirmation on success
-        return_url: `${window.location.origin}/checkout`,
-        payment_method_data: {
-          billing_details: {
-            name: `${shippingAddress.first_name} ${shippingAddress.last_name}`,
-            address: {
-              line1: shippingAddress.line1,
-              line2: shippingAddress.line2 || '',
-              city: shippingAddress.line4 || '',
-              state: shippingAddress.state,
-              postal_code: shippingAddress.postcode,
-              country: shippingAddress.country,
-            },
-          },
-        },
-      },
+      confirmParams,
       redirect: 'if_required',
     });
 
@@ -78,34 +87,38 @@ export function CheckoutForm({
     <form onSubmit={handleSubmit}>
       <h2 className="text-xl font-semibold mb-6 text-dark">Payment Details</h2>
 
-      {/* Shipping Summary */}
-      <div className="mb-6 p-4 bg-background rounded-lg">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-sm text-gray-500">Shipping to:</p>
-            <p className="font-medium text-dark">
-              {shippingAddress.first_name} {shippingAddress.last_name}
-            </p>
-            <p className="text-sm text-gray-600">
-              {shippingAddress.line1}
-              {shippingAddress.line2 && `, ${shippingAddress.line2}`}
-            </p>
-            <p className="text-sm text-gray-600">
-              {shippingAddress.line4}, {shippingAddress.state} {shippingAddress.postcode}
-            </p>
-            <p className="text-sm text-gray-600">
-              {countries.find(c => c.code === shippingAddress.country)?.name || shippingAddress.country}
-            </p>
+      {/* Shipping Summary - Only show if shipping is required and address exists */}
+      {isShippingRequired && shippingAddress && (
+        <div className="mb-6 p-4 bg-background rounded-lg">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-gray-500">Shipping to:</p>
+              <p className="font-medium text-dark">
+                {shippingAddress.first_name} {shippingAddress.last_name}
+              </p>
+              <p className="text-sm text-gray-600">
+                {shippingAddress.line1}
+                {shippingAddress.line2 && `, ${shippingAddress.line2}`}
+              </p>
+              <p className="text-sm text-gray-600">
+                {shippingAddress.line4}, {shippingAddress.state} {shippingAddress.postcode}
+              </p>
+              <p className="text-sm text-gray-600">
+                {countries.find(c => c.code === shippingAddress.country)?.name || shippingAddress.country}
+              </p>
+            </div>
+            {onBack && (
+              <button
+                type="button"
+                onClick={onBack}
+                className="text-sm text-primary hover:text-primary-dark hover:underline"
+              >
+                Edit
+              </button>
+            )}
           </div>
-          <button
-            type="button"
-            onClick={onBack}
-            className="text-sm text-primary hover:text-primary-dark hover:underline"
-          >
-            Edit
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Stripe Payment Element */}
       <div className="mb-6">

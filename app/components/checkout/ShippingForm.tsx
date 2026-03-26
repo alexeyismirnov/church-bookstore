@@ -388,11 +388,6 @@ export function ShippingForm({
         {isLoadingShippingMethods ? 'Loading...' : 'Continue to Payment'}
       </button>
       
-      {shippingMethods.length === 0 && !isLoadingShippingMethods && !shippingError && address.country && !isAddressIncomplete && (
-        <p className="text-sm text-center text-yellow-700 mt-2">
-          Cannot proceed: No shipping options available for the selected country.
-        </p>
-      )}
     </form>
   );
 }
