@@ -638,6 +638,7 @@ async function fetchProductDetails(productId: string): Promise<{
   author: string;
   coverImage: string;
   variantTitle?: string;
+  parentId: string; // Parent product ID for navigation (same as productId for parent products)
 } | null> {
   try {
     const product = await getProductById(productId);
@@ -653,6 +654,7 @@ async function fetchProductDetails(productId: string): Promise<{
         author: parentProduct.author || '',
         coverImage: parentProduct.image_url ? getFullImageUrl(parentProduct.image_url) : '/images/placeholder-book.jpg',
         variantTitle: product.title || undefined, // This is the variant title like "E-book"
+        parentId: product.parent_id.toString(), // Use parent ID for navigation
       };
     }
     
@@ -660,6 +662,7 @@ async function fetchProductDetails(productId: string): Promise<{
       title: product.title || 'Unknown Product',
       author: product.author || '',
       coverImage: product.image_url ? getFullImageUrl(product.image_url) : '/images/placeholder-book.jpg',
+      parentId: productId, // For parent products, use their own ID
     };
   } catch (err) {
     console.error('[fetchProductDetails] Failed to fetch product:', productId, err);
@@ -682,6 +685,7 @@ export async function basketToCartItems(basket: Basket): Promise<Array<{
   linePrice: number;
   variantTitle?: string;
   is_shipping_required: boolean;
+  parentId: string; // Parent product ID for navigation
 }>> {
   let lines: OscarBasketLine[] = [];
   
@@ -723,6 +727,7 @@ export async function basketToCartItems(basket: Basket): Promise<Array<{
         linePrice: linePrice,
         variantTitle: productDetails?.variantTitle,
         is_shipping_required: line.is_shipping_required ?? true, // Default to true if not provided
+        parentId: productDetails?.parentId || productId, // Use parent ID for navigation, fallback to productId
       };
     })
   );

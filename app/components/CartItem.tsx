@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { CartItem as CartItemType } from '../types';
 
@@ -13,6 +14,7 @@ interface CartItemDisplay {
   coverImage: string;
   linePrice?: number;
   variantTitle?: string;
+  parentId?: string; // Parent product ID for navigation
 }
 
 interface CartItemProps {
@@ -23,13 +25,16 @@ interface CartItemProps {
   onRemoveByBasketLineId?: (basketLineId: number) => void;
 }
 
-export default function CartItem({ 
-  item, 
-  onUpdateQuantity, 
+export default function CartItem({
+  item,
+  onUpdateQuantity,
   onUpdateQuantityByDelta,
-  onRemove, 
-  onRemoveByBasketLineId 
+  onRemove,
+  onRemoveByBasketLineId
 }: CartItemProps) {
+  // Use parentId for navigation if available (for variants), otherwise use item.id
+  const productLinkId = item.parentId || item.id;
+  
   const handleDecrease = () => {
     if (onUpdateQuantityByDelta) {
       onUpdateQuantityByDelta(-1);
@@ -58,18 +63,22 @@ export default function CartItem({
     <div className="flex gap-4 py-6 px-6 border-b border-gray-100">
       {/* Image */}
       <div className="w-24 h-32 flex-shrink-0">
-        <img
-          src={item.coverImage}
-          alt={item.title}
-          className="w-full h-full object-cover rounded-lg"
-        />
+        <Link href={`/product/${productLinkId}`} className="block cursor-pointer">
+          <img
+            src={item.coverImage}
+            alt={item.title}
+            className="w-full h-full object-cover rounded-lg hover:opacity-80 transition-opacity"
+          />
+        </Link>
       </div>
 
       {/* Content */}
       <div className="flex-grow flex flex-col">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-dark text-lg">{item.title}</h3>
+            <Link href={`/product/${productLinkId}`} className="hover:underline cursor-pointer">
+              <h3 className="font-semibold text-dark text-lg hover:text-primary transition-colors">{item.title}</h3>
+            </Link>
             {item.variantTitle && <p className="text-sm text-gray-400 italic">({item.variantTitle})</p>}
             {item.author && <p className="text-sm text-gray-500">{item.author}</p>}
           </div>

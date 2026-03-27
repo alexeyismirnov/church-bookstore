@@ -20,6 +20,7 @@ interface CartItemDisplay {
   linePrice: number;
   variantTitle?: string;
   is_shipping_required: boolean;
+  parentId: string; // Parent product ID for navigation
 }
 
 export default function CartPage() {

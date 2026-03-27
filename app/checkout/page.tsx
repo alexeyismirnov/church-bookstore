@@ -34,7 +34,7 @@ interface CartItemForDisplay {
 const CHECKOUT_STATE_KEY = 'checkout_payment_state';
 
 interface CheckoutPaymentState {
-  shippingAddress: ShippingAddress;
+  shippingAddress: ShippingAddress | null;
   clientSecret: string;
   paymentIntentId: string;
   selectedShippingMethod: ShippingMethod | null;
@@ -193,21 +193,24 @@ function CheckoutContent() {
       };
 
       // If we're on the payment step, create a new payment intent with the new currency
-      if (checkoutStep === 'payment' && shippingAddress) {
+      // Note: For digital-only orders (no shipping required), shippingAddress is null but we still need to refresh
+      if (checkoutStep === 'payment' && (shippingAddress || !isShippingRequired)) {
         const refreshPaymentIntent = async () => {
           const items = await refreshBasket();
           
-          // Re-fetch shipping methods and update selected method with new price
+          // Re-fetch shipping methods and update selected method with new price (only if shipping is required)
           let updatedShippingMethod = selectedShippingMethod;
-          try {
-            const methods = await getShippingMethods(shippingAddress);
-            const matchingMethod = methods.find(m => m.code === selectedShippingMethod?.code);
-            if (matchingMethod) {
-              setSelectedShippingMethod(matchingMethod);
-              updatedShippingMethod = matchingMethod;
+          if (isShippingRequired && shippingAddress) {
+            try {
+              const methods = await getShippingMethods(shippingAddress);
+              const matchingMethod = methods.find(m => m.code === selectedShippingMethod?.code);
+              if (matchingMethod) {
+                setSelectedShippingMethod(matchingMethod);
+                updatedShippingMethod = matchingMethod;
+              }
+            } catch (err) {
+              console.error('Error refreshing shipping methods after currency change:', err);
             }
-          } catch (err) {
-            console.error('Error refreshing shipping methods after currency change:', err);
           }
           
           // Calculate new total with updated prices
