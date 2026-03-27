@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { CartItem as CartItemType } from '../types';
+import { useTranslations } from '../i18n/LanguageContext';
+import { useCurrency } from '../i18n/CurrencyContext';
 
 interface CartItemDisplay {
   id: string;
@@ -32,6 +34,9 @@ export default function CartItem({
   onRemove,
   onRemoveByBasketLineId
 }: CartItemProps) {
+  const t = useTranslations();
+  const { symbol } = useCurrency();
+  
   // Use parentId for navigation if available (for variants), otherwise use item.id
   const productLinkId = item.parentId || item.id;
   
@@ -84,11 +89,11 @@ export default function CartItem({
           </div>
           <div className="text-right">
             <p className="font-bold text-lg text-dark">
-              ${(item.linePrice ?? (item.price * item.quantity)).toFixed(2)}
+              {symbol}{(item.linePrice ?? (item.price * item.quantity)).toFixed(2)}
             </p>
             {item.quantity > 1 && (
               <p className="text-sm text-gray-400">
-                ${item.price.toFixed(2)} each
+                {symbol}{item.price.toFixed(2)} {t('cart.item.each')}
               </p>
             )}
           </div>

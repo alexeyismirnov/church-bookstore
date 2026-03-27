@@ -4,10 +4,13 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, Package, Truck } from 'lucide-react';
+import { useTranslations } from '../../i18n/LanguageContext';
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations();
+  const tCheckout = useTranslations('checkout');
   const [mounted, setMounted] = useState(false);
   const paymentIntentId = searchParams.get('payment_intent');
   const redirectStatus = searchParams.get('redirect_status');
@@ -40,11 +43,11 @@ function ConfirmationContent() {
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold text-dark mb-4">
-            Order Confirmed!
+            {tCheckout('confirmation.title')}
           </h1>
           
           <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Thank you for your purchase. We've received your order and will send you a confirmation email shortly.
+            {tCheckout('confirmation.thankYou')}
           </p>
 
           {/* Order Status Steps */}
@@ -53,37 +56,37 @@ function ConfirmationContent() {
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
                 <CheckCircle className="w-6 h-6 text-primary" />
               </div>
-              <span className="text-xs text-gray-600">Order Placed</span>
+              <span className="text-xs text-gray-600">{tCheckout('confirmation.orderPlaced')}</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-2">
                 <Package className="w-6 h-6 text-gray-400" />
               </div>
-              <span className="text-xs text-gray-500">Processing</span>
+              <span className="text-xs text-gray-500">{tCheckout('confirmation.processing')}</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-2">
                 <Truck className="w-6 h-6 text-gray-400" />
               </div>
-              <span className="text-xs text-gray-500">Shipped</span>
+              <span className="text-xs text-gray-500">{tCheckout('confirmation.shipped')}</span>
             </div>
           </div>
 
           {/* What happens next */}
           <div className="text-left bg-background rounded-lg p-6 mb-8 max-w-lg mx-auto">
-            <h2 className="font-semibold text-dark mb-4">What happens next?</h2>
+            <h2 className="font-semibold text-dark mb-4">{tCheckout('confirmation.whatNext')}</h2>
             <ul className="space-y-3 text-sm text-gray-600">
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
-                <span>We'll send you an email confirmation with your order details</span>
+                <span>{tCheckout('confirmation.step1')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
-                <span>Your order will be processed within a few business days</span>
+                <span>{tCheckout('confirmation.step2')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
-                <span>You'll receive tracking information once your order ships</span>
+                <span>{tCheckout('confirmation.step3')}</span>
               </li>
             </ul>
           </div>
@@ -91,7 +94,7 @@ function ConfirmationContent() {
           {/* Actions */}
           <div className="flex justify-center">
             <Link href="/catalog" className="btn-primary inline-flex items-center justify-center">
-              Continue Shopping
+              {t('common.continueShopping')}
             </Link>
           </div>
         </div>

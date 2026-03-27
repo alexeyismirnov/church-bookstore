@@ -9,6 +9,7 @@ import {
 import { ShippingAddress } from './ShippingForm';
 import countries from '@/app/lib/countries.json';
 import { useCurrency } from '@/app/i18n/CurrencyContext';
+import { useTranslations } from '../../i18n/LanguageContext';
 
 interface CheckoutFormProps {
   orderTotal: number;
@@ -28,6 +29,8 @@ export function CheckoutForm({
   const stripe = useStripe();
   const elements = useElements();
   const { symbol } = useCurrency();
+  const t = useTranslations();
+  const tCheckout = useTranslations('checkout');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,7 +75,7 @@ export function CheckoutForm({
     });
 
     if (stripeError) {
-      setError(stripeError.message || 'Payment failed. Please try again.');
+      setError(stripeError.message || tCheckout('payment.failedGeneric'));
       setIsProcessing(false);
       return;
     }
@@ -85,14 +88,14 @@ export function CheckoutForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2 className="text-xl font-semibold mb-6 text-dark">Payment Details</h2>
+      <h2 className="text-xl font-semibold mb-6 text-dark">{tCheckout('payment.details')}</h2>
 
       {/* Shipping Summary - Only show if shipping is required and address exists */}
       {isShippingRequired && shippingAddress && (
         <div className="mb-6 p-4 bg-background rounded-lg">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-500">Shipping to:</p>
+              <p className="text-sm text-gray-500">{tCheckout('payment.shippingTo')}</p>
               <p className="font-medium text-dark">
                 {shippingAddress.first_name} {shippingAddress.last_name}
               </p>
@@ -113,7 +116,7 @@ export function CheckoutForm({
                 onClick={onBack}
                 className="text-sm text-primary hover:text-primary-dark hover:underline"
               >
-                Edit
+                {t('common.edit')}
               </button>
             )}
           </div>
@@ -166,16 +169,16 @@ export function CheckoutForm({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
               />
             </svg>
-            Processing...
+            {tCheckout('payment.processing')}
           </>
         ) : (
-          `Pay ${symbol}${orderTotal.toFixed(2)}`
+          tCheckout('payment.pay', { amount: `${symbol}${orderTotal.toFixed(2)}` })
         )}
       </button>
 
       {/* Security Note */}
       <p className="mt-4 text-center text-xs text-gray-500">
-        🔒 Payments are secure and encrypted
+        {tCheckout('payment.secureNote')}
       </p>
     </form>
   );

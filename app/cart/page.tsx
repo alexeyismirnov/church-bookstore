@@ -7,6 +7,8 @@ import CartItem from '../components/CartItem';
 import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems, getStoredToken } from '../lib/api';
 import { useCart } from '../lib/CartContext';
 import { useCurrency } from '../i18n/CurrencyContext';
+import { useTranslations } from '../i18n/LanguageContext';
+import { useApiLocale } from '../i18n/useApiLocale';
 import { Basket } from '../types';
 
 interface CartItemDisplay {
@@ -26,6 +28,9 @@ interface CartItemDisplay {
 export default function CartPage() {
   const { refreshCart } = useCart();
   const { currency, symbol } = useCurrency();
+  const locale = useApiLocale();
+  const t = useTranslations();
+  const tCart = useTranslations('cart');
   const [basket, setBasket] = useState<Basket | null>(null);
   const [cartItems, setCartItems] = useState<CartItemDisplay[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +69,7 @@ export default function CartPage() {
 
   useEffect(() => {
     fetchBasket();
-  }, [fetchBasket, currency]);
+  }, [fetchBasket, currency, locale]);
 
   const updateQuantity = async (basketLineId: number, quantity: number) => {
     if (!basket?.id || isUpdating) return;
@@ -119,7 +124,7 @@ export default function CartPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-gray-500">Loading your cart...</p>
+          <p className="text-gray-500">{tCart('loading')}</p>
         </div>
       </div>
     );
@@ -132,12 +137,12 @@ export default function CartPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-2xl font-bold text-dark mb-4">Please Sign In</h1>
+            <h1 className="text-2xl font-bold text-dark mb-4">{tCart('signIn.title')}</h1>
             <p className="text-gray-500 mb-8">
-              You need to sign in to view your cart and make purchases.
+              {tCart('signIn.description')}
             </p>
             <Link href="/login?redirect=/cart" className="btn-primary">
-              Sign In
+              {tCart('signIn.button')}
             </Link>
           </div>
         </div>
@@ -151,10 +156,10 @@ export default function CartPage() {
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-dark mb-4">Something went wrong</h1>
+            <h1 className="text-2xl font-bold text-dark mb-4">{tCart('error.title')}</h1>
             <p className="text-gray-500 mb-8">{error}</p>
             <button onClick={fetchBasket} className="btn-primary">
-              Try Again
+              {t('common.retry')}
             </button>
           </div>
         </div>
@@ -169,12 +174,12 @@ export default function CartPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-2xl font-bold text-dark mb-4">Your Cart is Empty</h1>
+            <h1 className="text-2xl font-bold text-dark mb-4">{tCart('empty.title')}</h1>
             <p className="text-gray-500 mb-8">
-              Looks like you haven't added any books to your cart yet.
+              {tCart('empty.description')}
             </p>
             <Link href="/catalog" className="btn-primary">
-              Start Shopping
+              {tCart('empty.button')}
             </Link>
           </div>
         </div>
@@ -187,13 +192,13 @@ export default function CartPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">Home</Link>
+          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
-          <span className="text-dark">Cart</span>
+          <span className="text-dark">{t('nav.cart')}</span>
         </nav>
 
         <h1 className="text-3xl md:text-4xl font-bold text-dark mb-8">
-          Shopping Cart
+          {tCart('title')}
         </h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -219,30 +224,30 @@ export default function CartPage() {
               className="inline-flex items-center gap-2 text-primary hover:text-primary-dark mt-6 font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
-              Continue Shopping
+              {t('common.continueShopping')}
             </Link>
           </div>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-              <h2 className="text-xl font-bold text-dark mb-6">Order Summary</h2>
+              <h2 className="text-xl font-bold text-dark mb-6">{t('checkout.orderSummary')}</h2>
               
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gray-600">
-                  <span>Subtotal</span>
+                  <span>{t('common.subtotal')}</span>
                   <span>{symbol}{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
-                  <span>{isShippingRequired ? 'TBD' : 'Free'}</span>
+                  <span>{t('common.shipping')}</span>
+                  <span>{isShippingRequired ? tCart('shipping.tbd') : t('common.free')}</span>
                 </div>
                 {isShippingRequired && (
                   <>
                     <hr className="border-gray-100" />
                     <div className="flex justify-between text-sm text-gray-500 italic">
                       <span></span>
-                      <span>Shipping calculated at checkout</span>
+                      <span>{tCart('shipping.calculatedAtCheckout')}</span>
                     </div>
                   </>
                 )}
@@ -252,14 +257,14 @@ export default function CartPage() {
                 href="/checkout"
                 className="btn-primary w-full text-center block"
               >
-                Proceed to Checkout
+                {tCart('proceedToCheckout')}
               </Link>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-500">
-                  or{' '}
+                  {tCart('or')}{' '}
                   <Link href="/catalog" className="text-primary hover:underline">
-                    continue shopping
+                    {tCart('continueShoppingLink')}
                   </Link>
                 </p>
               </div>

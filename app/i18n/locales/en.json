@@ -25,7 +25,8 @@
     "remove": "Remove",
     "close": "Close",
     "adding": "Adding...",
-    "added": "Added!"
+    "added": "Added!",
+    "edit": "Edit"
   },
   "nav": {
     "selectLanguage": "Select Language",
@@ -44,7 +45,8 @@
     "myOrders": "My Orders",
     "bookshelf": "Bookshelf",
     "logout": "Logout",
-    "account": "Account"
+    "account": "Account",
+    "cart": "Cart"
   },
   "homepage": {
     "hero": {
@@ -121,7 +123,31 @@
   },
   "cart": {
     "title": "Shopping Cart",
-    "empty": "Your cart is empty",
+    "loading": "Loading your cart...",
+    "empty": {
+      "title": "Your Cart is Empty",
+      "description": "Looks like you haven't added any books to your cart yet.",
+      "button": "Start Shopping"
+    },
+    "signIn": {
+      "title": "Please Sign In",
+      "description": "You need to sign in to view your cart and make purchases.",
+      "button": "Sign In"
+    },
+    "error": {
+      "title": "Something went wrong"
+    },
+    "shipping": {
+      "tbd": "TBD",
+      "calculatedAtCheckout": "Shipping calculated at checkout"
+    },
+    "item": {
+      "each": "each"
+    },
+    "or": "or",
+    "orContinue": "or {link}",
+    "continueShoppingLink": "continue shopping",
+    "emptyCart": "Your cart is empty",
     "items": "{count, plural, =0 {No items} one {# item} other {# items}}",
     "updateQuantity": "Update Quantity",
     "proceedToCheckout": "Proceed to Checkout"
@@ -129,6 +155,7 @@
   "checkout": {
     "title": "Checkout",
     "shipping": "Shipping Information",
+    "paymentTitle": "Payment",
     "payment": "Payment",
     "review": "Review Order",
     "placeOrder": "Place Order",
@@ -142,7 +169,67 @@
     "country": "Country",
     "postalCode": "Postal Code",
     "success": "Order placed successfully!",
-    "confirmation": "Order Confirmation"
+    "confirmation": "Order Confirmation",
+    "backToCart": "Back to Cart",
+    "errors": {
+      "cartLoadFailed": "Failed to load cart. Please try again.",
+      "paymentInitFailed": "Failed to initialize payment. Please try again."
+    },
+    "validation": {
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "streetRequired": "Street address is required",
+      "countryRequired": "Country is required"
+    },
+    "placeholders": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "street": "123 Main Street",
+      "apartment": "Apt 4B",
+      "building": "Tower A, 5th Floor",
+      "city": "San Francisco",
+      "state": "California",
+      "zipCode": "94102",
+      "phone": "+1 (555) 123-4567",
+      "deliveryInstructions": "Leave at door, ring doorbell, etc."
+    },
+    "shippingSection": {
+      "address": "Shipping Address",
+      "streetAddress": "Street Address",
+      "apartment": "Apartment, Suite, etc.",
+      "building": "Building Name, Floor, etc.",
+      "stateProvince": "State / Province / Region",
+      "zipCode": "ZIP / Postal Code",
+      "phone": "Phone Number",
+      "deliveryInstructions": "Delivery Instructions",
+      "loadingOptions": "Loading shipping options...",
+      "unableToLoad": "Unable to load shipping options for this country. Please try another country.",
+      "noMethods": "No shipping methods available for the selected country. Please select a different country or contact us for assistance.",
+      "continueToPayment": "Continue to Payment"
+    },
+    "payment": {
+      "details": "Payment Details",
+      "shippingTo": "Shipping to:",
+      "processing": "Processing...",
+      "pay": "Pay {amount}",
+      "secureNote": "🔒 Payments are secure and encrypted",
+      "failed": "Your payment was not successful. Please try again.",
+      "failedGeneric": "Payment failed. Please try again."
+    },
+    "confirmation": {
+      "title": "Order Confirmed!",
+      "thankYou": "Thank you for your purchase. We've received your order and will send you a confirmation email shortly.",
+      "orderPlaced": "Order Placed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "whatNext": "What happens next?",
+      "step1": "We'll send you an email confirmation with your order details",
+      "step2": "Your order will be processed within a few business days",
+      "step3": "You'll receive tracking information once your order ships"
+    },
+    "orderSummarySection": {
+      "qty": "Qty:"
+    }
   },
   "account": {
     "title": "My Account",

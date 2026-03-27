@@ -10,6 +10,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ShippingAddress, ShippingMethod } from '@/app/types';
 import { getBasket, basketToCartItems, getShippingMethods } from '@/app/lib/api';
 import { useCurrency } from '@/app/i18n/CurrencyContext';
+import { useTranslations } from '../i18n/LanguageContext';
+import { useApiLocale } from '../i18n/useApiLocale';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -45,11 +47,15 @@ function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { currency, symbol } = useCurrency();
+  const t = useTranslations();
+  const tCheckout = useTranslations('checkout');
+  const locale = useApiLocale();
   const redirectStatus = searchParams.get('redirect_status');
   const [cartItems, setCartItems] = useState<CartItemForDisplay[]>([]);
   const [basket, setBasket] = useState<{ lines: any[] | { results: any[] } } | null>(null);
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true); // Track if this is the first load (not a currency refresh)
   const [isBasketLoaded, setIsBasketLoaded] = useState(false);
   const [isStepDetermined, setIsStepDetermined] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +73,7 @@ function CheckoutContent() {
   useEffect(() => {
     if (redirectStatus === 'failed') {
       setPaymentFailed(true);
-      setError('Your payment was not successful. Please try again.');
+      setError(tCheckout('payment.failed'));
       
       // Try to restore checkout state from sessionStorage
       try {
@@ -107,17 +113,18 @@ function CheckoutContent() {
         setIsBasketLoaded(true);
       } catch (err) {
         console.error('Error loading cart from API:', err);
-        setError('Failed to load cart. Please try again.');
+        setError(tCheckout('errors.cartLoadFailed'));
         // Set empty cart on error - will redirect to cart page
         setCartItems([]);
         setIsBasketLoaded(true);
       } finally {
         setIsLoading(false);
+        setIsInitialLoad(false); // Mark initial load as complete
       }
     };
 
     loadCart();
-  }, [currency]);
+  }, [currency, locale]);
 
   // Determine the correct step after basket is loaded
   useEffect(() => {
@@ -156,7 +163,7 @@ function CheckoutContent() {
           setIsStepDetermined(true);
         } catch (err) {
           console.error('Error creating payment intent for non-shipping order:', err);
-          setError('Failed to initialize payment. Please try again.');
+          setError(tCheckout('errors.paymentInitFailed'));
           setIsStepDetermined(true); // Mark as determined even on error to avoid infinite loading
         }
       };
@@ -335,7 +342,7 @@ function CheckoutContent() {
       }
     } catch (err) {
       console.error('Error creating payment intent:', err);
-      setError('Failed to initialize payment. Please try again.');
+      setError(tCheckout('errors.paymentInitFailed'));
     }
   };
 
@@ -364,8 +371,9 @@ function CheckoutContent() {
     }
   }, [isLoading, cartItems.length, router]);
 
-  // Loading state - show spinner while basket is being loaded AND step is determined
-  if (isLoading || !isBasketLoaded || !isStepDetermined) {
+  // Loading state - show spinner only during INITIAL load (not during currency refreshes)
+  // This preserves the shipping form state when currency changes
+  if ((isLoading && isInitialLoad) || !isBasketLoaded || !isStepDetermined) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
@@ -383,15 +391,15 @@ function CheckoutContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">Home</Link>
+          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
-          <Link href="/cart" className="hover:text-primary">Cart</Link>
+          <Link href="/cart" className="hover:text-primary">{t('nav.cart')}</Link>
           <span className="mx-2">/</span>
-          <span className="text-dark">{checkoutStep === 'payment' ? 'Payment' : 'Shipping'}</span>
+          <span className="text-dark">{checkoutStep === 'payment' ? t('checkout.paymentTitle') : t('checkout.shipping')}</span>
         </nav>
 
         <h1 className="text-3xl md:text-4xl font-bold text-dark mb-8">
-          {checkoutStep === 'payment' ? 'Payment' : 'Shipping'}
+          {checkoutStep === 'payment' ? t('checkout.paymentTitle') : t('checkout.shipping')}
         </h1>
 
         {error && (
@@ -446,7 +454,7 @@ function CheckoutContent() {
                 className="inline-flex items-center gap-2 text-primary hover:text-primary-dark mt-6 font-medium"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Cart
+                {tCheckout('backToCart')}
               </Link>
             )}
           </div>

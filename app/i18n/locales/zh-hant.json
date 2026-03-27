@@ -25,7 +25,8 @@
     "remove": "刪除",
     "close": "關閉",
     "adding": "添加中...",
-    "added": "已添加！"
+    "added": "已添加！",
+    "edit": "編輯"
   },
   "nav": {
     "selectLanguage": "選擇語言",
@@ -44,7 +45,8 @@
     "myOrders": "我的訂單",
     "bookshelf": "我的書架",
     "logout": "登出",
-    "account": "帳戶"
+    "account": "帳戶",
+    "cart": "購物車"
   },
   "homepage": {
     "hero": {
@@ -121,7 +123,31 @@
   },
   "cart": {
     "title": "購物車",
-    "empty": "您的購物車是空的",
+    "loading": "正在載入購物車...",
+    "empty": {
+      "title": "您的購物車是空的",
+      "description": "您還沒有添加任何書籍到購物車。",
+      "button": "開始購物"
+    },
+    "signIn": {
+      "title": "請登入",
+      "description": "您需要登入才能查看購物車並進行購買。",
+      "button": "登入"
+    },
+    "error": {
+      "title": "出錯了"
+    },
+    "shipping": {
+      "tbd": "待定",
+      "calculatedAtCheckout": "運費在結帳時計算"
+    },
+    "item": {
+      "each": "每件"
+    },
+    "or": "或",
+    "orContinue": "或{link}",
+    "continueShoppingLink": "繼續購物",
+    "emptyCart": "您的購物車是空的",
     "items": "{count, plural, =0 {無商品} one {# 件商品} other {# 件商品}}",
     "updateQuantity": "更新數量",
     "proceedToCheckout": "去結帳"
@@ -129,6 +155,7 @@
   "checkout": {
     "title": "結帳",
     "shipping": "配送資訊",
+    "paymentTitle": "付款",
     "payment": "付款",
     "review": "訂單確認",
     "placeOrder": "提交訂單",
@@ -142,7 +169,67 @@
     "country": "國家",
     "postalCode": "郵遞區號",
     "success": "訂單提交成功！",
-    "confirmation": "訂單確認"
+    "confirmation": "訂單確認",
+    "backToCart": "返回購物車",
+    "errors": {
+      "cartLoadFailed": "無法載入購物車。請重試。",
+      "paymentInitFailed": "無法初始化付款。請重試。"
+    },
+    "validation": {
+      "firstNameRequired": "名字為必填項",
+      "lastNameRequired": "姓氏為必填項",
+      "streetRequired": "街道地址為必填項",
+      "countryRequired": "國家為必填項"
+    },
+    "placeholders": {
+      "firstName": "張",
+      "lastName": "三",
+      "street": "主街123號",
+      "apartment": "4B室",
+      "building": "A座5樓",
+      "city": "舊金山",
+      "state": "加利福尼亞",
+      "zipCode": "94102",
+      "phone": "+1 (555) 123-4567",
+      "deliveryInstructions": "放在門口，按門鈴等"
+    },
+    "shippingSection": {
+      "address": "送貨地址",
+      "streetAddress": "街道地址",
+      "apartment": "公寓、套房等",
+      "building": "樓名、樓層等",
+      "stateProvince": "省/市/自治區",
+      "zipCode": "郵遞區號",
+      "phone": "電話號碼",
+      "deliveryInstructions": "送貨說明",
+      "loadingOptions": "正在載入配送選項...",
+      "unableToLoad": "無法載入該國家的配送選項。請嘗試其他國家。",
+      "noMethods": "所選國家沒有可用的配送方式。請選擇其他國家或聯繫我們尋求幫助。",
+      "continueToPayment": "繼續付款"
+    },
+    "payment": {
+      "details": "付款詳情",
+      "shippingTo": "配送至：",
+      "processing": "處理中...",
+      "pay": "支付 {amount}",
+      "secureNote": "🔒 付款安全且已加密",
+      "failed": "付款未成功。請重試。",
+      "failedGeneric": "付款失敗。請重試。"
+    },
+    "confirmation": {
+      "title": "訂單已確認！",
+      "thankYou": "感謝您的購買。我們已收到您的訂單，稍後會向您發送確認郵件。",
+      "orderPlaced": "訂單已下單",
+      "processing": "處理中",
+      "shipped": "已發貨",
+      "whatNext": "接下來呢？",
+      "step1": "我們會向您發送訂單詳情的郵件確認",
+      "step2": "您的訂單將在幾個工作日內處理",
+      "step3": "訂單發貨後您將收到物流追蹤資訊"
+    },
+    "orderSummarySection": {
+      "qty": "數量："
+    }
   },
   "account": {
     "title": "我的帳戶",

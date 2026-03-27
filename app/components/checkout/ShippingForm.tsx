@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ShippingAddress, ShippingMethod } from '@/app/types';
 import { CountryAutocomplete } from './CountryAutocomplete';
 import { getShippingMethods } from '@/app/lib/api';
+import { useTranslations } from '../../i18n/LanguageContext';
 
 // Re-export ShippingAddress for use by CheckoutForm
 export type { ShippingAddress };
@@ -25,6 +26,9 @@ export function ShippingForm({
   selectedShippingMethod,
   currency,
 }: ShippingFormProps) {
+  const t = useTranslations();
+  const tCheckout = useTranslations('checkout');
+  
   const [address, setAddress] = useState<ShippingAddress>(
     initialData || {
       first_name: '',
@@ -122,7 +126,7 @@ export function ShippingForm({
         }
       } catch (err) {
         console.error('Failed to fetch shipping methods:', err);
-        setShippingError('Unable to load shipping options for this country. Please try another country.');
+        setShippingError(tCheckout('shippingSection.unableToLoad'));
         setShippingMethods([]);
         if (onShippingMethodsChange) {
           onShippingMethodsChange([]);
@@ -149,10 +153,10 @@ export function ShippingForm({
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof ShippingAddress, string>> = {};
 
-    if (!address.first_name.trim()) newErrors.first_name = 'First name is required';
-    if (!address.last_name.trim()) newErrors.last_name = 'Last name is required';
-    if (!address.line1.trim()) newErrors.line1 = 'Street address is required';
-    if (!address.country.trim()) newErrors.country = 'Country is required';
+    if (!address.first_name.trim()) newErrors.first_name = tCheckout('validation.firstNameRequired');
+    if (!address.last_name.trim()) newErrors.last_name = tCheckout('validation.lastNameRequired');
+    if (!address.line1.trim()) newErrors.line1 = tCheckout('validation.streetRequired');
+    if (!address.country.trim()) newErrors.country = tCheckout('validation.countryRequired');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -174,14 +178,14 @@ export function ShippingForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-xl font-semibold text-gray-900">Shipping Address</h2>
+      <h2 className="text-xl font-semibold text-gray-900">{tCheckout('shippingSection.address')}</h2>
 
       {/* Name Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* First Name */}
         <div>
           <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
-            First Name <span className="text-red-500">*</span>
+            {t('checkout.firstName')} <span className="text-red-500">*</span>
           </label>
           <input
             id="first_name"
@@ -189,7 +193,7 @@ export function ShippingForm({
             value={address.first_name}
             onChange={(e) => handleChange('first_name', e.target.value)}
             required
-            placeholder="John"
+            placeholder={tCheckout('placeholders.firstName')}
             className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
               errors.first_name ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -202,7 +206,7 @@ export function ShippingForm({
         {/* Last Name */}
         <div>
           <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
-            Last Name <span className="text-red-500">*</span>
+            {t('checkout.lastName')} <span className="text-red-500">*</span>
           </label>
           <input
             id="last_name"
@@ -210,7 +214,7 @@ export function ShippingForm({
             value={address.last_name}
             onChange={(e) => handleChange('last_name', e.target.value)}
             required
-            placeholder="Doe"
+            placeholder={tCheckout('placeholders.lastName')}
             className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
               errors.last_name ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -224,7 +228,7 @@ export function ShippingForm({
       {/* Address Line 1 */}
       <div>
         <label htmlFor="line1" className="block text-sm font-medium text-gray-700 mb-1">
-          Street Address <span className="text-red-500">*</span>
+          {tCheckout('shippingSection.streetAddress')} <span className="text-red-500">*</span>
         </label>
         <input
           id="line1"
@@ -232,7 +236,7 @@ export function ShippingForm({
           value={address.line1}
           onChange={(e) => handleChange('line1', e.target.value)}
           required
-          placeholder="123 Main Street"
+          placeholder={tCheckout('placeholders.street')}
           className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
             errors.line1 ? 'border-red-500' : 'border-gray-300'
           }`}
@@ -245,14 +249,14 @@ export function ShippingForm({
       {/* Address Line 2 */}
       <div>
         <label htmlFor="line2" className="block text-sm font-medium text-gray-700 mb-1">
-          Apartment, Suite, etc.
+          {tCheckout('shippingSection.apartment')}
         </label>
         <input
           id="line2"
           type="text"
           value={address.line2}
           onChange={(e) => handleChange('line2', e.target.value)}
-          placeholder="Apt 4B"
+          placeholder={tCheckout('placeholders.apartment')}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
         />
       </div>
@@ -260,14 +264,14 @@ export function ShippingForm({
       {/* Address Line 3 */}
       <div>
         <label htmlFor="line3" className="block text-sm font-medium text-gray-700 mb-1">
-          Building Name, Floor, etc.
+          {tCheckout('shippingSection.building')}
         </label>
         <input
           id="line3"
           type="text"
           value={address.line3}
           onChange={(e) => handleChange('line3', e.target.value)}
-          placeholder="Tower A, 5th Floor"
+          placeholder={tCheckout('placeholders.building')}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
         />
       </div>
@@ -277,14 +281,14 @@ export function ShippingForm({
         {/* City */}
         <div>
           <label htmlFor="line4" className="block text-sm font-medium text-gray-700 mb-1">
-            City
+            {t('checkout.city')}
           </label>
           <input
             id="line4"
             type="text"
             value={address.line4}
             onChange={(e) => handleChange('line4', e.target.value)}
-            placeholder="San Francisco"
+            placeholder={tCheckout('placeholders.city')}
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
           />
         </div>
@@ -292,14 +296,14 @@ export function ShippingForm({
         {/* State */}
         <div>
           <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
-            State / Province / Region
+            {tCheckout('shippingSection.stateProvince')}
           </label>
           <input
             id="state"
             type="text"
             value={address.state}
             onChange={(e) => handleChange('state', e.target.value)}
-            placeholder="California"
+            placeholder={tCheckout('placeholders.state')}
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
           />
         </div>
@@ -307,14 +311,14 @@ export function ShippingForm({
         {/* ZIP Code */}
         <div>
           <label htmlFor="postcode" className="block text-sm font-medium text-gray-700 mb-1">
-            ZIP / Postal Code
+            {tCheckout('shippingSection.zipCode')}
           </label>
           <input
             id="postcode"
             type="text"
             value={address.postcode}
             onChange={(e) => handleChange('postcode', e.target.value)}
-            placeholder="94102"
+            placeholder={tCheckout('placeholders.zipCode')}
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
           />
         </div>
@@ -330,14 +334,14 @@ export function ShippingForm({
       {/* Phone Number */}
       <div>
         <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-1">
-          Phone Number
+          {tCheckout('shippingSection.phone')}
         </label>
         <input
           id="phone_number"
           type="tel"
           value={address.phone_number}
           onChange={(e) => handleChange('phone_number', e.target.value)}
-          placeholder="+1 (555) 123-4567"
+          placeholder={tCheckout('placeholders.phone')}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
         />
       </div>
@@ -345,13 +349,13 @@ export function ShippingForm({
       {/* Delivery Instructions */}
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-          Delivery Instructions
+          {tCheckout('shippingSection.deliveryInstructions')}
         </label>
         <textarea
           id="notes"
           value={address.notes}
           onChange={(e) => handleChange('notes', e.target.value)}
-          placeholder="Leave at door, ring doorbell, etc."
+          placeholder={tCheckout('placeholders.deliveryInstructions')}
           rows={3}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none"
         />
@@ -361,7 +365,7 @@ export function ShippingForm({
       {isLoadingShippingMethods && (
         <div className="flex items-center justify-center py-4">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
-          <span className="ml-2 text-gray-600">Loading shipping options...</span>
+          <span className="ml-2 text-gray-600">{tCheckout('shippingSection.loadingOptions')}</span>
         </div>
       )}
       {shippingError && (
@@ -371,7 +375,7 @@ export function ShippingForm({
       )}
       {!isLoadingShippingMethods && !shippingError && !isAddressIncomplete && shippingMethods.length === 0 && (
         <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
-          No shipping methods available for the selected country. Please select a different country or contact us for assistance.
+          {tCheckout('shippingSection.noMethods')}
         </div>
       )}
 
@@ -385,7 +389,7 @@ export function ShippingForm({
             : 'bg-primary text-white hover:bg-primary-dark'
         }`}
       >
-        {isLoadingShippingMethods ? 'Loading...' : 'Continue to Payment'}
+        {isLoadingShippingMethods ? t('common.loading') : tCheckout('shippingSection.continueToPayment')}
       </button>
       
     </form>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import countries from '@/app/lib/countries.json';
+import { useTranslations } from '../../i18n/LanguageContext';
 
 interface CountryAutocompleteProps {
   value: string;
@@ -10,6 +11,7 @@ interface CountryAutocompleteProps {
 }
 
 export function CountryAutocomplete({ value, onChange, error }: CountryAutocompleteProps) {
+  const t = useTranslations('checkout');
   const [inputValue, setInputValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [filteredCountries, setFilteredCountries] = useState(countries);
@@ -126,7 +128,7 @@ export function CountryAutocomplete({ value, onChange, error }: CountryAutocompl
   return (
     <div ref={containerRef} className="relative">
       <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-        Country <span className="text-red-500">*</span>
+        {t('country')} <span className="text-red-500">*</span>
       </label>
       <input
         ref={inputRef}

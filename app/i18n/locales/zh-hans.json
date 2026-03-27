@@ -25,7 +25,8 @@
     "remove": "删除",
     "close": "关闭",
     "adding": "添加中...",
-    "added": "已添加！"
+    "added": "已添加！",
+    "edit": "编辑"
   },
   "nav": {
     "selectLanguage": "选择语言",
@@ -44,7 +45,8 @@
     "myOrders": "我的订单",
     "bookshelf": "我的书架",
     "logout": "退出",
-    "account": "账户"
+    "account": "账户",
+    "cart": "购物车"
   },
   "homepage": {
     "hero": {
@@ -121,7 +123,31 @@
   },
   "cart": {
     "title": "购物车",
-    "empty": "您的购物车是空的",
+    "loading": "正在加载购物车...",
+    "empty": {
+      "title": "您的购物车是空的",
+      "description": "您还没有添加任何书籍到购物车。",
+      "button": "开始购物"
+    },
+    "signIn": {
+      "title": "请登录",
+      "description": "您需要登录才能查看购物车并进行购买。",
+      "button": "登录"
+    },
+    "error": {
+      "title": "出错了"
+    },
+    "shipping": {
+      "tbd": "待定",
+      "calculatedAtCheckout": "运费在结账时计算"
+    },
+    "item": {
+      "each": "每件"
+    },
+    "or": "或",
+    "orContinue": "或{link}",
+    "continueShoppingLink": "继续购物",
+    "emptyCart": "您的购物车是空的",
     "items": "{count, plural, =0 {无商品} one {# 件商品} other {# 件商品}}",
     "updateQuantity": "更新数量",
     "proceedToCheckout": "去结账"
@@ -129,6 +155,7 @@
   "checkout": {
     "title": "结账",
     "shipping": "配送信息",
+    "paymentTitle": "支付",
     "payment": "支付",
     "review": "订单确认",
     "placeOrder": "提交订单",
@@ -142,7 +169,67 @@
     "country": "国家",
     "postalCode": "邮政编码",
     "success": "订单提交成功！",
-    "confirmation": "订单确认"
+    "confirmation": "订单确认",
+    "backToCart": "返回购物车",
+    "errors": {
+      "cartLoadFailed": "无法加载购物车。请重试。",
+      "paymentInitFailed": "无法初始化支付。请重试。"
+    },
+    "validation": {
+      "firstNameRequired": "名字为必填项",
+      "lastNameRequired": "姓氏为必填项",
+      "streetRequired": "街道地址为必填项",
+      "countryRequired": "国家为必填项"
+    },
+    "placeholders": {
+      "firstName": "张",
+      "lastName": "三",
+      "street": "主街123号",
+      "apartment": "4B室",
+      "building": "A座5楼",
+      "city": "旧金山",
+      "state": "加利福尼亚",
+      "zipCode": "94102",
+      "phone": "+1 (555) 123-4567",
+      "deliveryInstructions": "放在门口，按门铃等"
+    },
+    "shippingSection": {
+      "address": "送货地址",
+      "streetAddress": "街道地址",
+      "apartment": "公寓、套房等",
+      "building": "楼名、楼层等",
+      "stateProvince": "省/市/自治区",
+      "zipCode": "邮政编码",
+      "phone": "电话号码",
+      "deliveryInstructions": "送货说明",
+      "loadingOptions": "正在加载配送选项...",
+      "unableToLoad": "无法加载该国家的配送选项。请尝试其他国家。",
+      "noMethods": "所选国家没有可用的配送方式。请选择其他国家或联系我们寻求帮助。",
+      "continueToPayment": "继续付款"
+    },
+    "payment": {
+      "details": "付款详情",
+      "shippingTo": "配送至：",
+      "processing": "处理中...",
+      "pay": "支付 {amount}",
+      "secureNote": "🔒 支付安全且已加密",
+      "failed": "支付未成功。请重试。",
+      "failedGeneric": "支付失败。请重试。"
+    },
+    "confirmation": {
+      "title": "订单已确认！",
+      "thankYou": "感谢您的购买。我们已收到您的订单，稍后会向您发送确认邮件。",
+      "orderPlaced": "订单已下单",
+      "processing": "处理中",
+      "shipped": "已发货",
+      "whatNext": "接下来呢？",
+      "step1": "我们会向您发送订单详情的邮件确认",
+      "step2": "您的订单将在几个工作日内处理",
+      "step3": "订单发货后您将收到物流追踪信息"
+    },
+    "orderSummarySection": {
+      "qty": "数量："
+    }
   },
   "account": {
     "title": "我的账户",
