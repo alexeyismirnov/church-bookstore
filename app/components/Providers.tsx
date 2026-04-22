@@ -4,7 +4,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { StripeProvider } from '../providers/StripeProvider';
 import { LanguageProvider, type Locale } from '../i18n/LanguageContext';
 import { CurrencyProvider } from '../i18n/CurrencyContext';
 import { type Currency } from '../i18n/settings';
@@ -25,9 +24,7 @@ export default function Providers({ children, initialLocale, initialCurrency }: 
       <CartProvider>
         <CurrencyProvider initialCurrency={initialCurrency}>
           <LanguageProvider initialLocale={initialLocale}>
-            <StripeProvider>
-              {children}
-            </StripeProvider>
+            {children}
           </LanguageProvider>
         </CurrencyProvider>
       </CartProvider>

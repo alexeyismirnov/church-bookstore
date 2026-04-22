@@ -1,12 +1,68 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2, BookOpen, Headphones, Cross, type LucideIcon } from 'lucide-react';
 import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
-import { books, getNewArrivals, getBestsellers } from './lib/data';
+import { getNewArrivals, getCategories } from './lib/api';
+import { useApiLocale } from './i18n/useApiLocale';
+import { useCurrency } from './i18n/CurrencyContext';
+import { useTranslations } from './i18n/LanguageContext';
+import { Book, Category } from './types';
+
+// Category slugs to exclude from the homepage display
+// "Language" shows all books (same as "Books"), so it's redundant
+const EXCLUDED_CATEGORY_SLUGS = ['language'];
+
+// Descriptions and icons for top-level categories, keyed by slug
+const CATEGORY_INFO: Record<string, { description: string; Icon: LucideIcon }> = {
+  'books': {
+    description: 'Theology, lives of saints, liturgical texts, church history, and more — our full collection of printed and digital Orthodox Christian literature.',
+    Icon: BookOpen,
+  },
+  'audiovideo': {
+    description: 'Audio CDs of Orthodox liturgical music and choral works, plus the film "Faith of Saints" — multimedia resources for spiritual enrichment.',
+    Icon: Headphones,
+  },
+  'church-supplies': {
+    description: 'Hand-painted icons and frankincense for your home or parish — sacred items to support Orthodox worship and prayer life.',
+    Icon: Cross,
+  },
+};
 
 export default function HomePage() {
-  const newArrivals = getNewArrivals();
-  const bestsellers = getBestsellers();
+  const locale = useApiLocale();
+  const { isLoading: isCurrencyLoading } = useCurrency();
+  const t = useTranslations('homepage');
+  const [newArrivals, setNewArrivals] = useState<Book[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Don't fetch until currency context is loaded
+    if (isCurrencyLoading) return;
+
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const [newArrivalsData, categoriesData] = await Promise.all([
+          getNewArrivals(4),
+          getCategories(),
+        ]);
+        setNewArrivals(newArrivalsData);
+        setCategories(
+          categoriesData.filter(c => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug))
+        );
+      } catch (err) {
+        console.error('Error fetching homepage data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [locale, isCurrencyLoading]);
 
   return (
     <div>
@@ -16,7 +72,7 @@ export default function HomePage() {
       <section className="py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="section-title mb-0">New Arrivals</h2>
+            <h2 className="section-title mb-0">{t('featured.newArrivals')}</h2>
             <Link
               href="/catalog?sort=newest"
               className="flex items-center gap-2 text-primary hover:text-primary-dark font-medium"
@@ -25,61 +81,81 @@ export default function HomePage() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <ProductGrid books={newArrivals} />
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : newArrivals.length > 0 ? (
+            <ProductGrid books={newArrivals} />
+          ) : (
+            <p className="text-center text-gray-500 py-8">No new arrivals at the moment. Check back soon!</p>
+          )}
         </div>
       </section>
 
       {/* Categories Section */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title text-center">Browse by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[
-              { name: 'Prayer Books', image: '/images/products/2013/09/20060122prayerbook1.jpg', count: 24 },
-              { name: 'Liturgical Books', image: '/images/products/2013/10/cabasilasliturgy.jpg', count: 18 },
-              { name: 'Lives of Saints', image: '/images/products/2014/06/sergiy.jpg', count: 32 },
-              { name: 'Theology', image: '/images/products/2014/07/pravoslavie.jpg', count: 28 },
-            ].map((category) => (
-              <Link
-                key={category.name}
-                href={`/catalog?category=${category.name.toLowerCase().replace(/\s+/g, '-')}`}
-                className="group relative aspect-square rounded-xl overflow-hidden"
-              >
-                <img
-                  src={category.image}
-                  alt={category.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-white font-semibold text-lg">{category.name}</h3>
-                  <p className="text-white/70 text-sm">{category.count} books</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+          <h2 className="section-title text-center mb-12">{t('categories.title')}</h2>
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {categories.map((category) => {
+                const info = CATEGORY_INFO[category.slug];
+                const CategoryIcon = info?.Icon || BookOpen;
+                return (
+                  <Link
+                    key={category.id}
+                    href={`/catalog?category=${category.id}`}
+                    className="group block"
+                  >
+                    <div className="flex items-start gap-4 p-6 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all">
+                      {/* Icon */}
+                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <CategoryIcon className="w-6 h-6" />
+                      </div>
 
-      {/* Bestsellers Section */}
-      <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="section-title mb-0">Bestsellers</h2>
-            <Link
-              href="/catalog?sort=popular"
-              className="flex items-center gap-2 text-primary hover:text-primary-dark font-medium"
-            >
-              View All
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <ProductGrid books={bestsellers} />
+                      {/* Content */}
+                      <div className="flex-grow min-w-0">
+                        <div className="flex items-center justify-between gap-4">
+                          <h3 className="text-lg font-semibold text-dark group-hover:text-primary transition-colors">
+                            {category.name}
+                          </h3>
+                          <span className="text-sm text-gray-500 flex-shrink-0">{category.count} books</span>
+                        </div>
+                        <p className="mt-1 text-sm text-gray-600 leading-relaxed">
+                          {info?.description || `Browse our collection of ${category.name.toLowerCase()}.`}
+                        </p>
+                        {category.children && category.children.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {category.children.map((child) => (
+                              <span
+                                key={child.id}
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary transition-colors"
+                              >
+                                {child.name}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Arrow */}
+                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-primary flex-shrink-0 mt-1 transition-colors" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -118,8 +194,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
+

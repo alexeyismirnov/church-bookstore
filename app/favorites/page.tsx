@@ -1,19 +1,82 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Heart, ShoppingBag } from 'lucide-react';
 import ProductGrid from '../components/ProductGrid';
-import { books } from '../lib/data';
+import { getProducts, oscarProductToBook } from '../lib/api';
+import { useApiLocale } from '../i18n/useApiLocale';
+import { useCurrency } from '../i18n/CurrencyContext';
+import { useTranslations } from '../i18n/LanguageContext';
 import { Book } from '../types';
 
+const FAVORITES_KEY = 'favorite_product_ids';
+
+function getFavoriteIds(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const stored = localStorage.getItem(FAVORITES_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function FavoritesPage() {
-  // Mock favorites - in a real app, this would come from a database or localStorage
-  const [favorites, setFavorites] = useState<Book[]>([books[0], books[3], books[5]]);
+  const locale = useApiLocale();
+  const { isLoading: isCurrencyLoading } = useCurrency();
+  const tNav = useTranslations('nav');
+  const tCommon = useTranslations('common');
+  const [favorites, setFavorites] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isCurrencyLoading) return;
+
+    async function fetchFavorites() {
+      setLoading(true);
+      try {
+        const favoriteIds = getFavoriteIds();
+        if (favoriteIds.length === 0) {
+          setFavorites([]);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch products from API and filter to favorites
+        const response = await getProducts(1);
+        const allBooks = response.results.map(product => oscarProductToBook(product, locale));
+        const favoriteBooks = allBooks.filter(book => favoriteIds.includes(book.id));
+        setFavorites(favoriteBooks);
+      } catch (err) {
+        console.error('Error fetching favorites:', err);
+        setFavorites([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchFavorites();
+  }, [locale, isCurrencyLoading]);
 
   const removeFromFavorites = (id: string) => {
     setFavorites((prev) => prev.filter((book) => book.id !== id));
+    // Also update localStorage
+    const updatedIds = favorites.filter((book) => book.id !== id).map((book) => book.id);
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedIds));
+    } catch {
+      // Ignore storage errors
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   if (favorites.length === 0) {
     return (
@@ -41,7 +104,7 @@ export default function FavoritesPage() {
         <nav className="text-sm text-gray-500 mb-6">
           <Link href="/" className="hover:text-primary">Home</Link>
           <span className="mx-2">/</span>
-          <span className="text-dark">Favorites</span>
+          <span className="text-dark">{tNav('favorites')}</span>
         </nav>
 
         <div className="flex items-center justify-between mb-8">
@@ -69,7 +132,7 @@ export default function FavoritesPage() {
             </div>
             <Link href="/cart" className="btn-primary inline-flex items-center gap-2">
               <ShoppingBag className="w-5 h-5" />
-              View Cart
+              {tNav('cart')}
             </Link>
           </div>
         </div>

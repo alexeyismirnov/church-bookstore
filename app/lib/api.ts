@@ -304,7 +304,29 @@ export function oscarProductToBook(product: OscarProduct, locale: string = 'en')
 }
 
 // =============================================================================
-// Authentication helpers (for API functions that need auth)
+// Homepage data helpers
+// =============================================================================
+
+/**
+ * Fetch newest products from the Oscar API.
+ * Assumes the products endpoint returns results in reverse chronological order,
+ * so the first page contains the newest books.
+ * @param limit - Maximum number of products to return (default 6)
+ * @returns Array of Book objects
+ */
+export async function getNewArrivals(limit: number = 6): Promise<Book[]> {
+  try {
+    const response = await getProducts(1);
+    const locale = getLanguagePreference();
+    return response.results.slice(0, limit).map(product => oscarProductToBook(product, locale));
+  } catch (err) {
+    console.error('Failed to fetch new arrivals:', err);
+    return [];
+  }
+}
+
+// =============================================================================
+// Authentication helpers (for API functions that need auth)"
 // =============================================================================
 
 const TOKEN_KEY = 'auth_token';
