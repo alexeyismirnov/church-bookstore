@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod, ShippingAddress } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -831,4 +831,86 @@ export async function getShippingMethods(shippingAddr?: ShippingAddress): Promis
 
   const data = await response.json();
   return data;
+}
+
+// =============================================================================
+// Order Placement API Functions
+// =============================================================================
+
+/**
+ * Place an order via the Oscar checkout API.
+ * Called after payment is confirmed to register the order in the backend.
+ * On success, the basket status changes from "Open" to "Submitted" and an order is created.
+ */
+export async function placeOrder(params: {
+  basketId: string;
+  total: string;
+  currency: string;
+  shippingMethodCode: string;
+  shippingCharge?: {
+    currency: string;
+    excl_tax: string;
+    tax: string;
+  };
+  shippingAddress?: ShippingAddress;
+  guestEmail?: string;
+}): Promise<Order> {
+  const headers = getAuthHeaders();
+
+  // Build the basket URL - Oscar requires a full URL (HyperlinkedRelatedField)
+  // Same pattern as getShippingMethods() which constructs country URLs
+  const OSCAR_API_BASE = 'https://orthodoxbookshop.asia/api';
+  const basketUrl = `${OSCAR_API_BASE}/baskets/${params.basketId}/`;
+
+  // Build the request payload
+  const payload: OrderPlacementRequest = {
+    basket: basketUrl,
+    total: params.total,
+    shipping_method_code: params.shippingMethodCode,
+  };
+
+  // Add shipping charge if provided
+  if (params.shippingCharge) {
+    payload.shipping_charge = params.shippingCharge;
+  }
+
+  // Convert ShippingAddress to OscarAddress format (country code → URL)
+  if (params.shippingAddress) {
+    payload.shipping_address = {
+      country: `${OSCAR_API_BASE}/countries/${params.shippingAddress.country}/`,
+      first_name: params.shippingAddress.first_name,
+      last_name: params.shippingAddress.last_name,
+      line1: params.shippingAddress.line1,
+      line2: params.shippingAddress.line2 || '',
+      line3: params.shippingAddress.line3 || '',
+      line4: params.shippingAddress.line4 || '',
+      notes: params.shippingAddress.notes || '',
+      phone_number: params.shippingAddress.phone_number || '',
+      postcode: params.shippingAddress.postcode || '',
+      state: params.shippingAddress.state || '',
+    };
+  }
+
+  // Add guest email for anonymous checkout
+  if (params.guestEmail) {
+    payload.guest_email = params.guestEmail;
+  }
+
+  const response = await fetch(`${getApiBase()}/checkout/`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    console.error('Order placement failed:', response.status, errorData);
+    throw new Error(
+      errorData.detail ||
+      errorData.basket?.[0] ||
+      `Order placement failed with status ${response.status}`
+    );
+  }
+
+  return response.json();
 }

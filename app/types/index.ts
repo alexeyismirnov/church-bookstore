@@ -323,3 +323,71 @@ export interface ShippingMethod {
     tax: string;
   };
 }
+
+// ============================================================================
+// Order Placement Types
+// ============================================================================
+
+/**
+ * Address in Oscar API format (country is a URL, not a code)
+ * Used in order placement requests where Django REST Framework's
+ * HyperlinkedRelatedField expects full country URLs
+ */
+export interface OscarAddress {
+  country: string;          // Full URL, e.g. "https://orthodoxbookshop.asia/api/countries/US/"
+  first_name: string;
+  last_name: string;
+  line1: string;
+  line2?: string;
+  line3?: string;
+  line4?: string;
+  notes?: string;
+  phone_number?: string;
+  postcode?: string;
+  state?: string;
+  title?: string;
+}
+
+/**
+ * Request payload for placing an order via Oscar checkout API
+ * POST /api/checkout/
+ */
+export interface OrderPlacementRequest {
+  basket: string;           // Full URL to basket, e.g. "https://orthodoxbookshop.asia/api/baskets/{id}/"
+  total: string;            // Must match basket.total_incl_tax
+  shipping_method_code: string;
+  shipping_charge?: {
+    currency: string;
+    excl_tax: string;
+    tax: string;
+  };
+  shipping_address?: OscarAddress;  // Required for physical items
+  billing_address?: OscarAddress;   // Optional
+  guest_email?: string;     // Required for anonymous checkout
+}
+
+/**
+ * Response from Oscar API after placing an order
+ * Returned on HTTP 201 from POST /api/checkout/
+ */
+export interface Order {
+  number: string;
+  status: string;
+  date_placed: string;
+  basket: string;
+  currency: string;
+  total_incl_tax: string;
+  total_excl_tax: string;
+  shipping_incl_tax: string;
+  shipping_excl_tax: string;
+  shipping_method: string;
+  shipping_code: string;
+  url: string;
+  lines: string;
+  guest_email?: string;
+  owner?: string | null;
+  shipping_address?: OscarAddress & { id: number; search_text: string };
+  billing_address?: OscarAddress & { id: number; search_text: string };
+  offer_discounts: unknown[];
+  voucher_discounts: unknown[];
+}

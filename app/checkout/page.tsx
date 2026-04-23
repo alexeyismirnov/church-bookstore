@@ -7,8 +7,9 @@ import { ShippingForm } from '@/app/components/checkout/ShippingForm';
 import { CheckoutForm } from '@/app/components/checkout/CheckoutForm';
 import { OrderSummary } from '@/app/components/checkout/OrderSummary';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ShippingAddress, ShippingMethod } from '@/app/types';
-import { getBasket, basketToCartItems, getShippingMethods } from '@/app/lib/api';
+import { ShippingAddress, ShippingMethod, Basket } from '@/app/types';
+import { getBasket, basketToCartItems, getShippingMethods, placeOrder } from '@/app/lib/api';
+import { useCart } from '@/app/lib/CartContext';
 import { useCurrency } from '@/app/i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
 import { useApiLocale } from '../i18n/useApiLocale';
@@ -52,7 +53,7 @@ function CheckoutContent() {
   const locale = useApiLocale();
   const redirectStatus = searchParams.get('redirect_status');
   const [cartItems, setCartItems] = useState<CartItemForDisplay[]>([]);
-  const [basket, setBasket] = useState<{ lines: any[] | { results: any[] } } | null>(null);
+  const [basket, setBasket] = useState<Basket | null>(null);
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true); // Track if this is the first load (not a currency refresh)
@@ -65,7 +66,12 @@ function CheckoutContent() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [paymentFailed, setPaymentFailed] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [orderPlacementError, setOrderPlacementError] = useState<string | null>(null);
   
+  // Get cart context for refreshing cart count after order placement
+  const { refreshCart } = useCart();
+
   // Calculate if shipping is required based on cartItems (use cartItems which has is_shipping_required from fetched lines)
   const isShippingRequired = cartItems.some(item => item.is_shipping_required === true);
 
@@ -355,13 +361,41 @@ function CheckoutContent() {
   };
 
   // Handle successful payment
-  const handlePaymentSuccess = (paymentIntentId: string) => {
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
     setPaymentIntentId(paymentIntentId);
-    setCheckoutStep('complete');
-    // Clear the saved checkout state since payment succeeded
-    sessionStorage.removeItem(CHECKOUT_STATE_KEY);
-    // Navigate to confirmation page
-    router.push('/checkout/confirmation');
+    setIsPlacingOrder(true);
+    setOrderPlacementError(null);
+
+    try {
+      const order = await placeOrder({
+        basketId: basket?.id || '',
+        total: total.toFixed(2),
+        currency: basket?.currency || 'USD',
+        shippingMethodCode: selectedShippingMethod?.code || 'free-shipping',
+        shippingCharge: selectedShippingMethod ? {
+          currency: selectedShippingMethod.price.currency,
+          excl_tax: selectedShippingMethod.price.excl_tax,
+          tax: selectedShippingMethod.price.tax,
+        } : undefined,
+        shippingAddress: shippingAddress || undefined,
+      });
+
+      console.log('Order placed successfully:', order.number);
+      setCheckoutStep('complete');
+      // Clear the saved checkout state since payment succeeded
+      sessionStorage.removeItem(CHECKOUT_STATE_KEY);
+      // Reset cart count since basket is now consumed
+      refreshCart();
+      // Navigate to confirmation page
+      router.push('/checkout/confirmation');
+    } catch (err) {
+      console.error('Order placement failed after payment:', err);
+      setOrderPlacementError(
+        err instanceof Error ? err.message : 'Payment succeeded but order placement failed. Please contact support.'
+      );
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   // Redirect to cart page if cart is empty
@@ -405,6 +439,27 @@ function CheckoutContent() {
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
             {error}
+          </div>
+        )}
+
+        {isPlacingOrder && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700">
+            <p>Payment confirmed. Placing your order...</p>
+          </div>
+        )}
+
+        {orderPlacementError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <p className="font-medium">Payment succeeded but order placement failed</p>
+            <p className="text-sm mt-1">{orderPlacementError}</p>
+            <p className="text-sm mt-1">Please contact support with your payment reference.</p>
+            <button
+              onClick={() => handlePaymentSuccess(paymentIntentId!)}
+              disabled={isPlacingOrder}
+              className="mt-2 text-sm underline text-red-700 hover:text-red-900"
+            >
+              {isPlacingOrder ? 'Retrying...' : 'Retry order placement'}
+            </button>
           </div>
         )}
 
