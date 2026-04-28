@@ -37,7 +37,7 @@ function getCurrencyPreference(): string {
 }
 
 // Get common headers for API requests
-function getApiHeaders(): HeadersInit {
+export function getApiHeaders(): HeadersInit {
   const lang = getLanguagePreference();
   const currency = getCurrencyPreference();
   return {
@@ -439,8 +439,9 @@ export async function getBasket(): Promise<Basket> {
   });
 
   if (!response.ok) {
-    if (response.status === 404) {
-      // No basket exists yet - return empty basket structure
+    if (response.status === 404 || response.status === 401 || response.status === 403) {
+      // No basket exists (404) or user not authenticated (401/403) -
+      // return empty basket structure
       return {
         id: '',
         lines: [],

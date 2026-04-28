@@ -266,7 +266,18 @@
       "hasAccount": "已有账户？",
       "login": "登录",
       "failed": "注册失败，请重试。",
-      "passwordMismatch": "密码不匹配"
+      "passwordMismatch": "密码不匹配",
+      "captchaRequired": "请完成验证码验证",
+      "captchaNotConfigured": "验证码未配置，请联系客服。",
+      "passwordStrength": "密码强度",
+      "passwordWeak": "弱",
+      "passwordMedium": "中",
+      "passwordStrong": "强",
+      "passwordMinLength": "至少8个字符",
+      "passwordHasLetter": "包含字母",
+      "passwordHasDigit": "包含数字",
+      "passwordHasUppercase": "包含大小写字母",
+      "passwordTooWeak": "密码太弱"
     }
   },
   "contact": {
@@ -326,6 +337,16 @@
     "saveChanges": "保存更改",
     "saving": "保存中...",
     "success": "资料更新成功！",
-    "error": "更新资料失败，请重试。"
+    "error": "更新资料失败，请重试。",
+    "deleteAccount": {
+      "title": "删除账户",
+      "warning": "此操作是永久性的，无法撤销。您的所有数据、订单历史和账户信息将被永久删除。请输入密码以确认。",
+      "confirmPassword": "确认密码",
+      "passwordPlaceholder": "输入您的密码",
+      "confirmDialog": "您确定要删除您的账户吗？此操作是永久性的，无法撤销。您的所有数据将永远丢失。",
+      "deleting": "正在删除账户...",
+      "button": "删除账户",
+      "error": "删除账户失败，请重试。"
+    }
   }
 }

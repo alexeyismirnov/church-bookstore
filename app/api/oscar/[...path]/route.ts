@@ -61,8 +61,8 @@ async function proxyToOscar(
     headers,
   };
 
-  // Include body for POST/PUT/PATCH
-  if (['POST', 'PUT', 'PATCH'].includes(method)) {
+  // Include body for POST/PUT/PATCH/DELETE
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
     try {
       const body = await request.json();
       fetchOptions.body = JSON.stringify(body);

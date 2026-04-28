@@ -266,7 +266,18 @@
       "hasAccount": "Already have an account?",
       "login": "Sign In",
       "failed": "Registration failed. Please try again.",
-      "passwordMismatch": "Passwords do not match"
+      "passwordMismatch": "Passwords do not match",
+      "captchaRequired": "Please complete the captcha verification",
+      "captchaNotConfigured": "Captcha is not configured. Please contact support.",
+      "passwordStrength": "Password Strength",
+      "passwordWeak": "Weak",
+      "passwordMedium": "Medium",
+      "passwordStrong": "Strong",
+      "passwordMinLength": "At least 8 characters",
+      "passwordHasLetter": "Contains letters",
+      "passwordHasDigit": "Contains digits",
+      "passwordHasUppercase": "Contains uppercase and lowercase",
+      "passwordTooWeak": "Password is too weak"
     }
   },
   "contact": {
@@ -326,6 +337,16 @@
     "saveChanges": "Save Changes",
     "saving": "Saving...",
     "success": "Profile updated successfully!",
-    "error": "Failed to update profile. Please try again."
+    "error": "Failed to update profile. Please try again.",
+    "deleteAccount": {
+      "title": "Delete Account",
+      "warning": "This action is permanent and cannot be undone. All of your data, order history, and account information will be permanently deleted. Please type your password to confirm.",
+      "confirmPassword": "Confirm Password",
+      "passwordPlaceholder": "Enter your password",
+      "confirmDialog": "Are you absolutely sure you want to delete your account? This action is PERMANENT and cannot be undone. All your data will be lost forever.",
+      "deleting": "Deleting Account...",
+      "button": "Delete Account",
+      "error": "Failed to delete account. Please try again."
+    }
   }
 }

@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { getApiHeaders } from './api';
 
 // Types for user and profile
 export interface User {
@@ -33,9 +35,11 @@ interface AuthContextType {
   isLoading: boolean;
   error: string | null;
   login: (username: string, password: string, rememberMe?: boolean) => Promise<boolean>;
+  register: (data: { email: string; first_name: string; last_name: string; password1: string; password2: string; hcaptcha_token: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   fetchProfile: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<boolean>;
+  deleteAccount: (password: string) => Promise<{ success: boolean; error?: string }>;
   syncProfileToContexts: (setLanguage: SyncLanguageCallback, setCurrency: SyncCurrencyCallback) => void;
 }
 
@@ -94,6 +98,7 @@ function cacheProfilePreferences(language?: string, currency?: string): void {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -193,6 +198,61 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Register function
+  const register = async (data: {
+    email: string;
+    first_name: string;
+    last_name: string;
+    password1: string;
+    password2: string;
+    hcaptcha_token: string;
+  }): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${getApiBase()}/register/`, {
+        method: 'POST',
+        headers: getApiHeaders(),
+        body: JSON.stringify(data),
+      });
+
+      if (response.status === 201) {
+        const responseData = await response.json();
+
+        // Store token and user in localStorage (registration implies "remember me")
+        localStorage.setItem(TOKEN_KEY, responseData.token);
+        localStorage.setItem(USER_KEY, JSON.stringify(responseData.user));
+        localStorage.setItem(REMEMBER_ME_KEY, 'true');
+
+        setUser(responseData.user);
+
+        // Fetch profile after successful registration and sync with contexts
+        await fetchProfile();
+
+        setIsLoading(false);
+        return { success: true };
+      }
+
+      if (response.status === 400) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || 'Registration failed';
+        setError(errorMessage);
+        setIsLoading(false);
+        return { success: false, error: errorMessage };
+      }
+
+      setError('Registration failed');
+      setIsLoading(false);
+      return { success: false, error: 'Registration failed' };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Network error';
+      setError(errorMessage);
+      setIsLoading(false);
+      return { success: false, error: 'Network error' };
+    }
+  };
+
   // Logout function
   const logout = () => {
     // Clear from both storages to ensure complete logout
@@ -284,6 +344,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Delete account
+  const deleteAccount = async (password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch(`${getApiBase()}/profile/delete/`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.status === 204) {
+        logout();
+        router.push('/');
+        return { success: true };
+      }
+
+      if (response.status === 400) {
+        const data = await response.json();
+        return { success: false, error: data.error || 'Account deletion failed' };
+      }
+
+      return { success: false, error: 'Account deletion failed' };
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Account deletion failed' };
+    }
+  };
+
   // Sync profile language/currency to contexts (exposed for manual syncing if needed)
   const syncProfileToContexts = useCallback((setLanguage: SyncLanguageCallback, setCurrency: SyncCurrencyCallback) => {
     if (profile) {
@@ -305,9 +391,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         error,
         login,
+        register,
         logout,
         fetchProfile,
         updateProfile,
+        deleteAccount,
         syncProfileToContexts,
       }}
     >

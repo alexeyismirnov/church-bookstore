@@ -266,7 +266,18 @@
       "hasAccount": "已有帳戶？",
       "login": "登入",
       "failed": "註冊失敗，請重試。",
-      "passwordMismatch": "密碼不相符"
+      "passwordMismatch": "密碼不相符",
+      "captchaRequired": "請完成驗證碼驗證",
+      "captchaNotConfigured": "驗證碼未設定，請聯絡客服。",
+      "passwordStrength": "密碼強度",
+      "passwordWeak": "弱",
+      "passwordMedium": "中",
+      "passwordStrong": "強",
+      "passwordMinLength": "至少8個字元",
+      "passwordHasLetter": "包含字母",
+      "passwordHasDigit": "包含數字",
+      "passwordHasUppercase": "包含大小寫字母",
+      "passwordTooWeak": "密碼太弱"
     }
   },
   "contact": {
@@ -326,6 +337,16 @@
     "saveChanges": "儲存變更",
     "saving": "儲存中...",
     "success": "資料更新成功！",
-    "error": "更新資料失敗，請重試。"
+    "error": "更新資料失敗，請重試。",
+    "deleteAccount": {
+      "title": "刪除帳戶",
+      "warning": "此操作是永久性的，無法撤銷。您的所有資料、訂單歷史和帳戶資訊將被永久刪除。請輸入密碼以確認。",
+      "confirmPassword": "確認密碼",
+      "passwordPlaceholder": "輸入您的密碼",
+      "confirmDialog": "您確定要刪除您的帳戶嗎？此操作是永久性的，無法撤銷。您的所有資料將永遠丟失。",
+      "deleting": "正在刪除帳戶...",
+      "button": "刪除帳戶",
+      "error": "刪除帳戶失敗，請重試。"
+    }
   }
 }

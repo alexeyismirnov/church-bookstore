@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth, UserProfile } from '../lib/AuthContext';
 import { useTranslations } from '../i18n/LanguageContext';
-import { User, Mail, Save, Loader2 } from 'lucide-react';
+import { User, Mail, Save, Loader2, Trash2, AlertTriangle } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
   const t = useTranslations('profile');
-  const { user, profile, isAuthenticated, isLoading, fetchProfile, updateProfile, logout } = useAuth();
+  const { user, profile, isAuthenticated, isLoading, fetchProfile, updateProfile, logout, deleteAccount } = useAuth();
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -23,6 +23,9 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -214,6 +217,69 @@ export default function ProfilePage() {
               </button>
             </div>
           </form>
+        </div>
+
+        {/* Danger Zone — Delete Account */}
+        <div className="mt-8 border-2 border-red-300 rounded-2xl bg-red-50/50 p-8">
+          <div className="flex items-center gap-3 mb-4">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+            <h2 className="text-xl font-bold text-red-700">{t('deleteAccount.title')}</h2>
+          </div>
+          <p className="text-sm text-red-600 mb-6">
+            {t('deleteAccount.warning')}
+          </p>
+
+          {deleteError && (
+            <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
+              {deleteError}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-red-700 mb-1">
+                {t('deleteAccount.confirmPassword')}
+              </label>
+              <input
+                type="password"
+                value={deletePassword}
+                onChange={(e) => {
+                  setDeletePassword(e.target.value);
+                  setDeleteError(null);
+                }}
+                className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white"
+                placeholder={t('deleteAccount.passwordPlaceholder')}
+              />
+            </div>
+            <button
+              type="button"
+              disabled={isDeleting || !deletePassword}
+              onClick={async () => {
+                const confirmed = window.confirm(
+                  t('deleteAccount.confirmDialog')
+                );
+                if (!confirmed) return;
+
+                setIsDeleting(true);
+                setDeleteError(null);
+
+                const result = await deleteAccount(deletePassword);
+
+                if (!result.success) {
+                  setDeleteError(result.error || t('deleteAccount.error'));
+                  setIsDeleting(false);
+                }
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isDeleting ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Trash2 className="w-5 h-5" />
+              )}
+              {isDeleting ? t('deleteAccount.deleting') : t('deleteAccount.button')}
+            </button>
+          </div>
         </div>
       </div>
     </div>
