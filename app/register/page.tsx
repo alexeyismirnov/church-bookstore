@@ -7,17 +7,7 @@ import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useAuth } from '../lib/AuthContext';
 import { useTranslations } from '../i18n/LanguageContext';
-
-function getPasswordStrength(password: string) {
-  const rules = {
-    minLength: password.length >= 8,
-    hasLetter: /[a-zA-Z]/.test(password),
-    hasDigit: /[0-9]/.test(password),
-    hasUppercase: /[a-z]/.test(password) && /[A-Z]/.test(password),
-  };
-  const score = Object.values(rules).filter(Boolean).length;
-  return { rules, score };
-}
+import { getPasswordStrength, getStrengthColor, getStrengthTextColor } from '../lib/password';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -129,23 +119,10 @@ export default function RegisterPage() {
 
   const loading = isLoading || isSubmitting;
 
-  const getStrengthColor = (score: number) => {
-    if (score <= 1) return 'bg-red-500';
-    if (score === 2) return 'bg-orange-400';
-    return 'bg-green-500';
-  };
-
   const getStrengthLabel = (score: number) => {
     if (score <= 1) return t('passwordWeak');
     if (score === 2) return t('passwordMedium');
-    if (score === 3) return t('passwordStrong');
     return t('passwordStrong');
-  };
-
-  const getStrengthTextColor = (score: number) => {
-    if (score <= 1) return 'text-red-500';
-    if (score === 2) return 'text-orange-400';
-    return 'text-green-500';
   };
 
   return (
