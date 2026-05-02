@@ -14,6 +14,17 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Module-level ref so that AuthProvider (which renders *above* CartProvider)
+// can trigger a cart refresh without needing the React context.
+let refreshCartRef: (() => void) | null = null;
+
+/** Trigger a cart refresh from outside the CartProvider tree (e.g. AuthProvider). */
+export function triggerRefreshCart() {
+  if (refreshCartRef) {
+    refreshCartRef();
+  }
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartCount, setCartCount] = useState(0);
   const [isCartLoading, setIsCartLoading] = useState(false);
@@ -23,6 +34,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Increment trigger to signal all consumers to refresh
     setRefreshTrigger(prev => prev + 1);
   }, []);
+
+  // Expose refreshCart via module-level ref so triggerRefreshCart() works
+  // even when called from a component that is not inside CartProvider.
+  useEffect(() => {
+    refreshCartRef = refreshCart;
+    return () => { refreshCartRef = null; };
+  }, [refreshCart]);
 
   useEffect(() => {
     async function fetchCartCount() {

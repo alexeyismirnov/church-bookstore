@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { getApiHeaders } from './api';
+import { triggerRefreshCart } from './CartContext';
 
 // Types for user and profile
 export interface User {
@@ -189,6 +190,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Fetch profile after successful login and sync with contexts
       await fetchProfile();
       
+      // Refresh cart to show the user's saved basket items
+      triggerRefreshCart();
+      
       setIsLoading(false);
       return true;
     } catch (err) {
@@ -255,6 +259,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Logout function
   const logout = () => {
+    // Call Django backend logout endpoint to invalidate the session server-side.
+    // Fire-and-forget: don't block the frontend logout if this call fails.
+    try {
+      fetch('/api/oscar/logout/', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+      }).catch(() => {
+        // Ignore network errors — frontend logout proceeds regardless
+      });
+    } catch {
+      // Ignore synchronous errors as well
+    }
+
     // Clear from both storages to ensure complete logout
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
@@ -274,6 +291,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setUser(null);
     setProfile(null);
+
+    // Refresh cart to reset the badge (anonymous user gets an empty basket)
+    triggerRefreshCart();
   };
 
   // Fetch profile

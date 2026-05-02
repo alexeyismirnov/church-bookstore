@@ -85,13 +85,13 @@ function DownloadButtons({ book }: { book: Book }) {
     );
   }
 
-  // Unknown source with download URL: show generic download button
-  if (book.downloadUrl) {
+  // Unknown source with preview URL: show generic download button
+  if (book.previewUrl) {
     return (
       <div className="flex flex-col gap-3 pt-4 border-t">
         <span className="text-sm text-gray-500 font-medium">{t('download')}</span>
         <a
-          href={book.downloadUrl}
+          href={book.previewUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
