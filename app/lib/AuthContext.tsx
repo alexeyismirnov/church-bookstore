@@ -260,10 +260,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout function
   const logout = () => {
     // Call Django backend logout endpoint to invalidate the session server-side.
+    // oscarapi's LoginView handles logout via DELETE /api/login/ (not a separate
+    // /logout/ path). The proxy strips /api/oscar, so /api/oscar/login/ → /api/login/.
     // Fire-and-forget: don't block the frontend logout if this call fails.
     try {
-      fetch('/api/oscar/logout/', {
-        method: 'POST',
+      fetch('/api/oscar/login/', {
+        method: 'DELETE',
         headers: getAuthHeaders(),
       }).catch(() => {
         // Ignore network errors — frontend logout proceeds regardless
