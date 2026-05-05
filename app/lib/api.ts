@@ -388,6 +388,39 @@ export function getAuthHeaders(): HeadersInit {
   return headers;
 }
 
+// Singleton promise that ensures a Django session is established before
+// any basket operations proceed. On the first API call the proxy creates
+// a fresh Django session and stores the key in the oscar-session-id cookie.
+// Without this guard, concurrent first-visit requests would each create
+// separate sessions, and only the last response's cookie would survive —
+// potentially orphaning baskets created in the "losing" sessions.
+let sessionInitPromise: Promise<void> | null = null;
+
+async function ensureSession(): Promise<void> {
+  if (sessionInitPromise) {
+    return sessionInitPromise;
+  }
+
+  sessionInitPromise = (async () => {
+    try {
+      // A lightweight GET to the basket endpoint is enough to trigger
+      // session creation through the proxy. We use a raw fetch (not
+      // getBasket) to avoid recursion.
+      await fetch('/api/oscar/basket/', {
+        method: 'GET',
+        headers: getAuthHeaders(),
+        credentials: 'include',
+        cache: 'no-store',
+      });
+    } catch {
+      // Best effort — if this fails, the individual API calls will
+      // still work; they just might race on the first visit.
+    }
+  })();
+
+  return sessionInitPromise;
+}
+
 /**
  * Fetch user's purchased books (mybooks) from the API
  * @returns Array of MyBook objects
@@ -432,16 +465,17 @@ export async function getMyBooks(): Promise<MyBook[]> {
  * @returns Basket object with lines
  */
 export async function getBasket(): Promise<Basket> {
+  await ensureSession();
   const response = await fetch(`${getApiBase()}/basket/`, {
     method: 'GET',
     headers: getAuthHeaders(),
     cache: 'no-store',
+    credentials: 'include',
   });
 
   if (!response.ok) {
-    if (response.status === 404 || response.status === 401 || response.status === 403) {
-      // No basket exists (404) or user not authenticated (401/403) -
-      // return empty basket structure
+    if (response.status === 404 || response.status === 401) {
+      // No basket exists (404) or session expired (401) - return empty basket structure
       return {
         id: '',
         lines: [],
@@ -474,6 +508,7 @@ export async function getBasket(): Promise<Basket> {
  * @returns Updated basket
  */
 export async function addToBasket(productId: number, quantity: number): Promise<Basket> {
+  await ensureSession();
   // Build the product URL that Oscar API expects
   // Oscar API uses HyperlinkedRelatedField which needs the ACTUAL Oscar API URL,
   // not our proxy URL. The serializer validates against Product.objects.
@@ -489,6 +524,7 @@ export async function addToBasket(productId: number, quantity: number): Promise<
       quantity: quantity,
     }),
     cache: 'no-store',
+    credentials: 'include',
   });
 
   // Read response body - could be JSON or HTML (error page)
@@ -533,6 +569,7 @@ export async function updateBasketLine(
   lineId: number,
   quantity: number
 ): Promise<Basket> {
+  await ensureSession();
   // Oscar API uses: /baskets/{basketId}/lines/{lineId}/
   const endpoint = `${getApiBase()}/baskets/${basketId}/lines/${lineId}/`;
   
@@ -543,6 +580,7 @@ export async function updateBasketLine(
       quantity: quantity,
     }),
     cache: 'no-store',
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -569,6 +607,7 @@ export async function updateBasketLine(
  * @returns Updated basket
  */
 export async function removeBasketLine(basketId: string, lineId: number): Promise<Basket> {
+  await ensureSession();
   // Oscar API uses: /baskets/{basketId}/lines/{lineId}/
   const endpoint = `${getApiBase()}/baskets/${basketId}/lines/${lineId}/`;
   
@@ -576,6 +615,7 @@ export async function removeBasketLine(basketId: string, lineId: number): Promis
     method: 'DELETE',
     headers: getAuthHeaders(),
     cache: 'no-store',
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -621,6 +661,7 @@ interface OscarBasketLine {
  * We must route through our proxy to avoid CORS issues
  */
 async function fetchBasketLines(linesUrl: string): Promise<OscarBasketLine[]> {
+  await ensureSession();
   // Convert Oscar API URL to our proxy URL
   // e.g., https://orthodoxbookshop.asia/api/baskets/9752442/lines/ -> /api/oscar/baskets/9752442/lines/
   const oscarApiBase = 'https://orthodoxbookshop.asia/api';
@@ -636,6 +677,7 @@ async function fetchBasketLines(linesUrl: string): Promise<OscarBasketLine[]> {
     method: 'GET',
     headers: getAuthHeaders(),
     cache: 'no-store',
+    credentials: 'include',
   });
 
   if (!response.ok) {

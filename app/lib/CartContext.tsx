@@ -60,6 +60,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
               method: 'GET',
               headers: getAuthHeaders(),
               cache: 'no-store',
+              credentials: 'include',
             });
             if (linesResponse.ok) {
               const linesData = await linesResponse.json();

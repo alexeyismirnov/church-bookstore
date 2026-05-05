@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShoppingBag, Loader2 } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Loader2, LogIn } from 'lucide-react';
 import CartItem from '../components/CartItem';
-import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems, getStoredToken } from '../lib/api';
+import { getBasket, updateBasketLine, removeBasketLine, basketToCartItems } from '../lib/api';
 import { useCart } from '../lib/CartContext';
+import { useAuth } from '../lib/AuthContext';
 import { useCurrency } from '../i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
 import { useApiLocale } from '../i18n/useApiLocale';
@@ -110,7 +111,7 @@ export default function CartPage() {
   };
 
   // Check if user is authenticated
-  const isAuthenticated = !!getStoredToken();
+  const { isAuthenticated } = useAuth();
 
   // Calculate subtotal
   const subtotal = cartItems.reduce((sum, item) => sum + item.linePrice, 0);
@@ -125,26 +126,6 @@ export default function CartPage() {
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
           <p className="text-gray-500">{tCart('loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Not authenticated state
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-2xl font-bold text-dark mb-4">{tCart('signIn.title')}</h1>
-            <p className="text-gray-500 mb-8">
-              {tCart('signIn.description')}
-            </p>
-            <Link href="/login?redirect=/cart" className="btn-primary">
-              {tCart('signIn.button')}
-            </Link>
-          </div>
         </div>
       </div>
     );
@@ -190,6 +171,20 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Anonymous user banner */}
+        {!isAuthenticated && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-3">
+            <LogIn className="w-5 h-5 text-amber-600 flex-shrink-0" />
+            <p className="text-amber-800 text-sm">
+              <Link href="/login?redirect=/cart" className="font-medium underline hover:text-amber-900">
+                {tCart('signIn.button')}
+              </Link>
+              {' — '}
+              {tCart('signIn.description')}
+            </p>
+          </div>
+        )}
+
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
           <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
@@ -254,7 +249,7 @@ export default function CartPage() {
               </div>
 
               <Link
-                href="/checkout"
+                href={isAuthenticated ? '/checkout' : '/login?redirect=/checkout'}
                 className="btn-primary w-full text-center block"
               >
                 {tCart('proceedToCheckout')}

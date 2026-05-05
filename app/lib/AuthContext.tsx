@@ -288,6 +288,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Expire the profile cookies so the server stops using them
       document.cookie = `${PROFILE_LOCALE_KEY}=; max-age=0; path=/; SameSite=Lax`;
       document.cookie = `${PROFILE_CURRENCY_KEY}=; max-age=0; path=/; SameSite=Lax`;
+      // Clear the oscar session cookie so a fresh anonymous session starts
+      document.cookie = 'oscar-session-id=; max-age=0; path=/; SameSite=Lax';
     } catch {
       // ignore
     }

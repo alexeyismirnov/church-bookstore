@@ -2,13 +2,13 @@
 
 import { useState, useEffect, Suspense, useRef } from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { ShippingForm } from '@/app/components/checkout/ShippingForm';
 import { CheckoutForm } from '@/app/components/checkout/CheckoutForm';
 import { OrderSummary } from '@/app/components/checkout/OrderSummary';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShippingAddress, ShippingMethod, Basket } from '@/app/types';
-import { getBasket, basketToCartItems, getShippingMethods, placeOrder } from '@/app/lib/api';
+import { getBasket, basketToCartItems, getShippingMethods, placeOrder, getStoredToken } from '@/app/lib/api';
 import { useCart } from '@/app/lib/CartContext';
 import { useCurrency } from '@/app/i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
@@ -47,6 +47,17 @@ interface CheckoutPaymentState {
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Require authentication for checkout
+  const [authChecked, setAuthChecked] = useState(false);
+  useEffect(() => {
+    if (!getStoredToken()) {
+      router.replace('/login?redirect=/checkout');
+    } else {
+      setAuthChecked(true);
+    }
+  }, [router]);
+
   const { currency, symbol } = useCurrency();
   const t = useTranslations();
   const tCheckout = useTranslations('checkout');
@@ -404,6 +415,15 @@ function CheckoutContent() {
       router.push('/cart');
     }
   }, [isLoading, cartItems.length, router]);
+
+  // Auth check - redirect to login if not authenticated
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   // Loading state - show spinner only during INITIAL load (not during currency refreshes)
   // This preserves the shipping form state when currency changes

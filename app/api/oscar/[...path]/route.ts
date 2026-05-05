@@ -5,45 +5,74 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const OSCAR_API_BASE = process.env.OSCAR_API_URL || 'https://orthodoxbookshop.asia/api';
 
+function setSessionCookie(response: NextResponse, sessionId: string) {
+  response.cookies.set('oscar-session-id', sessionId, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  });
+}
+
 async function proxyToOscar(
   request: NextRequest,
   pathSegments: string[],
   method: string
 ) {
   const cookieStore = await cookies();
-  const sessionId = cookieStore.get('oscar-session-id')?.value;
-  
+
+  // Read our stored Django session key from the proxy's own cookie.
+  const sessionCookie = cookieStore.get('oscar-session-id')?.value;
+
   // Get language from cookie (set by Django's set_language)
   const languageCookie = cookieStore.get('django_language')?.value;
-  
+
   // Build the target URL
   const path = pathSegments.join('/');
   const searchParams = request.nextUrl.searchParams.toString();
-  
+
   // Ensure trailing slash for Django compatibility
   const targetUrl = `${OSCAR_API_BASE}/${path}/${searchParams ? `?${searchParams}` : ''}`;
-  
+
   // Prepare headers
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   };
-  
-  if (sessionId) {
-    headers['Session-Id'] = sessionId;
+
+  // Forward the Django session as a Cookie header so that Django's standard
+  // SessionMiddleware can read it. We do NOT use the oscarapi Session-Id
+  // header because:
+  //  1. oscarapi's HeaderSessionMiddleware hashes the Session-Id value with
+  //     SECRET_KEY to derive a Django session key.
+  //  2. When no session with that key exists, get_session() calls
+  //     SessionStore.save(must_create=True) which generates its OWN key.
+  //  3. process_response() then asserts that the session key equals the
+  //     derived hash — this fails because Django generated a different key.
+  // Instead, we let the standard cookie-based SessionMiddleware handle
+  // sessions. The proxy acts as a browser: it sends/receives the sessionid
+  // cookie and stores it in its own oscar-session-id cookie for the client.
+  const cookieParts: string[] = [];
+  if (sessionCookie) {
+    cookieParts.push(`sessionid=${sessionCookie}`);
+  }
+  if (languageCookie) {
+    cookieParts.push(`django_language=${languageCookie}`);
+  }
+  if (cookieParts.length > 0) {
+    headers['Cookie'] = cookieParts.join('; ');
   }
 
   // Forward the language preference to Django API
-  // Django will use this to set LANGUAGE_CODE for localized responses
   const acceptLanguageHeader = request.headers.get('Accept-Language');
   const languageToUse = acceptLanguageHeader || languageCookie;
-  
+
   if (languageToUse) {
     headers['Accept-Language'] = languageToUse;
   }
 
   // Forward the currency preference to Django API
-  // Django will use this to convert prices to the requested currency
   const currencyHeader = request.headers.get('X-Currency');
   if (currencyHeader) {
     headers['X-Currency'] = currencyHeader;
@@ -73,29 +102,35 @@ async function proxyToOscar(
 
   // Make the request to Django
   const oscarResponse = await fetch(targetUrl, fetchOptions);
-  
+
+  // Extract sessionid from Django's Set-Cookie header so we can store it
+  // in our own cookie. We do this regardless of response status.
+  let newSessionId: string | null = null;
+  const setCookies = oscarResponse.headers.getSetCookie?.() ?? [];
+  for (const cookie of setCookies) {
+    const match = cookie.match(/\bsessionid=([^;]+)/);
+    if (match) {
+      newSessionId = match[1];
+      break;
+    }
+  }
+
   // Handle no-content responses (204, 205, 304) - these cannot have a body
   const noContentStatus = oscarResponse.status === 204
     || oscarResponse.status === 205
     || oscarResponse.status === 304;
-  
+
   if (noContentStatus) {
     const response = new NextResponse(null, { status: oscarResponse.status });
-    
-    // Still capture Session-Id cookie if present
-    const newSessionId = oscarResponse.headers.get('Session-Id');
+
+    // Store the Django session key in our proxy cookie
     if (newSessionId) {
-      response.cookies.set('oscar-session-id', newSessionId, {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-      });
+      setSessionCookie(response, newSessionId);
     }
-    
+
     return response;
   }
-  
+
   // Parse response for normal responses
   let data;
   const contentType = oscarResponse.headers.get('content-type');
@@ -110,16 +145,9 @@ async function proxyToOscar(
     ? new NextResponse(data, { status: oscarResponse.status })
     : NextResponse.json(data ?? null, { status: oscarResponse.status });
 
-  // Capture and forward Session-Id as httpOnly cookie
-  const newSessionId = oscarResponse.headers.get('Session-Id');
+  // Store the Django session key in our proxy cookie
   if (newSessionId) {
-    response.cookies.set('oscar-session-id', newSessionId, {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      // secure: true, // Enable in production with HTTPS
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
+    setSessionCookie(response, newSessionId);
   }
 
   return response;

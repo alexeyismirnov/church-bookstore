@@ -186,14 +186,6 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const handleAddToCart = async (variantId: number) => {
     if (!book) return; // Safety check
 
-    // Check if user is authenticated
-    const token = getStoredToken();
-    if (!token) {
-      // Redirect to login with return URL
-      router.push(`/login?redirect=/product/${productId}`);
-      return;
-    }
-
     try {
       setAddingToCartVariantId(variantId);
       setAddToCartError(null);
