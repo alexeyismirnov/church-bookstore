@@ -29,6 +29,7 @@
     "edit": "编辑"
   },
   "nav": {
+    "title": "正教书店",
     "selectLanguage": "选择语言",
     "selectCurrency": "选择货币",
     "catalog": "目录",
@@ -52,7 +53,12 @@
     "hero": {
       "title": "欢迎来到东正教书店",
       "subtitle": "您的东正教基督教书籍、祈祷书和属灵资源宝库",
-      "cta": "浏览目录"
+      "cta": "浏览目录",
+      "bookstore": "书店",
+      "statBooks": "可用书籍",
+      "statOrders": "已发货订单",
+      "statReaders": "满意读者",
+      "since": "自{{year}}年以来，我们的书店已向全球发货。"
     },
     "featured": {
       "title": "精选产品",
@@ -60,7 +66,19 @@
       "bestsellers": "畅销书"
     },
     "categories": {
-      "title": "浏览分类"
+      "title": "浏览分类",
+      "booksDesc": "神学著作、圣人传记、礼仪经文、教会历史等——我们完整的东正教基督教印刷和电子文献收藏。",
+      "audiovideoDesc": "东正教礼仪音乐和合唱作品的音频CD，以及电影《圣徒的信仰》——丰富灵性生活的多媒体资源。",
+      "churchSuppliesDesc": "手绘圣像和乳香，适用于家庭或教堂——支持东正教崇拜和祈祷生活的神圣物品。",
+      "defaultDesc": "浏览我们的{name}系列。"
+    },
+    "features": {
+      "curatedTitle": "精心甄选",
+      "curatedDesc": "精选来自全球东正教出版社的书籍，确保教义纯正和属灵价值。",
+      "qualityTitle": "品质保证",
+      "qualityDesc": "所有书籍均采用优质纸张印刷，装订牢固，可传承数代。",
+      "churchTitle": "教会支持",
+      "churchDesc": "收入用于支持本堂区的事工和本地及海外的慈善工作。"
     }
   },
   "catalog": {

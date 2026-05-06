@@ -29,6 +29,7 @@
     "edit": "Edit"
   },
   "nav": {
+    "title": "Orthodox Bookstore",
     "selectLanguage": "Select Language",
     "selectCurrency": "Select Currency",
     "catalog": "Catalog",
@@ -52,7 +53,12 @@
     "hero": {
       "title": "Welcome to Orthodox Bookstore",
       "subtitle": "Your source for Orthodox Christian books, prayer books, and spiritual resources",
-      "cta": "Browse Catalog"
+      "cta": "Browse Catalog",
+      "bookstore": "Bookstore",
+      "statBooks": "Books Available",
+      "statOrders": "Orders Shipped",
+      "statReaders": "Happy Readers",
+      "since": "Our bookshop has been shipping orders worldwide since {{year}}."
     },
     "featured": {
       "title": "Featured Products",
@@ -60,7 +66,19 @@
       "bestsellers": "Bestsellers"
     },
     "categories": {
-      "title": "Browse by Category"
+      "title": "Browse by Category",
+      "booksDesc": "Theology, lives of saints, liturgical texts, church history, and more — our full collection of printed and digital Orthodox Christian literature.",
+      "audiovideoDesc": "Audio CDs of Orthodox liturgical music and choral works, plus the film \"Faith of Saints\" — multimedia resources for spiritual enrichment.",
+      "churchSuppliesDesc": "Hand-painted icons and frankincense for your home or parish — sacred items to support Orthodox worship and prayer life.",
+      "defaultDesc": "Browse our collection of {name}."
+    },
+    "features": {
+      "curatedTitle": "Curated Selection",
+      "curatedDesc": "Carefully selected books from Orthodox publishers worldwide, ensuring doctrinal soundness and spiritual value.",
+      "qualityTitle": "Quality Guaranteed",
+      "qualityDesc": "All our books are printed on high-quality paper with durable bindings, built to last for generations.",
+      "churchTitle": "Church Supported",
+      "churchDesc": "Proceeds support our parish ministries and charitable works in the local community and abroad."
     }
   },
   "catalog": {

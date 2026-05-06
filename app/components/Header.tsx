@@ -26,7 +26,6 @@ export default function Header() {
 
   const navLinks = [
     { href: '/catalog', label: t('catalog') },
-    { href: '/about', label: t('about') },
     { href: '/contact', label: t('contact') },
   ];
 
@@ -62,7 +61,7 @@ export default function Header() {
               />
             </div>
             <span className="hidden md:block text-lg font-bold text-dark">
-              Orthodox Bookstore
+              {t('title')}
             </span>
           </Link>
 

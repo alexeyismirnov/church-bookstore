@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Loader2, BookOpen, Headphones, Cross, type LucideIcon } from 'lucide-react';
+import { Loader2, BookOpen, Headphones, Cross, type LucideIcon } from 'lucide-react';
 import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
 import { getNewArrivals, getCategories } from './lib/api';
@@ -15,20 +15,18 @@ import { Book, Category } from './types';
 // "Language" shows all books (same as "Books"), so it's redundant
 const EXCLUDED_CATEGORY_SLUGS = ['language'];
 
-// Descriptions and icons for top-level categories, keyed by slug
-const CATEGORY_INFO: Record<string, { description: string; Icon: LucideIcon }> = {
-  'books': {
-    description: 'Theology, lives of saints, liturgical texts, church history, and more — our full collection of printed and digital Orthodox Christian literature.',
-    Icon: BookOpen,
-  },
-  'audiovideo': {
-    description: 'Audio CDs of Orthodox liturgical music and choral works, plus the film "Faith of Saints" — multimedia resources for spiritual enrichment.',
-    Icon: Headphones,
-  },
-  'church-supplies': {
-    description: 'Hand-painted icons and frankincense for your home or parish — sacred items to support Orthodox worship and prayer life.',
-    Icon: Cross,
-  },
+// Icons for top-level categories, keyed by slug
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  'books': BookOpen,
+  'audiovideo': Headphones,
+  'church-supplies': Cross,
+};
+
+// Translation keys for category descriptions, keyed by slug
+const CATEGORY_DESC_KEYS: Record<string, string> = {
+  'books': 'categories.booksDesc',
+  'audiovideo': 'categories.audiovideoDesc',
+  'church-supplies': 'categories.churchSuppliesDesc',
 };
 
 export default function HomePage() {
@@ -36,6 +34,7 @@ export default function HomePage() {
   const { isLoading: isCurrencyLoading } = useCurrency();
   const t = useTranslations('homepage');
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
+  const [heroBook, setHeroBook] = useState<Book | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,10 +46,14 @@ export default function HomePage() {
       setLoading(true);
       try {
         const [newArrivalsData, categoriesData] = await Promise.all([
-          getNewArrivals(4),
+          getNewArrivals(5),
           getCategories(),
         ]);
-        setNewArrivals(newArrivalsData);
+        // Randomly select a hero book from the fetched arrivals
+        const heroIndex = Math.floor(Math.random() * newArrivalsData.length);
+        const hero = newArrivalsData[heroIndex];
+        setHeroBook(hero);
+        setNewArrivals(newArrivalsData.filter((_, i) => i !== heroIndex));
         setCategories(
           categoriesData.filter(c => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug))
         );
@@ -66,20 +69,13 @@ export default function HomePage() {
 
   return (
     <div>
-      <Hero />
+      <Hero book={heroBook} />
 
       {/* New Arrivals Section */}
       <section className="py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="text-center mb-8">
             <h2 className="section-title mb-0">{t('featured.newArrivals')}</h2>
-            <Link
-              href="/catalog?sort=newest"
-              className="flex items-center gap-2 text-primary hover:text-primary-dark font-medium"
-            >
-              View All
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
           {loading ? (
             <div className="flex items-center justify-center py-16">
@@ -94,7 +90,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-16 md:py-20 bg-amber-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="section-title text-center mb-12">{t('categories.title')}</h2>
           {loading ? (
@@ -104,15 +100,13 @@ export default function HomePage() {
           ) : (
             <div className="space-y-4">
               {categories.map((category) => {
-                const info = CATEGORY_INFO[category.slug];
-                const CategoryIcon = info?.Icon || BookOpen;
+                const CategoryIcon = CATEGORY_ICONS[category.slug] || BookOpen;
                 return (
-                  <Link
+                  <div
                     key={category.id}
-                    href={`/catalog?category=${category.id}`}
-                    className="group block"
+                    className="group"
                   >
-                    <div className="flex items-start gap-4 p-6 rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all">
+                    <div className="flex items-start gap-4 p-6 rounded-xl bg-white border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all">
                       {/* Icon */}
                       <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                         <CategoryIcon className="w-6 h-6" />
@@ -120,33 +114,28 @@ export default function HomePage() {
 
                       {/* Content */}
                       <div className="flex-grow min-w-0">
-                        <div className="flex items-center justify-between gap-4">
-                          <h3 className="text-lg font-semibold text-dark group-hover:text-primary transition-colors">
-                            {category.name}
-                          </h3>
-                          <span className="text-sm text-gray-500 flex-shrink-0">{category.count} books</span>
-                        </div>
+                        <h3 className="text-lg font-semibold text-dark group-hover:text-primary transition-colors">
+                          {category.name}
+                        </h3>
                         <p className="mt-1 text-sm text-gray-600 leading-relaxed">
-                          {info?.description || `Browse our collection of ${category.name.toLowerCase()}.`}
+                          {t(CATEGORY_DESC_KEYS[category.slug] || 'categories.defaultDesc', { name: category.name })}
                         </p>
                         {category.children && category.children.length > 0 && (
                           <div className="mt-3 flex flex-wrap gap-2">
                             {category.children.map((child) => (
-                              <span
+                              <Link
                                 key={child.id}
-                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 group-hover:bg-primary/10 group-hover:text-primary transition-colors"
+                                href={`/catalog?category=${child.id}`}
+                                className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-white/90 text-gray-700 shadow-sm border border-gray-100 hover:bg-primary/10 hover:text-primary hover:border-primary/20 hover:shadow-md transition-all"
                               >
                                 {child.name}
-                              </span>
+                              </Link>
                             ))}
                           </div>
                         )}
                       </div>
-
-                      {/* Arrow */}
-                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-primary flex-shrink-0 mt-1 transition-colors" />
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
@@ -164,9 +153,9 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-dark mb-2">Curated Selection</h3>
+              <h3 className="text-xl font-semibold text-dark mb-2">{t('features.curatedTitle')}</h3>
               <p className="text-gray-600">
-                Carefully selected books from Orthodox publishers worldwide, ensuring doctrinal soundness and spiritual value.
+                {t('features.curatedDesc')}
               </p>
             </div>
             <div className="text-center">
@@ -175,9 +164,9 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-dark mb-2">Quality Guaranteed</h3>
+              <h3 className="text-xl font-semibold text-dark mb-2">{t('features.qualityTitle')}</h3>
               <p className="text-gray-600">
-                All our books are printed on high-quality paper with durable bindings, built to last for generations.
+                {t('features.qualityDesc')}
               </p>
             </div>
             <div className="text-center">
@@ -186,9 +175,9 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-dark mb-2">Church Supported</h3>
+              <h3 className="text-xl font-semibold text-dark mb-2">{t('features.churchTitle')}</h3>
               <p className="text-gray-600">
-                Proceeds support our parish ministries and charitable works in the local community and abroad.
+                {t('features.churchDesc')}
               </p>
             </div>
           </div>
