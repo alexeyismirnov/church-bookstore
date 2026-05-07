@@ -144,7 +144,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-20">
+      <section className="pt-8 md:pt-10 pb-16 md:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
