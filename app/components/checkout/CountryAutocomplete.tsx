@@ -141,7 +141,7 @@ export function CountryAutocomplete({ value, onChange, error }: CountryAutocompl
         onClick={handleInputClick}
         placeholder="Type to search countries..."
         autoComplete="off"
-        className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
+        className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors ${
           error ? 'border-red-500' : 'border-gray-300'
         }`}
       />
@@ -156,7 +156,7 @@ export function CountryAutocomplete({ value, onChange, error }: CountryAutocompl
                 onClick={() => handleSelect(country)}
                 className={`px-4 py-2.5 cursor-pointer transition-colors ${
                   index === highlightedIndex
-                    ? 'bg-primary text-white'
+                    ? 'bg-burgundy text-white'
                     : 'hover:bg-gray-100'
                 }`}
               >

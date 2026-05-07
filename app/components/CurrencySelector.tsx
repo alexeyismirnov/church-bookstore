@@ -87,7 +87,7 @@ export default function CurrencySelector() {
               key={curr}
               onClick={() => handleCurrencySelect(curr)}
               className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-gray-100 transition-colors ${
-                currency === curr ? 'bg-gray-50 text-primary font-medium' : 'text-gray-700'
+                currency === curr ? 'bg-gray-50 text-burgundy font-medium' : 'text-gray-700'
               }`}
             >
               <span className="font-medium">{curr}</span>

@@ -16,22 +16,22 @@ export default function Hero({ book }: HeroProps) {
   const t = useTranslations('homepage.hero');
 
   return (
-    <section className="relative bg-gradient-to-br from-background to-background-alt overflow-hidden">
+    <section className="relative bg-gradient-to-br from-parchment to-parchment-dark overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="grid gap-8 items-center md:grid-cols-2">
           {/* Content */}
           <div className="space-y-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-dark leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display text-ink leading-tight">
               {t('title')}
-              <span className="block text-primary">{t('bookstore')}</span>
+              <span className="block text-burgundy">{t('bookstore')}</span>
             </h1>
-            <p className="text-lg text-gray-600 max-w-lg">
+            <p className="text-lg text-ink-light max-w-lg">
               {t('subtitle')}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/catalog"
-                className="btn-primary inline-flex items-center gap-2"
+                className="btn-burgundy inline-flex items-center gap-2"
               >
                 {t('cta')}
                 <ArrowRight className="w-5 h-5" />
@@ -39,26 +39,26 @@ export default function Hero({ book }: HeroProps) {
             </div>
             
             {/* Stats */}
-            <div className="flex gap-8 pt-6 border-t border-gray-200">
+            <div className="flex gap-8 pt-6 border-t border-parchment-dark/30">
               <div>
-                <p className="text-3xl font-bold text-primary">100+</p>
-                <p className="text-sm text-gray-500">{t('statBooks')}</p>
+                <p className="text-3xl font-bold text-gold">100+</p>
+                <p className="text-sm text-ink-muted">{t('statBooks')}</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-primary">500+</p>
-                <p className="text-sm text-gray-500">{t('statOrders')}</p>
+                <p className="text-3xl font-bold text-gold">500+</p>
+                <p className="text-sm text-ink-muted">{t('statOrders')}</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-primary">1500+</p>
-                <p className="text-sm text-gray-500">{t('statReaders')}</p>
+                <p className="text-3xl font-bold text-gold">1500+</p>
+                <p className="text-sm text-ink-muted">{t('statReaders')}</p>
               </div>
             </div>
-            <p className="text-base text-gray-500 pt-4">
+            <p className="text-base text-ink-muted pt-4">
               {t('since').split('{{year}}').map((part, i, arr) => (
                 <span key={i}>
                   {part}
                   {i < arr.length - 1 && (
-                    <span className="font-semibold text-primary">2014</span>
+                    <span className="font-semibold text-gold">2014</span>
                   )}
                 </span>
               ))}
@@ -79,8 +79,8 @@ export default function Hero({ book }: HeroProps) {
                   </Link>
                 </div>
                 {/* Decorative Elements */}
-                <div className="absolute top-10 right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-10 left-10 w-40 h-40 bg-accent-orange/10 rounded-full blur-3xl" />
+                <div className="absolute top-10 right-10 w-32 h-32 bg-burgundy/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-10 left-10 w-40 h-40 bg-gold/10 rounded-full blur-3xl" />
               </>
             )}
           </div>

@@ -56,7 +56,7 @@ export default function BookshelfPage() {
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
             <span className="ml-3 text-gray-500">{t('common.loading')}</span>
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function BookshelfPage() {
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <nav className="text-sm text-gray-500 mb-6">
-            <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
+            <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
             <span className="mx-2">/</span>
             <span className="text-dark">{tBookshelf('title')}</span>
           </nav>
@@ -78,7 +78,7 @@ export default function BookshelfPage() {
             <p className="text-gray-500 text-sm mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="text-primary hover:underline"
+              className="text-burgundy hover:underline"
             >
               {t('common.retry')}
             </button>
@@ -93,7 +93,7 @@ export default function BookshelfPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
+          <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
           <span className="text-dark">{tBookshelf('title')}</span>
         </nav>
@@ -143,7 +143,7 @@ export default function BookshelfPage() {
                     href={`/product/${book.book_id}`}
                     className="block"
                   >
-                    <h3 className="font-semibold text-dark mb-1 line-clamp-2 transition-colors hover:text-primary">
+                    <h3 className="font-semibold text-dark mb-1 line-clamp-2 transition-colors hover:text-burgundy">
                       {book.title}
                     </h3>
                   </Link>
@@ -197,7 +197,7 @@ export default function BookshelfPage() {
             </p>
             <Link
               href="/catalog"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-burgundy text-white rounded-lg hover:bg-burgundy/90 transition-colors"
             >
               <Download className="w-4 h-4" />
               {tBookshelf('browseCatalog')}

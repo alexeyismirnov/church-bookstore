@@ -5,41 +5,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&display=swap');
 
 :root {
-  --foreground-rgb: 36, 36, 36;
-  --background-start-rgb: 243, 239, 232;
-  --background-end-rgb: 233, 227, 216;
+  --foreground-rgb: 44, 24, 16;
+  --background-start-rgb: 245, 240, 232;
+  --background-end-rgb: 232, 223, 208;
+  --color-burgundy: #6B1D2A;
+  --color-gold: #C9A84C;
+  --color-ink: #2C1810;
+  --color-parchment: #F5F0E8;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
   font-family: 'Inter', system-ui, sans-serif;
 }
 
 @layer components {
-  .btn-primary {
-    @apply bg-primary text-white px-6 py-3 rounded-lg font-medium 
-           hover:bg-primary-dark transition-colors duration-200
-           active:scale-95 transform;
+  .btn-primary,
+  .btn-burgundy {
+    @apply bg-gold text-ink px-6 py-3 rounded-lg font-medium hover:bg-gold-light transition-colors duration-200 active:scale-95;
   }
   
   .btn-secondary {
-    @apply border-2 border-primary text-primary px-6 py-3 rounded-lg font-medium
-           hover:bg-primary hover:text-white transition-colors duration-200
-           active:scale-95 transform;
+    @apply border-2 border-burgundy text-burgundy px-6 py-3 rounded-lg font-medium hover:bg-burgundy hover:text-parchment-light transition-colors duration-200 active:scale-95;
   }
   
   .card {
-    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply bg-parchment-light rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
   }
   
   .section-title {
-    @apply text-3xl md:text-4xl font-bold text-dark mb-8;
+    @apply text-3xl md:text-4xl font-bold text-ink mb-8 font-display;
   }
 }
 
@@ -57,7 +53,7 @@ body {
 @media (hover: hover) {
   /* Product card title hover effect */
   .card-link:hover .card-title {
-    color: var(--color-primary, #8b2f2f);
+    color: var(--color-burgundy);
   }
 }
 
@@ -65,7 +61,7 @@ body {
 @media (hover: none) {
   /* Disable hover-based visibility changes */
   .card-link:active .card-title {
-    color: var(--color-primary, #8b2f2f);
+    color: var(--color-burgundy);
   }
 }
 
@@ -93,7 +89,7 @@ body {
   }
   
   .group-hover-text-primary:hover {
-    color: var(--color-primary, #8b2f2f);
+    color: var(--color-burgundy);
   }
 }
 
@@ -139,6 +135,3 @@ body {
    CSS CUSTOM PROPERTIES FOR CONSISTENCY
    ============================================ */
 
-:root {
-  --color-primary: #8b2f2f;
-}

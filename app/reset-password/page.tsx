@@ -107,7 +107,7 @@ function ResetPasswordForm() {
               </div>
               <Link
                 href="/forgot-password"
-                className="btn-primary w-full inline-block text-center"
+                className="btn-burgundy w-full inline-block text-center"
               >
                 {t('requestNewLink')}
               </Link>
@@ -139,7 +139,7 @@ function ResetPasswordForm() {
               </div>
               <Link
                 href="/login"
-                className="btn-primary w-full inline-block text-center"
+                className="btn-burgundy w-full inline-block text-center"
               >
                 {t('signIn')}
               </Link>
@@ -181,7 +181,7 @@ function ResetPasswordForm() {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.newPassword}
                   onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder={t('newPasswordPlaceholder')}
                   required
                   disabled={isSubmitting}
@@ -243,7 +243,7 @@ function ResetPasswordForm() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder={t('confirmPasswordPlaceholder')}
                   required
                   disabled={isSubmitting}
@@ -270,7 +270,7 @@ function ResetPasswordForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-burgundy w-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !isFormValid}
             >
               {isSubmitting ? t('resetting') : t('submit')}

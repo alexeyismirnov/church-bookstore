@@ -194,7 +194,7 @@ export function ShippingForm({
             onChange={(e) => handleChange('first_name', e.target.value)}
             required
             placeholder={tCheckout('placeholders.firstName')}
-            className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
+            className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors ${
               errors.first_name ? 'border-red-500' : 'border-gray-300'
             }`}
           />
@@ -215,7 +215,7 @@ export function ShippingForm({
             onChange={(e) => handleChange('last_name', e.target.value)}
             required
             placeholder={tCheckout('placeholders.lastName')}
-            className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
+            className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors ${
               errors.last_name ? 'border-red-500' : 'border-gray-300'
             }`}
           />
@@ -237,7 +237,7 @@ export function ShippingForm({
           onChange={(e) => handleChange('line1', e.target.value)}
           required
           placeholder={tCheckout('placeholders.street')}
-          className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
+          className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors ${
             errors.line1 ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -257,7 +257,7 @@ export function ShippingForm({
           value={address.line2}
           onChange={(e) => handleChange('line2', e.target.value)}
           placeholder={tCheckout('placeholders.apartment')}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors"
         />
       </div>
 
@@ -272,7 +272,7 @@ export function ShippingForm({
           value={address.line3}
           onChange={(e) => handleChange('line3', e.target.value)}
           placeholder={tCheckout('placeholders.building')}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors"
         />
       </div>
 
@@ -289,7 +289,7 @@ export function ShippingForm({
             value={address.line4}
             onChange={(e) => handleChange('line4', e.target.value)}
             placeholder={tCheckout('placeholders.city')}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors"
           />
         </div>
 
@@ -304,7 +304,7 @@ export function ShippingForm({
             value={address.state}
             onChange={(e) => handleChange('state', e.target.value)}
             placeholder={tCheckout('placeholders.state')}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors"
           />
         </div>
 
@@ -319,7 +319,7 @@ export function ShippingForm({
             value={address.postcode}
             onChange={(e) => handleChange('postcode', e.target.value)}
             placeholder={tCheckout('placeholders.zipCode')}
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors"
           />
         </div>
       </div>
@@ -342,7 +342,7 @@ export function ShippingForm({
           value={address.phone_number}
           onChange={(e) => handleChange('phone_number', e.target.value)}
           placeholder={tCheckout('placeholders.phone')}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors"
         />
       </div>
 
@@ -357,14 +357,14 @@ export function ShippingForm({
           onChange={(e) => handleChange('notes', e.target.value)}
           placeholder={tCheckout('placeholders.deliveryInstructions')}
           rows={3}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors resize-none"
         />
       </div>
 
       {/* Shipping Method Selection - Hidden, auto-select first method */}
       {isLoadingShippingMethods && (
         <div className="flex items-center justify-center py-4">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-burgundy" />
           <span className="ml-2 text-gray-600">{tCheckout('shippingSection.loadingOptions')}</span>
         </div>
       )}
@@ -386,7 +386,7 @@ export function ShippingForm({
         className={`w-full py-3 text-base font-medium rounded-lg transition-colors ${
           shippingMethods.length === 0 || isLoadingShippingMethods
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-primary text-white hover:bg-primary-dark'
+            : 'bg-burgundy text-white hover:bg-burgundy-dark'
         }`}
       >
         {isLoadingShippingMethods ? t('common.loading') : tCheckout('shippingSection.continueToPayment')}

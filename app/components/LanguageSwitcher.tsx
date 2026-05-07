@@ -89,7 +89,7 @@ export default function LanguageSwitcher() {
               key={loc}
               onClick={() => handleLanguageSelect(loc)}
               className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-gray-100 transition-colors ${
-                locale === loc ? 'bg-gray-50 text-primary font-medium' : 'text-gray-700'
+                locale === loc ? 'bg-gray-50 text-burgundy font-medium' : 'text-gray-700'
               }`}
             >
               <span className="text-lg">{languageFlags[loc]}</span>

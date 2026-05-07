@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
               </div>
               <Link
                 href="/login"
-                className="btn-primary w-full inline-block text-center"
+                className="btn-burgundy w-full inline-block text-center"
               >
                 {t('backToLogin')}
               </Link>
@@ -136,7 +136,7 @@ export default function ForgotPasswordPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder={t('emailPlaceholder')}
                   required
                   disabled={isSubmitting}
@@ -164,7 +164,7 @@ export default function ForgotPasswordPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-burgundy w-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !hcaptchaToken}
             >
               {isSubmitting ? t('sending') : t('submit')}
@@ -174,7 +174,7 @@ export default function ForgotPasswordPage() {
 
         {/* Back to login */}
         <p className="text-center text-gray-600 mt-6">
-          <Link href="/login" className="text-primary hover:underline font-medium">
+          <Link href="/login" className="text-burgundy hover:underline font-medium">
             {t('backToLogin')}
           </Link>
         </p>

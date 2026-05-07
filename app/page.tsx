@@ -72,30 +72,30 @@ export default function HomePage() {
       <Hero book={heroBook} />
 
       {/* New Arrivals Section */}
-      <section className="py-16 md:py-20">
+      <section className="pt-8 pb-16 md:pt-12 md:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-12">
             <h2 className="section-title mb-0">{t('featured.newArrivals')}</h2>
           </div>
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
             </div>
           ) : newArrivals.length > 0 ? (
             <ProductGrid books={newArrivals} />
           ) : (
-            <p className="text-center text-gray-500 py-8">No new arrivals at the moment. Check back soon!</p>
+            <p className="text-center text-ink-muted py-8">No new arrivals at the moment. Check back soon!</p>
           )}
         </div>
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 md:py-20 bg-amber-50/30">
+      <section className="pt-8 pb-16 md:pt-12 md:pb-20 bg-parchment-dark/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="section-title text-center mb-12">{t('categories.title')}</h2>
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
             </div>
           ) : (
             <div className="space-y-4">
@@ -106,18 +106,18 @@ export default function HomePage() {
                     key={category.id}
                     className="group"
                   >
-                    <div className="flex items-start gap-4 p-6 rounded-xl bg-white border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all">
+                    <div className="flex items-start gap-4 p-6 rounded-xl bg-parchment-light border border-parchment-dark/30 hover:border-gold/50 hover:shadow-md transition-all">
                       {/* Icon */}
-                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-burgundy/10 flex items-center justify-center text-burgundy group-hover:bg-burgundy group-hover:text-parchment-light transition-colors">
                         <CategoryIcon className="w-6 h-6" />
                       </div>
 
                       {/* Content */}
                       <div className="flex-grow min-w-0">
-                        <h3 className="text-lg font-semibold text-dark group-hover:text-primary transition-colors">
+                        <h3 className="text-lg font-semibold text-ink group-hover:text-burgundy transition-colors">
                           {category.name}
                         </h3>
-                        <p className="mt-1 text-sm text-gray-600 leading-relaxed">
+                        <p className="mt-1 text-sm text-ink-light leading-relaxed">
                           {t(CATEGORY_DESC_KEYS[category.slug] || 'categories.defaultDesc', { name: category.name })}
                         </p>
                         {category.children && category.children.length > 0 && (
@@ -126,7 +126,7 @@ export default function HomePage() {
                               <Link
                                 key={child.id}
                                 href={`/catalog?category=${child.id}`}
-                                className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-white/90 text-gray-700 shadow-sm border border-gray-100 hover:bg-primary/10 hover:text-primary hover:border-primary/20 hover:shadow-md transition-all"
+                                className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment text-ink-light border border-parchment-dark/20 hover:bg-burgundy/10 hover:text-burgundy hover:border-burgundy/30 hover:shadow-md transition-all"
                               >
                                 {child.name}
                               </Link>
@@ -148,35 +148,35 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-16 h-16 bg-burgundy/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-burgundy" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-dark mb-2">{t('features.curatedTitle')}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-ink mb-2">{t('features.curatedTitle')}</h3>
+              <p className="text-ink-light">
                 {t('features.curatedDesc')}
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-16 h-16 bg-burgundy/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-burgundy" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-dark mb-2">{t('features.qualityTitle')}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-ink mb-2">{t('features.qualityTitle')}</h3>
+              <p className="text-ink-light">
                 {t('features.qualityDesc')}
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-16 h-16 bg-burgundy/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-burgundy" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-dark mb-2">{t('features.churchTitle')}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-ink mb-2">{t('features.churchTitle')}</h3>
+              <p className="text-ink-light">
                 {t('features.churchDesc')}
               </p>
             </div>

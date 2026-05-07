@@ -156,7 +156,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                     placeholder="John"
                     required
                     disabled={loading}
@@ -171,7 +171,7 @@ export default function RegisterPage() {
                   type="text"
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder="Doe"
                   required
                   disabled={loading}
@@ -190,7 +190,7 @@ export default function RegisterPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder="you@example.com"
                   required
                   disabled={loading}
@@ -209,7 +209,7 @@ export default function RegisterPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder="••••••••"
                   required
                   disabled={loading}
@@ -276,7 +276,7 @@ export default function RegisterPage() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder="••••••••"
                   required
                   disabled={loading}
@@ -316,7 +316,7 @@ export default function RegisterPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-burgundy w-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading || !isFormValid}
             >
               {loading ? t('registering') : t('submit')}
@@ -327,7 +327,7 @@ export default function RegisterPage() {
         {/* Login Link */}
         <p className="text-center text-gray-600 mt-6">
           {t('hasAccount')}{' '}
-          <Link href="/login" className="text-primary hover:underline font-medium">
+          <Link href="/login" className="text-burgundy hover:underline font-medium">
             {t('login')}
           </Link>
         </p>

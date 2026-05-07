@@ -420,7 +420,7 @@ function CheckoutContent() {
   if (!authChecked) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
       </div>
     );
   }
@@ -430,7 +430,7 @@ function CheckoutContent() {
   if ((isLoading && isInitialLoad) || !isBasketLoaded || !isStepDetermined) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy" />
       </div>
     );
   }
@@ -445,9 +445,9 @@ function CheckoutContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
+          <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
-          <Link href="/cart" className="hover:text-primary">{t('nav.cart')}</Link>
+          <Link href="/cart" className="hover:text-burgundy">{t('nav.cart')}</Link>
           <span className="mx-2">/</span>
           <span className="text-dark">{checkoutStep === 'payment' ? t('checkout.paymentTitle') : t('checkout.shipping')}</span>
         </nav>
@@ -526,7 +526,7 @@ function CheckoutContent() {
             {checkoutStep === 'shipping' && (
               <Link
                 href="/cart"
-                className="inline-flex items-center gap-2 text-primary hover:text-primary-dark mt-6 font-medium"
+                className="inline-flex items-center gap-2 text-burgundy hover:text-burgundy-dark mt-6 font-medium"
               >
                 <ArrowLeft className="w-4 h-4" />
                 {tCheckout('backToCart')}
@@ -554,7 +554,7 @@ export default function CheckoutPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy" />
       </div>
     }>
       <CheckoutContent />

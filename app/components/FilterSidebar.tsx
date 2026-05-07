@@ -151,7 +151,7 @@ export default function FilterSidebar({
 
     return (
       <div key={category.id} style={{ marginLeft: `${depth * 12}px` }}>
-        <div className={`flex items-center gap-2 cursor-pointer py-1 px-2 rounded-lg transition-colors ${isSelected ? 'bg-primary/10' : 'hover:bg-gray-100'}`}>
+        <div className={`flex items-center gap-2 cursor-pointer py-1 px-2 rounded-lg transition-colors ${isSelected ? 'bg-burgundy/10' : 'hover:bg-gray-100'}`}>
           {hasChildren ? (
             <button
               type="button"
@@ -174,7 +174,7 @@ export default function FilterSidebar({
           <button
             type="button"
             onClick={() => handleCategoryClick(category, !!hasChildren)}
-            className={`text-sm flex-grow text-left whitespace-nowrap ${isSelected ? 'text-primary' : isPartiallySelected ? 'text-primary font-medium' : 'text-gray-600 hover:text-primary'}`}
+            className={`text-sm flex-grow text-left whitespace-nowrap ${isSelected ? 'text-burgundy' : isPartiallySelected ? 'text-burgundy font-medium' : 'text-gray-600 hover:text-burgundy'}`}
           >
             {category.name}
           </button>
@@ -213,7 +213,7 @@ export default function FilterSidebar({
                 type="checkbox"
                 checked={inStock}
                 onChange={(e) => onStockChange(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                className="w-4 h-4 rounded border-gray-300 text-burgundy focus:ring-burgundy"
               />
               <span className="text-sm text-gray-600">{tCatalog('filter.inStockOnly')}</span>
             </label>

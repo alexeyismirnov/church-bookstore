@@ -82,7 +82,7 @@ export default function CartItem({
         <div className="flex justify-between items-start">
           <div>
             <Link href={`/product/${productLinkId}`} className="hover:underline cursor-pointer">
-              <h3 className="font-semibold text-dark text-lg hover:text-primary transition-colors">{item.title}</h3>
+              <h3 className="font-semibold text-dark text-lg hover:text-burgundy transition-colors">{item.title}</h3>
             </Link>
             {item.variantTitle && <p className="text-sm text-gray-400 italic">({item.variantTitle})</p>}
             {item.author && <p className="text-sm text-gray-500">{item.author}</p>}

@@ -114,7 +114,7 @@ export function CheckoutForm({
               <button
                 type="button"
                 onClick={onBack}
-                className="text-sm text-primary hover:text-primary-dark hover:underline"
+                className="text-sm text-burgundy hover:text-burgundy-dark hover:underline"
               >
                 {t('common.edit')}
               </button>
@@ -143,7 +143,7 @@ export function CheckoutForm({
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full btn-primary py-4 px-6 text-lg
+        className="w-full btn-burgundy py-4 px-6 text-lg
                    disabled:opacity-50 disabled:cursor-not-allowed
                    flex items-center justify-center"
       >

@@ -54,8 +54,8 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {contactInfo.map((info) => (
               <div key={info.title} className="bg-white rounded-xl p-6 shadow-sm text-center">
-                <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <info.icon className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 bg-burgundy/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <info.icon className="w-7 h-7 text-burgundy" />
                 </div>
                 <h3 className="text-lg font-semibold text-dark mb-2">{info.title}</h3>
                 {info.details.map((detail, index) => (
@@ -88,7 +88,7 @@ export default function ContactPage() {
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                       placeholder="John Doe"
                       required
                     />
@@ -101,7 +101,7 @@ export default function ContactPage() {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                       placeholder="you@example.com"
                       required
                     />
@@ -115,7 +115,7 @@ export default function ContactPage() {
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                     placeholder="How can we help?"
                     required
                   />
@@ -127,12 +127,12 @@ export default function ContactPage() {
                   <textarea
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary h-32 resize-none"
+                    className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy h-32 resize-none"
                     placeholder="Your message..."
                     required
                   />
                 </div>
-                <button type="submit" className="btn-primary inline-flex items-center gap-2">
+                <button type="submit" className="btn-burgundy inline-flex items-center gap-2">
                   <Send className="w-4 h-4" />
                   Send Message
                 </button>

@@ -48,8 +48,8 @@ export default function ProductCard({ book }: ProductCardProps) {
     >
       {/* Loading Overlay */}
       {isNavigating && (
-        <div className="absolute inset-0 z-20 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        <div className="absolute inset-0 z-20 bg-parchment-light/80 backdrop-blur-sm rounded-xl flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-burgundy animate-spin" />
         </div>
       )}
       {/* Image */}
@@ -60,12 +60,12 @@ export default function ProductCard({ book }: ProductCardProps) {
           className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
         />
         {book.isNew && (
-          <span className="absolute top-3 left-3 bg-accent-green text-white text-xs font-semibold px-2 py-1 rounded">
+          <span className="absolute top-3 left-3 bg-gold text-ink text-xs font-semibold px-2 py-1 rounded">
             New
           </span>
         )}
         {book.originalPrice && (
-          <span className="absolute top-3 left-3 bg-primary text-white text-xs font-semibold px-2 py-1 rounded">
+          <span className="absolute top-3 left-3 bg-burgundy text-parchment-light text-xs font-semibold px-2 py-1 rounded">
             Sale
           </span>
         )}
@@ -74,13 +74,13 @@ export default function ProductCard({ book }: ProductCardProps) {
       {/* Content */}
       <div className="p-4 flex flex-col flex-grow">
         {/* Title */}
-        <h3 className="card-title font-semibold text-dark mb-1 line-clamp-2 transition-colors">
+        <h3 className="card-title font-semibold text-ink mb-1 line-clamp-2 transition-colors">
           {book.title}
         </h3>
 
         {/* Author */}
         {book.author && (
-          <p className="text-sm text-gray-500 mb-3">{book.author}</p>
+          <p className="text-sm text-ink-muted mb-3">{book.author}</p>
         )}
 
         {/* Price & Book Type Icon */}
@@ -129,22 +129,22 @@ export default function ProductCard({ book }: ProductCardProps) {
                     .map((variant) => (
                     <div key={variant.id} className="flex items-center gap-1">
                       {parseFloat(variant.price) === 0 ? (
-                        <span className="text-lg font-bold text-green-600">
+                        <span className="text-lg font-bold text-gold-dark">
                           FREE
                         </span>
                       ) : (
-                        <span className="text-lg font-bold text-dark">
+                        <span className="text-lg font-bold text-gold-dark">
                           {formatPrice(parseFloat(variant.price))}
                         </span>
                       )}
                       {/* Book Type Indicator based on is_shipping_required */}
                       {variant.is_shipping_required ? (
                         <span title="Paper book">
-                          <BookOpen className="w-4 h-4 text-red-500 ml-1" />
+                          <BookOpen className="w-4 h-4 text-burgundy ml-1" />
                         </span>
                       ) : (
                         <span title="E-book (PDF)">
-                          <BsFilePdf className="w-4 h-4 text-red-500 ml-1" />
+                          <BsFilePdf className="w-4 h-4 text-burgundy ml-1" />
                         </span>
                       )}
                     </div>
@@ -158,28 +158,28 @@ export default function ProductCard({ book }: ProductCardProps) {
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   {book.price === 0 ? (
-                    <span className="text-lg font-bold text-green-600">
+                    <span className="text-lg font-bold text-gold-dark">
                       FREE
                     </span>
                   ) : (
-                    <span className="text-lg font-bold text-dark">
+                    <span className="text-lg font-bold text-gold-dark">
                       {formatPrice(book.price)}
                     </span>
                   )}
                   {book.originalPrice && (
-                    <span className="text-sm text-gray-400 line-through">
+                    <span className="text-sm text-ink-muted line-through">
                       {formatPrice(book.originalPrice)}
                     </span>
                   )}
                   {/* Book Type Indicator */}
                   {book.isShippingRequired === true && (
                     <span title="Paper book">
-                      <BookOpen className="w-4 h-4 text-red-500 ml-1" />
+                      <BookOpen className="w-4 h-4 text-burgundy ml-1" />
                     </span>
                   )}
                   {book.isShippingRequired === false && (
                     <span title="E-book (PDF)">
-                      <BsFilePdf className="w-4 h-4 text-red-500 ml-1" />
+                      <BsFilePdf className="w-4 h-4 text-burgundy ml-1" />
                     </span>
                   )}
                 </div>

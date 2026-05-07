@@ -28,7 +28,7 @@ function ConfirmationContent() {
   if (!mounted || redirectStatus === 'failed') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy" />
       </div>
     );
   }
@@ -53,8 +53,8 @@ function ConfirmationContent() {
           {/* Order Status Steps */}
           <div className="grid grid-cols-3 gap-4 mb-10 max-w-lg mx-auto">
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-                <CheckCircle className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-burgundy/10 rounded-full flex items-center justify-center mb-2">
+                <CheckCircle className="w-6 h-6 text-burgundy" />
               </div>
               <span className="text-xs text-gray-600">{tCheckout('confirmation.orderPlaced')}</span>
             </div>
@@ -77,15 +77,15 @@ function ConfirmationContent() {
             <h2 className="font-semibold text-dark mb-4">{tCheckout('confirmation.whatNext')}</h2>
             <ul className="space-y-3 text-sm text-gray-600">
               <li className="flex items-start gap-3">
-                <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
+                <span className="w-2 h-2 bg-burgundy rounded-full mt-1.5 flex-shrink-0" />
                 <span>{tCheckout('confirmation.step1')}</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
+                <span className="w-2 h-2 bg-burgundy rounded-full mt-1.5 flex-shrink-0" />
                 <span>{tCheckout('confirmation.step2')}</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0" />
+                <span className="w-2 h-2 bg-burgundy rounded-full mt-1.5 flex-shrink-0" />
                 <span>{tCheckout('confirmation.step3')}</span>
               </li>
             </ul>
@@ -93,7 +93,7 @@ function ConfirmationContent() {
 
           {/* Actions */}
           <div className="flex justify-center">
-            <Link href="/catalog" className="btn-primary inline-flex items-center justify-center">
+            <Link href="/catalog" className="btn-burgundy inline-flex items-center justify-center">
               {t('common.continueShopping')}
             </Link>
           </div>
@@ -107,7 +107,7 @@ export default function ConfirmationPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy" />
       </div>
     }>
       <ConfirmationContent />

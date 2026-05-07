@@ -124,7 +124,7 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <Loader2 className="w-8 h-8 animate-spin text-burgundy mx-auto mb-4" />
           <p className="text-gray-500">{tCart('loading')}</p>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default function CartPage() {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-dark mb-4">{tCart('error.title')}</h1>
             <p className="text-gray-500 mb-8">{error}</p>
-            <button onClick={fetchBasket} className="btn-primary">
+            <button onClick={fetchBasket} className="btn-burgundy">
               {t('common.retry')}
             </button>
           </div>
@@ -159,7 +159,7 @@ export default function CartPage() {
             <p className="text-gray-500 mb-8">
               {tCart('empty.description')}
             </p>
-            <Link href="/catalog" className="btn-primary">
+            <Link href="/catalog" className="btn-burgundy">
               {tCart('empty.button')}
             </Link>
           </div>
@@ -187,7 +187,7 @@ export default function CartPage() {
 
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
+          <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
           <span className="text-dark">{t('nav.cart')}</span>
         </nav>
@@ -216,7 +216,7 @@ export default function CartPage() {
 
             <Link
               href="/catalog"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary-dark mt-6 font-medium"
+              className="inline-flex items-center gap-2 text-burgundy hover:text-burgundy-dark mt-6 font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
               {t('common.continueShopping')}
@@ -250,7 +250,7 @@ export default function CartPage() {
 
               <Link
                 href={isAuthenticated ? '/checkout' : '/login?redirect=/checkout'}
-                className="btn-primary w-full text-center block"
+                className="btn-burgundy w-full text-center block"
               >
                 {tCart('proceedToCheckout')}
               </Link>
@@ -258,7 +258,7 @@ export default function CartPage() {
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-500">
                   {tCart('or')}{' '}
-                  <Link href="/catalog" className="text-primary hover:underline">
+                  <Link href="/catalog" className="text-burgundy hover:underline">
                     {tCart('continueShoppingLink')}
                   </Link>
                 </p>

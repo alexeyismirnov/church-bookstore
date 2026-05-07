@@ -10,8 +10,8 @@ export default function ReviewCard({ review }: ReviewCardProps) {
     <div className="bg-white rounded-xl p-6 shadow-sm">
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <span className="text-primary font-semibold text-lg">
+        <div className="w-12 h-12 rounded-full bg-burgundy/10 flex items-center justify-center flex-shrink-0">
+          <span className="text-burgundy font-semibold text-lg">
             {review.author.charAt(0)}
           </span>
         </div>

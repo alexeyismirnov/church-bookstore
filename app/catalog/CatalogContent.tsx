@@ -165,7 +165,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
+          <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
           <span className="text-dark">{tCatalog('title')}</span>
         </nav>
@@ -197,7 +197,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
           <div className="flex-grow">
             {loading ? (
               <div className="flex items-center justify-center py-16">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
                 <span className="ml-3 text-gray-500">{t('common.loading')}</span>
               </div>
             ) : error ? (
@@ -206,7 +206,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
                 <p className="text-gray-500 text-sm mb-4">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
-                  className="text-primary hover:underline"
+                  className="text-burgundy hover:underline"
                 >
                   {t('common.retry')}
                 </button>
@@ -253,7 +253,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
                     params.delete('category');
                     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
                   }}
-                  className="mt-4 text-primary hover:underline"
+                  className="mt-4 text-burgundy hover:underline"
                 >
                   {tCatalog('filter.clearAll')}
                 </button>

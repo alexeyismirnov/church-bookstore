@@ -255,7 +255,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <Loader2 className="w-8 h-8 animate-spin text-burgundy mx-auto mb-4" />
           <p className="text-gray-600">{t('loading')}</p>
         </div>
       </div>
@@ -314,7 +314,7 @@ export default function ProfilePage() {
                     name="first_name"
                     value={formData.first_name}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                     placeholder="John"
                   />
                 </div>
@@ -328,7 +328,7 @@ export default function ProfilePage() {
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder="Doe"
                 />
               </div>
@@ -349,7 +349,7 @@ export default function ProfilePage() {
                     onChange={handleChange}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-burgundy/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-burgundy"></div>
                 </label>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default function ProfilePage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-burgundy flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSaving ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -371,7 +371,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setShowPasswordModal(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 font-medium text-primary border border-primary rounded-lg hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 font-medium text-burgundy border border-burgundy rounded-lg hover:bg-burgundy hover:text-parchment-light focus:outline-none focus:ring-2 focus:ring-burgundy focus:ring-offset-2 transition-colors"
               >
                 <KeyRound className="w-5 h-5" />
                 {t('changePassword.openButton')}
@@ -461,13 +461,13 @@ export default function ProfilePage() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b">
               <div className="flex items-center gap-3">
-                <KeyRound className="w-5 h-5 text-primary" />
+                <KeyRound className="w-5 h-5 text-burgundy" />
                 <h2 className="text-lg font-bold text-dark">{t('changePassword.title')}</h2>
               </div>
               <button
                 type="button"
                 onClick={closePasswordModal}
-                className="p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+                className="p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-burgundy transition-colors"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
@@ -503,7 +503,7 @@ export default function ProfilePage() {
                         setPasswordSuccess(null);
                         setPasswordError(null);
                       }}
-                      className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                       placeholder={t('changePassword.currentPasswordPlaceholder')}
                     />
                   </div>
@@ -524,7 +524,7 @@ export default function ProfilePage() {
                         setPasswordSuccess(null);
                         setPasswordError(null);
                       }}
-                      className="w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                       placeholder={t('changePassword.newPasswordPlaceholder')}
                     />
                     <button
@@ -589,7 +589,7 @@ export default function ProfilePage() {
                         setPasswordSuccess(null);
                         setPasswordError(null);
                       }}
-                      className="w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                       placeholder={t('changePassword.confirmPasswordPlaceholder')}
                     />
                     <button
@@ -618,7 +618,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={isChangingPassword || !isPasswordFormValid}
-                    className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-burgundy flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isChangingPassword ? (
                       <Loader2 className="w-5 h-5 animate-spin" />

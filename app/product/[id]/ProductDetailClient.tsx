@@ -94,7 +94,7 @@ function DownloadButtons({ book }: { book: Book }) {
           href={book.previewUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-burgundy text-white rounded-lg hover:bg-burgundy/90 transition-colors"
         >
           <Download className="w-4 h-4" />
           <span>{t('download')}</span>
@@ -212,7 +212,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   if (showLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
         <span className="ml-3 text-gray-500">{t('common.loading')}</span>
       </div>
     );
@@ -224,7 +224,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
         <div className="text-center">
           <h1 className="text-2xl font-bold text-dark mb-4">{tProduct('notFound')}</h1>
           <p className="text-gray-500 mb-6">{tProduct('notFoundDesc')}</p>
-          <Link href="/catalog" className="btn-primary">
+          <Link href="/catalog" className="btn-burgundy">
             {tProduct('browseCatalog')}
           </Link>
         </div>
@@ -237,9 +237,9 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">{t('nav.home')}</Link>
+          <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
-          <Link href="/catalog" className="hover:text-primary">{t('nav.catalog')}</Link>
+          <Link href="/catalog" className="hover:text-burgundy">{t('nav.catalog')}</Link>
           <span className="mx-2">/</span>
           <span className="text-dark">{book.title}</span>
         </nav>
@@ -305,26 +305,26 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                         {variantPrice === 0 ? (
                           <span className="text-green-600 font-semibold whitespace-nowrap">{t('common.free')}</span>
                         ) : variant.isAvailable === false ? (
-                          <button className="btn-primary w-full whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
+                          <button className="btn-burgundy w-full whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
                             {t('common.outOfStock')}
                           </button>
                         ) : addingToCartVariantId === variant.id ? (
-                          <button className="btn-primary w-full whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
+                          <button className="btn-burgundy w-full whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
                             <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
                             {t('common.adding')}
                           </button>
                         ) : addedToCartVariantId === variant.id ? (
-                          <button className="btn-primary w-full whitespace-nowrap bg-green-600 hover:bg-green-600">
+                          <button className="btn-burgundy w-full whitespace-nowrap bg-green-600 hover:bg-green-600">
                             <Check className="w-4 h-4 inline mr-2" />
                             {t('common.added')}
                           </button>
                         ) : addToCartError && addingToCartVariantId === null ? (
-                          <button className="btn-primary w-full whitespace-nowrap bg-red-500 hover:bg-red-600">
+                          <button className="btn-burgundy w-full whitespace-nowrap bg-red-500 hover:bg-red-600">
                             {t('common.error')}
                           </button>
                         ) : (
                           <button
-                            className="btn-primary w-full whitespace-nowrap"
+                            className="btn-burgundy w-full whitespace-nowrap"
                             onClick={() => handleAddToCart(variant.id)}
                           >
                             <ShoppingCart className="w-4 h-4 inline mr-2" />
@@ -379,22 +379,22 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   {book.price !== 0 && (
                     book.isShippingRequired === false || book.isInStock ? (
                       addingToCartVariantId === parseInt(book.id) ? (
-                        <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
+                        <button className="btn-burgundy whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
                           <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
                           {t('common.adding')}
                         </button>
                       ) : addedToCartVariantId === parseInt(book.id) ? (
-                        <button className="btn-primary whitespace-nowrap bg-green-600 hover:bg-green-600">
+                        <button className="btn-burgundy whitespace-nowrap bg-green-600 hover:bg-green-600">
                           <Check className="w-4 h-4 inline mr-2" />
                           {t('common.added')}
                         </button>
                       ) : addToCartError ? (
-                        <button className="btn-primary whitespace-nowrap bg-red-500 hover:bg-red-600">
+                        <button className="btn-burgundy whitespace-nowrap bg-red-500 hover:bg-red-600">
                           {addToCartError}
                         </button>
                       ) : (
                         <button
-                          className="btn-primary whitespace-nowrap"
+                          className="btn-burgundy whitespace-nowrap"
                           onClick={() => handleAddToCart(parseInt(book.id))}
                         >
                           <ShoppingCart className="w-4 h-4 inline mr-2" />
@@ -402,7 +402,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                         </button>
                       )
                     ) : (
-                      <button className="btn-primary whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
+                      <button className="btn-burgundy whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
                         {t('common.outOfStock')}
                       </button>
                     )

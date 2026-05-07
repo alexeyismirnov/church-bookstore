@@ -73,7 +73,7 @@ export default function FavoritesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy" />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function FavoritesPage() {
             <p className="text-gray-500 mb-8">
               Save items you love to your favorites list for quick access later.
             </p>
-            <Link href="/catalog" className="btn-primary">
+            <Link href="/catalog" className="btn-burgundy">
               Browse Catalog
             </Link>
           </div>
@@ -102,7 +102,7 @@ export default function FavoritesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-primary">Home</Link>
+          <Link href="/" className="hover:text-burgundy">Home</Link>
           <span className="mx-2">/</span>
           <span className="text-dark">{tNav('favorites')}</span>
         </nav>
@@ -130,7 +130,7 @@ export default function FavoritesPage() {
                 Add your favorite items to the cart and complete your order.
               </p>
             </div>
-            <Link href="/cart" className="btn-primary inline-flex items-center gap-2">
+            <Link href="/cart" className="btn-burgundy inline-flex items-center gap-2">
               <ShoppingBag className="w-5 h-5" />
               {tNav('cart')}
             </Link>

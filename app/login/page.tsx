@@ -66,7 +66,7 @@ export default function LoginPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder="you@example.com"
                   required
                   disabled={isLoading}
@@ -85,7 +85,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy"
                   placeholder="••••••••"
                   required
                   disabled={isLoading}
@@ -112,14 +112,14 @@ export default function LoginPage() {
                   type="checkbox"
                   checked={formData.rememberMe}
                   onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  className="w-4 h-4 rounded border-gray-300 text-burgundy focus:ring-burgundy"
                   disabled={isLoading}
                 />
                 <span className="text-sm text-gray-600">{t('rememberMe')}</span>
               </label>
               <Link
                 href="/forgot-password"
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-burgundy hover:underline"
               >
                 {t('forgotPassword')}
               </Link>
@@ -128,7 +128,7 @@ export default function LoginPage() {
             {/* Submit Button */}
             <button 
               type="submit" 
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-burgundy w-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? t('loggingIn') : t('submit')}
@@ -141,7 +141,7 @@ export default function LoginPage() {
         {/* Sign Up Link */}
         <p className="text-center text-gray-600 mt-6">
           {t('noAccount')}{' '}
-          <Link href="/register" className="text-primary hover:underline font-medium">
+          <Link href="/register" className="text-burgundy hover:underline font-medium">
             {t('register')}
           </Link>
         </p>
