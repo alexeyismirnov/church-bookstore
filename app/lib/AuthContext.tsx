@@ -129,7 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = getStoredToken();
       const savedUser = localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY);
       const rememberMe = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
-      
+
       if (token && savedUser) {
         try {
           const userData = JSON.parse(savedUser);
@@ -143,11 +143,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sessionStorage.removeItem(TOKEN_KEY);
           sessionStorage.removeItem(USER_KEY);
           localStorage.removeItem(REMEMBER_ME_KEY);
+          // Clear stale profile preferences
+          document.cookie = `${PROFILE_LOCALE_KEY}=; max-age=0; path=/; SameSite=Lax`;
+          document.cookie = `${PROFILE_CURRENCY_KEY}=; max-age=0; path=/; SameSite=Lax`;
+          localStorage.removeItem(PROFILE_LOCALE_KEY);
+          localStorage.removeItem(PROFILE_CURRENCY_KEY);
         }
       } else if (!rememberMe && token) {
-        // If rememberMe was false but we have a token in sessionStorage, 
+        // If rememberMe was false but we have a token in sessionStorage,
         // it means the session has ended - this is expected behavior
       }
+
+      // Clear stale profile preferences if no valid session exists
+      if (!getStoredToken()) {
+        try {
+          document.cookie = `${PROFILE_LOCALE_KEY}=; max-age=0; path=/; SameSite=Lax`;
+          document.cookie = `${PROFILE_CURRENCY_KEY}=; max-age=0; path=/; SameSite=Lax`;
+        } catch {}
+        try {
+          localStorage.removeItem(PROFILE_LOCALE_KEY);
+          localStorage.removeItem(PROFILE_CURRENCY_KEY);
+        } catch {}
+      }
+
       setIsLoading(false);
     };
     

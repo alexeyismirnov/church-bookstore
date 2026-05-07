@@ -62,6 +62,7 @@ export function LanguageProvider({ children, initialLocale }: LanguageProviderPr
   const [locale, setLocaleState] = useState<Locale>(
     initialLocale && locales.includes(initialLocale) ? initialLocale : defaultLocale
   );
+
   // isLoading is always false because the locale is known from the first render
   // (provided via the initialLocale prop from the server-read cookie).
   const isLoading = false;
@@ -84,6 +85,7 @@ export function LanguageProvider({ children, initialLocale }: LanguageProviderPr
     } catch (e) {
       console.warn('Could not save language preference to cookie');
     }
+
     setLocaleState(newLocale);
   }, []);
 

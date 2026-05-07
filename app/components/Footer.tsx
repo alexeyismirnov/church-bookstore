@@ -5,7 +5,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-burgundy text-parchment border-t-2 border-gold/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 md:py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-10 pb-5 md:pb-6">
         <div className="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-8">
           {/* Contact Info — phone & email on row 1, address on row 2 */}
           <div className="flex flex-col gap-1.5 text-sm">
