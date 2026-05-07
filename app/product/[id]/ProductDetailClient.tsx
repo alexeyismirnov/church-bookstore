@@ -40,7 +40,7 @@ function DownloadButtons({ book }: { book: Book }) {
           href={book.previewUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-burgundy text-burgundy rounded-lg font-medium hover:bg-burgundy hover:text-parchment-light transition-colors duration-200 active:scale-95 transform"
         >
           <BookOpen className="w-4 h-4" />
           <span>{t('previewPdf')}</span>
@@ -63,7 +63,7 @@ function DownloadButtons({ book }: { book: Book }) {
               href={book.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink rounded-lg font-medium hover:bg-gold-light transition-colors duration-200 active:scale-95 transform"
             >
               <FileText className="w-4 h-4" />
               <span>{t('downloadPdf')}</span>
@@ -74,7 +74,7 @@ function DownloadButtons({ book }: { book: Book }) {
               href={book.epubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink rounded-lg font-medium hover:bg-gold-light transition-colors duration-200 active:scale-95 transform"
             >
               <BookOpen className="w-4 h-4" />
               <span>{t('downloadEpub')}</span>
@@ -94,7 +94,7 @@ function DownloadButtons({ book }: { book: Book }) {
           href={book.previewUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-burgundy text-white rounded-lg hover:bg-burgundy/90 transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-burgundy text-burgundy rounded-lg font-medium hover:bg-burgundy hover:text-parchment-light transition-colors duration-200 active:scale-95 transform"
         >
           <Download className="w-4 h-4" />
           <span>{t('download')}</span>

@@ -162,7 +162,7 @@ export default function BookshelfPage() {
                             href={book.download_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200 rounded text-sm font-medium"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium transition-colors duration-200 active:scale-95 transform"
                           >
                             <FileText className="w-3 h-3" />
                             PDF
@@ -173,7 +173,7 @@ export default function BookshelfPage() {
                             href={book.epub_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 hover:bg-blue-200 rounded text-sm font-medium"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium transition-colors duration-200 active:scale-95 transform"
                           >
                             <BookOpen className="w-3 h-3" />
                             EPUB
@@ -197,7 +197,7 @@ export default function BookshelfPage() {
             </p>
             <Link
               href="/catalog"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-burgundy text-white rounded-lg hover:bg-burgundy/90 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-ink rounded-lg font-medium hover:bg-gold-light transition-colors duration-200 active:scale-95 transform"
             >
               <Download className="w-4 h-4" />
               {tBookshelf('browseCatalog')}

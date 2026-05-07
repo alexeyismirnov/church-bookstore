@@ -58,10 +58,10 @@ Deep liturgical red, inspired by Orthodox vestments and icon backgrounds. Replac
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `burgundy` | `#6B1D2A` | Brand color, footer background, heading accents, nav highlights |
-| `burgundy-dark` | `#4A0E1C` | Hover states, deep accents |
-| `burgundy-light` | `#8B3A4A` | Subtle accents, light burgundy backgrounds at 10% opacity |
-| `burgundy-muted` | `#946B74` | Muted burgundy for secondary text on dark backgrounds |
+| `burgundy` | `#A01830` | Brand color, footer background, heading accents, nav highlights |
+| `burgundy-dark` | `#6E0E1E` | Hover states, deep accents |
+| `burgundy-light` | `#C03050` | Subtle accents, light burgundy backgrounds at 10% opacity |
+| `burgundy-muted` | `#B05060` | Muted burgundy for secondary text on dark backgrounds |
 
 ### 2.3 Gold Family (10% — Accent)
 
@@ -69,10 +69,10 @@ Liturgical gold for highlights and calls-to-action. Replaces the generic orange 
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `gold` | `#C9A84C` | CTA buttons, prices, key highlights, decorative elements |
-| `gold-light` | `#D4BA6A` | Hover states on gold elements |
-| `gold-dark` | `#A88B2E` | Pressed/active states |
-| `gold-muted` | `#B89D4A` | Subtle gold text |
+| `gold` | `#DDB020` | CTA buttons, prices, key highlights, decorative elements |
+| `gold-light` | `#ECC840` | Hover states on gold elements |
+| `gold-dark` | `#D09010` | Pressed/active states |
+| `gold-muted` | `#D0A830` | Subtle gold text |
 
 ### 2.4 Ink Family (Text)
 
@@ -106,7 +106,7 @@ The redesign uses exactly **3 surface levels**, all warm-toned:
 │                                              │
 │  ══════════ border-t-2 border-gold/30 ══════ │
 │  ┌─────────────────────────────────────────┐ │
-│  │  DEEP — burgundy #6B1D2A                │ │
+│  │  DEEP — burgundy #A01830                │ │
 │  │  Footer only                             │ │
 │  └─────────────────────────────────────────┘ │
 └─────────────────────────────────────────────┘
@@ -116,7 +116,7 @@ The redesign uses exactly **3 surface levels**, all warm-toned:
 |-------|-----------|------|----------|
 | Base | `parchment` `#F5F0E8` | Page bg, header bg | `background: #F3EFE8` + `bg-white/95` |
 | Raised | `parchment-light` `#FBF8F3` | Cards, panels, dropdowns | `bg-white` cards + `bg-amber-50/30` |
-| Deep | `burgundy` `#6B1D2A` | Footer only | `bg-dark #242424` |
+| Deep | `burgundy` `#A01830` | Footer only | `bg-dark #242424` |
 
 **Key principle:** The header uses `bg-parchment/95 backdrop-blur-sm` — same color family as the page background — so it blends seamlessly instead of creating a separate visual tier.
 
@@ -141,18 +141,18 @@ colors: {
   
   // Burgundy family (30% — secondary/brand)
   burgundy: {
-    DEFAULT: '#6B1D2A',
-    dark: '#4A0E1C',
-    light: '#8B3A4A',
-    muted: '#946B74',
+    DEFAULT: '#A01830',
+    dark: '#6E0E1E',
+    light: '#C03050',
+    muted: '#B05060',
   },
   
   // Gold family (10% — accent)
   gold: {
-    DEFAULT: '#C9A84C',
-    light: '#D4BA6A',
-    dark: '#A88B2E',
-    muted: '#B89D4A',
+    DEFAULT: '#DDB020',
+    light: '#ECC840',
+    dark: '#D09010',
+    muted: '#D0A830',
   },
   
   // Ink family (text)
@@ -189,8 +189,8 @@ File: [`app/globals.css`](app/globals.css:142)
 **Replace with:**
 ```css
 :root {
-  --color-burgundy: #6B1D2A;
-  --color-gold: #C9A84C;
+  --color-burgundy: #A01830;
+  --color-gold: #DDB020;
   --color-ink: #2C1810;
   --color-parchment: #F5F0E8;
 }
@@ -219,7 +219,7 @@ File: [`app/globals.css`](app/globals.css:142)
 ### 5.3 Update all `var(--color-primary, #8b2f2f)` references
 
 In [`globals.css`](app/globals.css), replace every occurrence of:
-- `var(--color-primary, #8b2f2f)` → `var(--color-burgundy, #6B1D2A)`
+- `var(--color-primary, #8b2f2f)` → `var(--color-burgundy, #A01830)`
 
 This affects lines 60, 68, 96.
 
@@ -398,7 +398,7 @@ File: [`app/components/Footer.tsx`](app/components/Footer.tsx)
 
 | Element | Current | New |
 |---------|---------|-----|
-| Background | `bg-dark #242424` | `bg-burgundy #6B1D2A` |
+| Background | `bg-dark #242424` | `bg-burgundy #A01830` |
 | Top border | none | `border-t-2 border-gold/30` (gold transition line) |
 | Logo text | `text-white` | `text-parchment font-display` |
 | Description text | `text-gray-400` | `text-parchment/70` |
@@ -535,13 +535,13 @@ Keep `font-body` (Inter) for all other text — product titles, descriptions, na
 - Reduce from 4 tiers (white, cream, white, black) to 3 tiers (parchment, parchment-light, burgundy)
 - Header changes from `bg-white/95` to `bg-parchment/95` — same family as page bg
 - Cards change from `bg-white` to `bg-parchment-light` — warm white, not pure white
-- Footer changes from `bg-dark #242424` to `bg-burgundy #6B1D2A` — warm dark, not cold black
+- Footer changes from `bg-dark #242424` to `bg-burgundy #A01830` — warm dark, not cold black
 - **Files:** [`Header.tsx`](app/components/Header.tsx), [`ProductCard.tsx`](app/components/ProductCard.tsx), [`Footer.tsx`](app/components/Footer.tsx), [`page.tsx`](app/page.tsx), [`globals.css`](app/globals.css)
 
 ### Issue #2: Jarring black footer with no transition
 
 **Changes:**
-- Footer background: `bg-dark #242424` → `bg-burgundy #6B1D2A` (warm, not cold)
+- Footer background: `bg-dark #242424` → `bg-burgundy #A01830` (warm, not cold)
 - Add decorative gold transition line: `border-t-2 border-gold/30`
 - Footer text: `text-gray-*` → `text-parchment` / `text-parchment/70` (warm cream on warm burgundy)
 - **Files:** [`Footer.tsx`](app/components/Footer.tsx)
@@ -582,7 +582,7 @@ This is the ordered sequence of changes for the implementer:
 
 - [ ] Update [`tailwind.config.js`](tailwind.config.js) — replace `colors` block with parchment/burgundy/gold/ink families
 - [ ] Update [`app/globals.css`](app/globals.css) — replace `:root` CSS variables (RGB values + custom properties)
-- [ ] Update [`app/globals.css`](app/globals.css) — replace all `var(--color-primary, #8b2f2f)` with `var(--color-burgundy, #6B1D2A)`
+- [ ] Update [`app/globals.css`](app/globals.css) — replace all `var(--color-primary, #8b2f2f)` with `var(--color-burgundy, #A01830)`
 - [ ] Update [`app/globals.css`](app/globals.css) — update `.btn-primary`, `.btn-secondary`, `.card`, `.section-title` component classes
 
 ### Phase 2: Shared Components
