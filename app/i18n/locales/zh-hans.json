@@ -88,6 +88,11 @@
     "previous": "上一页",
     "next": "下一页",
     "page": "第",
+    "hero": {
+      "title": "图书目录",
+      "searchPlaceholder": "按书名或作者搜索…",
+      "searchButton": "搜索"
+    },
     "filter": {
       "title": "筛选",
       "categories": "分类",
@@ -341,14 +346,32 @@
   },
   "contact": {
     "title": "联系我们",
+    "subtitle": "我们很乐意听到您的声音。如有任何问题、意见或代祷请求，请随时联系我们。",
     "name": "您的姓名",
+    "namePlaceholder": "张三",
     "email": "电子邮箱",
-    "subject": "主题",
+    "emailPlaceholder": "you@example.com",
     "message": "留言",
-    "submit": "发送",
-    "success": "留言发送成功！",
+    "messagePlaceholder": "您的留言...",
+    "submit": "发送留言",
+    "submitting": "发送中...",
+    "success": "感谢您的留言！我们会尽快回复您。",
+    "captchaRequired": "请完成验证码验证",
+    "captchaNotConfigured": "验证码未配置，请联系网站管理员。",
+    "errorMessage": "发送消息失败，请稍后重试。",
     "phone": "电话",
-    "address": "地址"
+    "social": "社交媒体",
+    "address": "地址",
+    "formDescription": "有订单问题、需要书籍推荐，或者只是想打个招呼？请填写下面的表格，我们会尽快回复您。",
+    "faq": {
+      "title": "常见问题",
+      "shippingQuestion": "配送需要多长时间？",
+      "shippingAnswer": "本地订单通常在5-7个工作日内送达。国际订单可能需要2-4周，具体取决于目的地。",
+      "specificBookQuestion": "我可以请求特定的书籍吗？",
+      "specificBookAnswer": "当然可以！如果您正在寻找我们目录中没有的特定书目，请告诉我们，我们会尽力为您寻找。",
+      "physicalStoreQuestion": "你们有实体书店吗？",
+      "physicalStoreAnswer": "是的，我们在教堂内有一家小书店，您可以在教堂礼拜时间亲自前来选购书籍。"
+    }
   },
   "about": {
     "title": "关于我们",

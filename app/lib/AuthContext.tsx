@@ -233,7 +233,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await fetch(`${getApiBase()}/register/`, {
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: getApiHeaders(),
         body: JSON.stringify(data),

@@ -88,6 +88,11 @@
     "previous": "上一頁",
     "next": "下一頁",
     "page": "第",
+    "hero": {
+      "title": "圖書目錄",
+      "searchPlaceholder": "按書名或作者搜尋…",
+      "searchButton": "搜尋"
+    },
     "filter": {
       "title": "篩選",
       "categories": "分類",
@@ -340,15 +345,33 @@
     }
   },
   "contact": {
-    "title": "聯絡我們",
+    "title": "聯繫我們",
+    "subtitle": "我們很樂意聽到您的聲音。如有任何問題、意見或代禱請求，請隨時聯繫我們。",
     "name": "您的姓名",
+    "namePlaceholder": "張三",
     "email": "電子郵箱",
-    "subject": "主題",
+    "emailPlaceholder": "you@example.com",
     "message": "留言",
-    "submit": "發送",
-    "success": "留言發送成功！",
+    "messagePlaceholder": "您的留言...",
+    "submit": "發送留言",
+    "submitting": "發送中...",
+    "success": "感謝您的留言！我們會盡快回覆您。",
+    "captchaRequired": "請完成驗證碼驗證",
+    "captchaNotConfigured": "驗證碼未配置，請聯繫網站管理員。",
+    "errorMessage": "發送消息失敗，請稍後重試。",
     "phone": "電話",
-    "address": "地址"
+    "social": "社交媒體",
+    "address": "地址",
+    "formDescription": "有訂單問題、需要書籍推薦，或者只是想打個招呼？請填寫下面的表格，我們會盡快回覆您。",
+    "faq": {
+      "title": "常見問題",
+      "shippingQuestion": "配送需要多長時間？",
+      "shippingAnswer": "本地訂單通常在5-7個工作日內送達。國際訂單可能需要2-4週，具體取決於目的地。",
+      "specificBookQuestion": "我可以請求特定的書籍嗎？",
+      "specificBookAnswer": "當然可以！如果您正在尋找我們目錄中沒有的特定書目，請告訴我們，我們會盡力為您尋找。",
+      "physicalStoreQuestion": "你們有實體書店嗎？",
+      "physicalStoreAnswer": "是的，我們在教堂內有一家小書店，您可以在教堂禮拜時間親自前來選購書籍。"
+    }
   },
   "about": {
     "title": "關於我們",

@@ -88,6 +88,11 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page",
+    "hero": {
+      "title": "Book Catalog",
+      "searchPlaceholder": "Search by title or author…",
+      "searchButton": "Search"
+    },
     "filter": {
       "title": "Filters",
       "categories": "Categories",
@@ -341,14 +346,32 @@
   },
   "contact": {
     "title": "Contact Us",
+    "subtitle": "We'd love to hear from you. Reach out with any questions, comments, or prayer requests.",
     "name": "Your Name",
+    "namePlaceholder": "John Doe",
     "email": "Email Address",
-    "subject": "Subject",
+    "emailPlaceholder": "you@example.com",
     "message": "Message",
+    "messagePlaceholder": "Your message...",
     "submit": "Send Message",
-    "success": "Message sent successfully!",
+    "submitting": "Sending...",
+    "success": "Thank you for your message! We will get back to you soon.",
+    "captchaRequired": "Please complete the captcha verification",
+    "captchaNotConfigured": "Captcha is not configured. Please contact the site administrator.",
+    "errorMessage": "Failed to send message. Please try again later.",
     "phone": "Phone",
-    "address": "Address"
+    "social": "Social",
+    "address": "Address",
+    "formDescription": "Have a question about an order, a book recommendation, or just want to say hello? Fill out the form below and we'll get back to you as soon as possible.",
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "shippingQuestion": "How long does shipping take?",
+      "shippingAnswer": "Domestic orders typically arrive within 5-7 business days. International orders may take 2-4 weeks depending on the destination.",
+      "specificBookQuestion": "Can I request a specific book?",
+      "specificBookAnswer": "Absolutely! If you're looking for a specific title not in our catalog, let us know and we'll do our best to source it for you.",
+      "physicalStoreQuestion": "Do you have a physical bookstore?",
+      "physicalStoreAnswer": "Yes, we have a small bookstore in our church, you can visit us during the church service hours and purchase books in person."
+    }
   },
   "about": {
     "title": "About Us",

@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/oscar/password-reset/', {
+      const response = await fetch('/api/password-reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, hcaptcha_token: hcaptchaToken }),

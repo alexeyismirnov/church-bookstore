@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import ProductGrid from '../components/ProductGrid';
 import FilterSidebar from '../components/FilterSidebar';
@@ -10,7 +9,7 @@ import { useApiLocale } from '../i18n/useApiLocale';
 import { useCurrency } from '../i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
 import { Book } from '../types';
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, Search } from 'lucide-react';
 
 interface CatalogContentProps {
   categoryId?: string;
@@ -48,6 +47,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId || null);
   // Refresh counter to force re-fetch when category is re-selected
   const [refreshKey, setRefreshKey] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Sync currentPage with URL when it changes externally (e.g., back button)
   useEffect(() => {
@@ -112,6 +112,12 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
     );
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: integrate search with API when search endpoint is available
+    // For now, this is a placeholder — search functionality will be implemented later
+  };
+
   // Handle category selection from FilterSidebar and update URL
   const handleCategorySelect = (categoryId: string | null) => {
     setSelectedCategoryId(categoryId);
@@ -161,27 +167,35 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumbs */}
-        <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
-          <span className="mx-2">/</span>
-          <span className="text-dark">{tCatalog('title')}</span>
-        </nav>
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-dark">{tCatalog('title')}</h1>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-b from-burgundy to-burgundy-dark py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-8 text-parchment font-display">{tCatalog('hero.title')}</h1>
           
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">
-              {loading ? t('common.loading') : `${totalCount} ${tCatalog('products')}`}
-            </span>
-          </div>
+          {/* Search Box */}
+          <form onSubmit={handleSearch} className="max-w-xl mx-auto flex gap-2">
+            <div className="relative flex-grow">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={tCatalog('hero.searchPlaceholder')}
+                className="w-full pl-10 pr-4 py-3 rounded-lg bg-white/95 text-ink placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-parchment"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-6 py-3 bg-parchment text-burgundy font-semibold rounded-lg hover:bg-parchment-light transition-colors"
+            >
+              {tCatalog('hero.searchButton')}
+            </button>
+          </form>
         </div>
+      </section>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <FilterSidebar
