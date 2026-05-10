@@ -270,7 +270,15 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             {book.isParent && book.variants && book.variants.length > 0 ? (
               /* Multiple Variants: Show one row per variant with flex layout */
               <div className="space-y-3">
-                {book.variants.map((variant: Variant) => {
+                {[...book.variants].sort((a, b) => {
+                  // Use the language-agnostic book_type field instead of regex on
+                  // the localized title, which only worked for English keywords.
+                  const aIsEbook = a.book_type === 'ebook';
+                  const bIsEbook = b.book_type === 'ebook';
+                  if (aIsEbook && !bIsEbook) return -1;
+                  if (!aIsEbook && bIsEbook) return 1;
+                  return 0;
+                }).map((variant: Variant) => {
                   const variantPrice = parseVariantPrice(variant);
                   return (
                     <div key={variant.id} className="grid grid-cols-[120px_1fr_160px] items-center gap-4 bg-gray-50 rounded-xl p-4">
@@ -423,7 +431,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
 
 
             {/* Characteristics */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
+            <div className="bg-white rounded-xl p-6 shadow-sm !mt-8">
               <h3 className="font-semibold text-dark mb-4">{tProduct('details')}</h3>
               <dl className="grid grid-cols-2 gap-4 text-sm">
                 {book.author && (

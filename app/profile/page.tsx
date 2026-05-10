@@ -267,14 +267,18 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-dark mb-2">{t('title')}</h1>
-          <p className="text-gray-600">
-            {t('description')}
-          </p>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-b from-burgundy to-burgundy-dark py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-parchment font-display">{t('title')}</h1>
+          <p className="text-xl text-parchment/70 max-w-3xl mx-auto">{t('subtitle')}</p>
         </div>
+      </section>
+
+      {/* Content */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-background">
+      <div className="max-w-2xl mx-auto">
 
         <div className="bg-white rounded-2xl shadow-sm p-8">
           {/* Success/Error Messages */}
@@ -633,6 +637,7 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
+      </section>
     </div>
   );
 }

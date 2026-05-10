@@ -221,10 +221,12 @@ export default function ContactPage() {
                   )}
                 </div>
 
-                <button type="submit" className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled={isSubmitting || !hcaptchaToken}>
-                  <Send className="w-4 h-4" />
-                  {isSubmitting ? t('submitting') : t('submit')}
-                </button>
+                <div className="flex justify-center">
+                  <button type="submit" className="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled={isSubmitting || !hcaptchaToken || !formData.name.trim() || !formData.email.trim() || !formData.message.trim()}>
+                    <Send className="w-4 h-4" />
+                    {isSubmitting ? t('submitting') : t('submit')}
+                  </button>
+                </div>
               </form>
             </div>
 

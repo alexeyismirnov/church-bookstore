@@ -410,6 +410,7 @@
   "profile": {
     "title": "我的資料",
     "description": "管理您的帳戶資訊",
+    "subtitle": "管理您的帳戶設定和偏好",
     "loading": "正在載入資料...",
     "email": "電子郵箱",
     "firstName": "名",
@@ -456,5 +457,39 @@
       "button": "刪除帳戶",
       "error": "刪除帳戶失敗，請重試。"
     }
+  },
+  "orders": {
+    "title": "訂單歷史",
+    "subtitle": "查看和追蹤您過去的訂單",
+    "orderNumber": "訂單 #{number}",
+    "datePlaced": "下單日期",
+    "status": "狀態",
+    "total": "總計",
+    "items": "{count} 件商品",
+    "viewDetails": "查看詳情",
+    "backToOrders": "返回訂單",
+    "backToProfile": "返回個人資料",
+    "noOrders": "您還沒有下過訂單。",
+    "startShopping": "開始購物",
+    "loading": "正在載入訂單...",
+    "error": "無法載入訂單",
+    "orderDetails": "訂單詳情",
+    "shippingAddress": "送貨地址",
+    "orderSummary": "訂單摘要",
+    "subtotal": "小計",
+    "shipping": "運費",
+    "totalInclTax": "總計（含稅）",
+    "product": "商品",
+    "quantity": "數量",
+    "unitPrice": "單價",
+    "lineTotal": "總計",
+    "page": "第 {current} 頁，共 {total} 頁",
+    "previous": "上一頁",
+    "next": "下一頁",
+    "pending": "待處理",
+    "processing": "處理中",
+    "shipped": "已發貨",
+    "delivered": "已送達",
+    "cancelled": "已取消"
   }
 }

@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order, OscarOrder, OscarOrderListResponse, OrderLine } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -698,7 +698,7 @@ async function fetchBasketLines(linesUrl: string): Promise<OscarBasketLine[]> {
  * Fetch product details by ID to get title, author, image for basket display
  * If the product is a variant (child), fetch the parent instead and include variant info
  */
-async function fetchProductDetails(productId: string): Promise<{
+export async function fetchProductDetails(productId: string): Promise<{
   title: string;
   author: string;
   coverImage: string;
@@ -955,5 +955,50 @@ export async function placeOrder(params: {
     );
   }
 
+  return response.json();
+}
+
+// =============================================================================
+// Order History API
+// =============================================================================
+
+/**
+ * Fetch user's orders (paginated)
+ */
+export async function getOrders(page: number = 1): Promise<OscarOrderListResponse> {
+  const response = await fetch(`${getApiBase()}/orders/?page=${page}`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch orders: ${response.status}`);
+  }
+  return response.json();
+}
+
+/**
+ * Fetch a single order by its database primary key (NOT the order number).
+ * django-oscar-api uses `<int:pk>` in the URL, so we must pass the pk here.
+ */
+export async function getOrderById(pk: string): Promise<OscarOrder> {
+  const response = await fetch(`${getApiBase()}/orders/${pk}/`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch order: ${response.status}`);
+  }
+  return response.json();
+}
+
+/**
+ * Fetch lines for a specific order by its database primary key (NOT the order number).
+ * django-oscar-api uses `<int:pk>` in the URL, so we must pass the pk here.
+ */
+export async function getOrderLines(pk: string): Promise<OscarPaginationResponse<OrderLine>> {
+  const response = await fetch(`${getApiBase()}/orders/${pk}/lines/`, {
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch order lines: ${response.status}`);
+  }
   return response.json();
 }

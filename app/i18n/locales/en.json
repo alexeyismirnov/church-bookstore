@@ -410,6 +410,7 @@
   "profile": {
     "title": "My Profile",
     "description": "Manage your account information",
+    "subtitle": "Manage your account settings and preferences",
     "loading": "Loading profile...",
     "email": "Email",
     "firstName": "First Name",
@@ -456,5 +457,39 @@
       "button": "Delete Account",
       "error": "Failed to delete account. Please try again."
     }
+  },
+  "orders": {
+    "title": "Order History",
+    "subtitle": "View and track your past orders",
+    "orderNumber": "Order #{number}",
+    "datePlaced": "Date Placed",
+    "status": "Status",
+    "total": "Total",
+    "items": "{count} item | {count} items",
+    "viewDetails": "View Details",
+    "backToOrders": "Back to Orders",
+    "backToProfile": "Back to Profile",
+    "noOrders": "You haven't placed any orders yet.",
+    "startShopping": "Start Shopping",
+    "loading": "Loading orders...",
+    "error": "Failed to load orders",
+    "orderDetails": "Order Details",
+    "shippingAddress": "Shipping Address",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "totalInclTax": "Total (incl. tax)",
+    "product": "Product",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "lineTotal": "Total",
+    "page": "Page {current} of {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "pending": "Pending",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
   }
 }

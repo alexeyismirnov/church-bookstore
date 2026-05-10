@@ -410,6 +410,7 @@
   "profile": {
     "title": "Мой профиль",
     "description": "Управление данными вашего аккаунта",
+    "subtitle": "Управление настройками аккаунта",
     "loading": "Загрузка профиля...",
     "email": "Email",
     "firstName": "Имя",
@@ -456,5 +457,39 @@
       "button": "Удалить аккаунт",
       "error": "Не удалось удалить аккаунт. Пожалуйста, попробуйте снова."
     }
+  },
+  "orders": {
+    "title": "История заказов",
+    "subtitle": "Просмотр и отслеживание ваших прошлых заказов",
+    "orderNumber": "Заказ #{number}",
+    "datePlaced": "Дата оформления",
+    "status": "Статус",
+    "total": "Итого",
+    "items": "{count} товар | {count} товаров",
+    "viewDetails": "Подробнее",
+    "backToOrders": "Назад к заказам",
+    "backToProfile": "Назад к профилю",
+    "noOrders": "Вы ещё не оформляли заказов.",
+    "startShopping": "Начать покупки",
+    "loading": "Загрузка заказов...",
+    "error": "Не удалось загрузить заказы",
+    "orderDetails": "Детали заказа",
+    "shippingAddress": "Адрес доставки",
+    "orderSummary": "Итого",
+    "subtotal": "Подытог",
+    "shipping": "Доставка",
+    "totalInclTax": "Итого (вкл. налог)",
+    "product": "Товар",
+    "quantity": "Количество",
+    "unitPrice": "Цена за шт.",
+    "lineTotal": "Итого",
+    "page": "Страница {current} из {total}",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "pending": "Ожидает",
+    "processing": "В обработке",
+    "shipped": "Отправлен",
+    "delivered": "Доставлен",
+    "cancelled": "Отменён"
   }
 }

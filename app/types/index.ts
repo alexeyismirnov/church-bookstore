@@ -391,3 +391,77 @@ export interface Order {
   offer_discounts: unknown[];
   voucher_discounts: unknown[];
 }
+
+// ============================================================================
+// Order History Types
+// ============================================================================
+
+/**
+ * Order line item from oscar-api
+ */
+export interface OrderLine {
+  url: string;
+  product: string; // product detail URL, e.g. /api/products/381/
+  stockrecord: string; // stockrecord URL
+  quantity: number;
+  price_currency: string;
+  price_excl_tax: string;
+  price_incl_tax: string;
+  price_incl_tax_excl_discounts: string;
+  price_excl_tax_excl_discounts: string;
+  order: string; // order URL
+  attributes: unknown[]; // array of line attributes
+}
+
+/**
+ * Order address from oscar-api
+ */
+export interface OrderAddress {
+  id: number;
+  first_name: string;
+  last_name: string;
+  line1: string;
+  line2: string;
+  line3: string;
+  line4: string;
+  state: string;
+  postcode: string;
+  country: string; // URL
+  phone_number: string;
+  search_text: string;
+}
+
+/**
+ * Order from oscar-api (list view for order history)
+ */
+export interface OscarOrder {
+  number: string;
+  url: string;
+  lines: string; // URL to lines
+  lines_url: string;
+  status: string;
+  date_placed: string;
+  owner: string; // URL
+  billing_address: OrderAddress | null;
+  shipping_address: OrderAddress | null;
+  currency: string;
+  total_incl_tax: string;
+  total_excl_tax: string;
+  total_tax: string;
+  shipping_incl_tax: string;
+  shipping_excl_tax: string;
+  shipping_tax: string;
+  shipping_method: string;
+  shipping_code: string;
+  email: string;
+}
+
+/**
+ * Paginated order list response from oscar-api
+ */
+export interface OscarOrderListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: OscarOrder[];
+}
