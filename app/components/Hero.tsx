@@ -28,7 +28,7 @@ export default function Hero({ book }: HeroProps) {
             <p className="text-lg text-ink-light max-w-lg">
               {t('subtitle')}
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 pt-4">
               <Link
                 href="/catalog"
                 className="btn-burgundy inline-flex items-center gap-2"
@@ -53,7 +53,7 @@ export default function Hero({ book }: HeroProps) {
                 <p className="text-sm text-ink-muted">{t('statReaders')}</p>
               </div>
             </div>
-            <p className="text-base text-ink-muted pt-4">
+            <p className="text-base text-ink-muted">
               {t('since').split('{{year}}').map((part, i, arr) => (
                 <span key={i}>
                   {part}

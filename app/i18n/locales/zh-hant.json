@@ -29,7 +29,7 @@
     "edit": "編輯"
   },
   "nav": {
-    "title": "正教書店",
+    "title": "正教圖書書店",
     "selectLanguage": "選擇語言",
     "selectCurrency": "選擇貨幣",
     "catalog": "目錄",
@@ -44,17 +44,17 @@
     "dashboard": "控制面板",
     "myProfile": "我的資料",
     "myOrders": "我的訂單",
-    "bookshelf": "我的書架",
+    "bookshelf": "我的圖書",
     "logout": "登出",
     "account": "帳戶",
     "cart": "購物車"
   },
   "homepage": {
     "hero": {
-      "title": "歡迎來到東正教書局",
-      "subtitle": "您的東正教基督教書籍、祈禱書和屬靈資源寶庫",
+      "title": "歡迎來到",
+      "subtitle": "我們提供種類豐富的簡體中文、正體中文、俄文、英文的圖書。",
       "cta": "瀏覽目錄",
-      "bookstore": "書店",
+      "bookstore": "正教圖書書店",
       "statBooks": "可用書籍",
       "statOrders": "已發貨訂單",
       "statReaders": "滿意讀者",
@@ -399,13 +399,20 @@
   },
   "bookshelf": {
     "title": "我的書架",
+    "subtitle": "您購買的書籍都在這裡",
     "empty": "您的書架是空的",
-    "emptyDescription": "購買書籍或下載免費書籍以在此處查看。",
+    "emptyDescription": "購買書籍後即可在此查看。",
     "browseCatalog": "瀏覽目錄",
     "purchased": "已購買",
     "free": "免費",
     "bookCount": "本書",
-    "booksCount": "本圖書"
+    "booksCount": "本圖書",
+    "removeFromBookshelf": "從書架移除",
+    "confirmDeleteTitle": "移除書籍",
+    "confirmDeleteMessage": "確定要從書架中移除「{title}」嗎？",
+    "cancel": "取消",
+    "confirmDelete": "移除",
+    "deleting": "正在移除..."
   },
   "profile": {
     "title": "我的資料",

@@ -44,17 +44,17 @@
     "dashboard": "Dashboard",
     "myProfile": "My Profile",
     "myOrders": "My Orders",
-    "bookshelf": "Bookshelf",
+    "bookshelf": "My Books",
     "logout": "Logout",
     "account": "Account",
     "cart": "Cart"
   },
   "homepage": {
     "hero": {
-      "title": "Welcome to Orthodox Bookstore",
-      "subtitle": "Your source for Orthodox Christian books, prayer books, and spiritual resources",
+      "title": "Welcome to",
+      "subtitle": "Books in Chinese (Simplified and Traditional characters), English, and Russian.",
       "cta": "Browse Catalog",
-      "bookstore": "Bookstore",
+      "bookstore": "Orthodox Christian Bookstore",
       "statBooks": "Books Available",
       "statOrders": "Orders Shipped",
       "statReaders": "Happy Readers",
@@ -399,13 +399,20 @@
   },
   "bookshelf": {
     "title": "My Bookshelf",
+    "subtitle": "Your purchased books in one place",
     "empty": "Your bookshelf is empty",
-    "emptyDescription": "Purchase books or download free books to see them here.",
+    "emptyDescription": "Purchase books to see them here.",
     "browseCatalog": "Browse Catalog",
     "purchased": "Purchased",
     "free": "FREE",
     "bookCount": "book",
-    "booksCount": "books"
+    "booksCount": "books",
+    "removeFromBookshelf": "Remove from bookshelf",
+    "confirmDeleteTitle": "Remove Book",
+    "confirmDeleteMessage": "Are you sure you want to remove \"{title}\" from your bookshelf?",
+    "cancel": "Cancel",
+    "confirmDelete": "Remove",
+    "deleting": "Removing..."
   },
   "profile": {
     "title": "My Profile",

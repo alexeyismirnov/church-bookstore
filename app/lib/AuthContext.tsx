@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { getApiHeaders } from './api';
+import { getApiHeaders, resetSession } from './api';
 import { triggerRefreshCart } from './CartContext';
 
 // Types for user and profile
@@ -313,6 +313,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setUser(null);
     setProfile(null);
+
+    // Reset the session singleton so the next basket fetch creates a fresh
+    // Django session instead of reusing the invalidated one.
+    resetSession();
 
     // Refresh cart to reset the badge (anonymous user gets an empty basket)
     triggerRefreshCart();

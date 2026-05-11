@@ -422,6 +422,15 @@ async function ensureSession(): Promise<void> {
 }
 
 /**
+ * Reset the session singleton so that the next basket/API call will
+ * initialise a fresh Django session. Must be called after logout (where
+ * the server-side session is invalidated via DELETE /login/).
+ */
+export function resetSession(): void {
+  sessionInitPromise = null;
+}
+
+/**
  * Fetch user's purchased books (mybooks) from the API
  * @returns Array of MyBook objects
  * @throws Error if not authenticated or request fails
@@ -455,6 +464,23 @@ export async function getMyBooks(): Promise<MyBook[]> {
   return data.results || [];
 }
 
+/**
+ * Delete a book from user's bookshelf
+ * DELETE /mybooks/{bookId}/ - Removes the book from the user's bookshelf
+ * @param bookId - The book_id of the book to remove
+ * @throws Error if not authenticated or request fails
+ */
+export async function deleteMyBook(bookId: number): Promise<void> {
+  const response = await fetch(`${getApiBase()}/mybooks/${bookId}/`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to remove book from bookshelf');
+  }
+}
+
 // =============================================================================
 // Basket API Functions (Oscar API)
 // =============================================================================
@@ -474,8 +500,8 @@ export async function getBasket(): Promise<Basket> {
   });
 
   if (!response.ok) {
-    if (response.status === 404 || response.status === 401) {
-      // No basket exists (404) or session expired (401) - return empty basket structure
+    if (response.status === 400 || response.status === 404 || response.status === 401) {
+      // Bad request (400), no basket exists (404) or session expired (401) - return empty basket structure
       return {
         id: '',
         lines: [],
