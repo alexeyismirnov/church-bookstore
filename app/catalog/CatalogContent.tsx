@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import ProductGrid from '../components/ProductGrid';
 import FilterSidebar from '../components/FilterSidebar';
-import { getProducts, getProductsByCategory, oscarProductToBook } from '../lib/api';
+import { getProducts, getProductsByCategory, searchProducts, oscarProductToBook } from '../lib/api';
 import { useApiLocale } from '../i18n/useApiLocale';
 import { useCurrency } from '../i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
 import { Book } from '../types';
-import { ChevronLeft, ChevronRight, Loader2, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, Search, X } from 'lucide-react';
 
 interface CatalogContentProps {
   categoryId?: string;
@@ -48,6 +48,8 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   // Refresh counter to force re-fetch when category is re-selected
   const [refreshKey, setRefreshKey] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [committedSearchQuery, setCommittedSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   // Sync currentPage with URL when it changes externally (e.g., back button)
   useEffect(() => {
@@ -77,7 +79,10 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
       
       try {
         let response;
-        if (selectedCategoryId) {
+        if (isSearchActive && committedSearchQuery.trim()) {
+          // Search mode: fetch products matching the search query
+          response = await searchProducts(committedSearchQuery, currentPage);
+        } else if (selectedCategoryId) {
           // Fetch products by category from /api/prodcat/<categoryId>/
           response = await getProductsByCategory(selectedCategoryId, currentPage);
         } else {
@@ -102,7 +107,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
     }
 
     fetchProducts();
-  }, [currentPage, selectedCategoryId, categoryParam, refreshKey, locale, isCurrencyLoading, currency]);
+  }, [currentPage, selectedCategoryId, categoryParam, refreshKey, locale, isCurrencyLoading, currency, isSearchActive, committedSearchQuery]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
@@ -114,8 +119,22 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: integrate search with API when search endpoint is available
-    // For now, this is a placeholder — search functionality will be implemented later
+    if (searchQuery.trim()) {
+      setCommittedSearchQuery(searchQuery.trim());
+      setIsSearchActive(true);
+      setCurrentPage(1);
+    } else {
+      // If search is cleared, exit search mode
+      setIsSearchActive(false);
+      setCommittedSearchQuery('');
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setCommittedSearchQuery('');
+    setIsSearchActive(false);
+    setCurrentPage(1);
   };
 
   // Handle category selection from FilterSidebar and update URL
@@ -209,6 +228,24 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
 
           {/* Product Grid */}
           <div className="flex-grow">
+            {/* Search active indicator */}
+            {isSearchActive && (
+              <div className="flex items-center justify-between bg-parchment/30 border border-parchment/50 rounded-lg px-4 py-3 mb-6">
+                <span className="text-sm text-gray-700">
+                  {tCatalog('showingResults')
+                    .replace('{start}', String((currentPage - 1) * 20 + 1))
+                    .replace('{end}', String(Math.min(currentPage * 20, totalCount)))
+                    .replace('{total}', String(totalCount))} &ldquo;<strong>{committedSearchQuery}</strong>&rdquo;
+                </span>
+                <button
+                  onClick={handleClearSearch}
+                  className="flex items-center gap-1 text-sm text-burgundy hover:underline"
+                >
+                  <X className="w-4 h-4" />
+                  {tCatalog('filter.clearAll')}
+                </button>
+              </div>
+            )}
             {loading ? (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
@@ -256,20 +293,28 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
               </>
             ) : (
               <div className="text-center py-16">
-                <p className="text-gray-500 text-lg">{tCatalog('empty')}</p>
+                <p className="text-gray-500 text-lg">
+                  {isSearchActive
+                    ? `${tCatalog('empty')} "${committedSearchQuery}"`
+                    : tCatalog('empty')}
+                </p>
                 <button
                   onClick={() => {
-                    setSelectedCategories([]);
-                    setSelectedCategoryId(null);
-                    setInStock(false);
-                    // Clear category from URL
-                    const params = new URLSearchParams(searchParams);
-                    params.delete('category');
-                    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+                    if (isSearchActive) {
+                      handleClearSearch();
+                    } else {
+                      setSelectedCategories([]);
+                      setSelectedCategoryId(null);
+                      setInStock(false);
+                      // Clear category from URL
+                      const params = new URLSearchParams(searchParams);
+                      params.delete('category');
+                      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+                    }
                   }}
                   className="mt-4 text-burgundy hover:underline"
                 >
-                  {tCatalog('filter.clearAll')}
+                  {isSearchActive ? tCatalog('hero.searchButton') === 'Search' ? 'Clear search' : tCatalog('filter.clearAll') : tCatalog('filter.clearAll')}
                 </button>
               </div>
             )}

@@ -89,6 +89,27 @@ export async function getProducts(page: number = 1): Promise<OscarPaginationResp
 }
 
 /**
+ * Search products by query from the Oscar API
+ * @param query - Search query string
+ * @param page - Page number (1-based)
+ * @returns Paginated product response
+ */
+export async function searchProducts(query: string, page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
+  const response = await fetch(`${getApiBase()}/search/?q=${encodeURIComponent(query)}&page=${page}`, {
+    method: 'GET',
+    headers: getApiHeaders(),
+    cache: 'no-store', // Ensure fresh data
+  });
+
+  if (!response.ok) {
+    throw new Error(`Search failed: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+/**
  * Fetch a single product by ID
  * @param id - Product ID
  * @returns Product details
