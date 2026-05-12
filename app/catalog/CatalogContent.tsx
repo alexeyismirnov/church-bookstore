@@ -32,7 +32,8 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   const categoryParam = searchParams.get('category');
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [inStock, setInStock] = useState(false);
+  const inStockFromUrl = searchParams.get('in_stock') === 'true';
+  const [inStock, setInStock] = useState(inStockFromUrl);
   
   // API state
   const [books, setBooks] = useState<Book[]>([]);
@@ -47,14 +48,25 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId || null);
   // Refresh counter to force re-fetch when category is re-selected
   const [refreshKey, setRefreshKey] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [committedSearchQuery, setCommittedSearchQuery] = useState('');
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  const queryFromUrl = searchParams.get('q') || '';
+  const [searchQuery, setSearchQuery] = useState(queryFromUrl);
+  const [committedSearchQuery, setCommittedSearchQuery] = useState(queryFromUrl);
+  const [isSearchActive, setIsSearchActive] = useState(!!queryFromUrl);
 
   // Sync currentPage with URL when it changes externally (e.g., back button)
   useEffect(() => {
     setCurrentPage(pageFromUrl);
   }, [pageFromUrl]);
+
+  // Sync inStock and search state from URL when it changes externally (e.g., back button)
+  useEffect(() => {
+    const urlInStock = searchParams.get('in_stock') === 'true';
+    const urlQuery = searchParams.get('q') || '';
+    setInStock(urlInStock);
+    setSearchQuery(urlQuery);
+    setCommittedSearchQuery(urlQuery);
+    setIsSearchActive(!!urlQuery);
+  }, [searchParams]);
  
   // Sync selectedCategoryId with categoryId prop when it changes (e.g., from URL)
   useEffect(() => {
@@ -81,13 +93,13 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
         let response;
         if (isSearchActive && committedSearchQuery.trim()) {
           // Search mode: fetch products matching the search query
-          response = await searchProducts(committedSearchQuery, currentPage);
+          response = await searchProducts(committedSearchQuery, currentPage, inStock);
         } else if (selectedCategoryId) {
           // Fetch products by category from /api/prodcat/<categoryId>/
-          response = await getProductsByCategory(selectedCategoryId, currentPage);
+          response = await getProductsByCategory(selectedCategoryId, currentPage, inStock);
         } else {
           // Fetch all products from /api/oscar/products/
-          response = await getProducts(currentPage);
+          response = await getProducts(currentPage, inStock);
         }
         
         // Convert Oscar products to Book format with current locale
@@ -107,7 +119,7 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
     }
 
     fetchProducts();
-  }, [currentPage, selectedCategoryId, categoryParam, refreshKey, locale, isCurrencyLoading, currency, isSearchActive, committedSearchQuery]);
+  }, [currentPage, selectedCategoryId, categoryParam, refreshKey, locale, isCurrencyLoading, currency, isSearchActive, committedSearchQuery, inStock]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
@@ -123,10 +135,22 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
       setCommittedSearchQuery(searchQuery.trim());
       setIsSearchActive(true);
       setCurrentPage(1);
+      // Update URL
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('q', searchQuery.trim());
+      params.delete('page');
+      params.set('page', '1');
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     } else {
       // If search is cleared, exit search mode
       setIsSearchActive(false);
       setCommittedSearchQuery('');
+      // Remove q from URL
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete('q');
+      params.delete('page');
+      params.set('page', '1');
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     }
   };
 
@@ -134,6 +158,26 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
     setSearchQuery('');
     setCommittedSearchQuery('');
     setIsSearchActive(false);
+    setCurrentPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('q');
+    params.delete('page');
+    params.set('page', '1');
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  // Handle stock filter change and update URL
+  const handleStockChange = (value: boolean) => {
+    setInStock(value);
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set('in_stock', 'true');
+    } else {
+      params.delete('in_stock');
+    }
+    params.delete('page');
+    params.set('page', '1');
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     setCurrentPage(1);
   };
 
@@ -164,13 +208,13 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
   };
 
   // Filter and sort books (client-side on current page)
+  // Note: inStock filtering is now handled server-side via the API
   const filteredBooks = books
     .filter((book) => {
       if (selectedCategories.length > 0) {
         const categorySlug = book.category.toLowerCase().replace(/\s+/g, '-');
         if (!selectedCategories.includes(categorySlug)) return false;
       }
-      if (inStock && !book.inStock) return false;
       return true;
     });
 
@@ -214,14 +258,14 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <FilterSidebar
             selectedCategories={selectedCategories}
             onCategoryChange={handleCategoryChange}
             inStock={inStock}
-            onStockChange={setInStock}
+            onStockChange={handleStockChange}
             onCategorySelect={handleCategorySelect}
             selectedCategoryId={selectedCategoryId}
           />
@@ -306,9 +350,10 @@ export default function CatalogContent({ categoryId }: CatalogContentProps) {
                       setSelectedCategories([]);
                       setSelectedCategoryId(null);
                       setInStock(false);
-                      // Clear category from URL
+                      // Clear category and in_stock from URL
                       const params = new URLSearchParams(searchParams);
                       params.delete('category');
+                      params.delete('in_stock');
                       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
                     }
                   }}

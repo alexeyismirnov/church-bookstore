@@ -53,8 +53,10 @@ export function getApiHeaders(): HeadersInit {
  * @param page - Page number (1-based)
  * @returns Paginated product response
  */
-export async function getProductsByCategory(categoryId: string, page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
-  const response = await fetch(`${getApiBase()}/prodcat/${categoryId}/?page=${page}`, {
+export async function getProductsByCategory(categoryId: string, page: number = 1, inStock?: boolean): Promise<OscarPaginationResponse<OscarProduct>> {
+  let url = `${getApiBase()}/prodcat/${categoryId}/?page=${page}`;
+  if (inStock) url += '&in_stock=true';
+  const response = await fetch(url, {
     method: 'GET',
     headers: getApiHeaders(),
     cache: 'no-store', // Ensure fresh data
@@ -73,8 +75,10 @@ export async function getProductsByCategory(categoryId: string, page: number = 1
  * @param page - Page number (1-based)
  * @returns Paginated product response
  */
-export async function getProducts(page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
-  const response = await fetch(`${getApiBase()}/products/?page=${page}`, {
+export async function getProducts(page: number = 1, inStock?: boolean): Promise<OscarPaginationResponse<OscarProduct>> {
+  let url = `${getApiBase()}/products/?page=${page}`;
+  if (inStock) url += '&in_stock=true';
+  const response = await fetch(url, {
     method: 'GET',
     headers: getApiHeaders(),
     cache: 'no-store', // Ensure fresh data
@@ -94,8 +98,10 @@ export async function getProducts(page: number = 1): Promise<OscarPaginationResp
  * @param page - Page number (1-based)
  * @returns Paginated product response
  */
-export async function searchProducts(query: string, page: number = 1): Promise<OscarPaginationResponse<OscarProduct>> {
-  const response = await fetch(`${getApiBase()}/search/?q=${encodeURIComponent(query)}&page=${page}`, {
+export async function searchProducts(query: string, page: number = 1, inStock?: boolean): Promise<OscarPaginationResponse<OscarProduct>> {
+  let url = `${getApiBase()}/search/?q=${encodeURIComponent(query)}&page=${page}`;
+  if (inStock) url += '&in_stock=true';
+  const response = await fetch(url, {
     method: 'GET',
     headers: getApiHeaders(),
     cache: 'no-store', // Ensure fresh data
