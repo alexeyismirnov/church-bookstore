@@ -498,5 +498,21 @@
     "shipped": "Shipped",
     "delivered": "Delivered",
     "cancelled": "Cancelled"
+  },
+  "faithofsaints": {
+    "title": "Faith of Saints",
+    "audioTrack": "Audio Track:",
+    "mandarin": "Mandarin",
+    "cantonese": "Cantonese",
+    "russian": "Russian",
+    "loading": "Loading episodes...",
+    "error": "Failed to load episodes",
+    "retry": "Retry",
+    "loginRequired": "Please log in to access Faith of Saints",
+    "goHome": "Go to Home",
+    "episode": "Episode {num}",
+    "back": "Back to Episodes",
+    "previousEpisode": "Previous Episode",
+    "nextEpisode": "Next Episode"
   }
 }

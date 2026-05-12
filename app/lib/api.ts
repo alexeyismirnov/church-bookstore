@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order, OscarOrder, OscarOrderListResponse, OrderLine } from '../types';
+import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, Basket, BasketLine, BasketLinesResponse, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order, OscarOrder, OscarOrderListResponse, OrderLine, Episode } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -1054,4 +1054,46 @@ export async function getOrderLines(pk: string): Promise<OscarPaginationResponse
     throw new Error(`Failed to fetch order lines: ${response.status}`);
   }
   return response.json();
+}
+
+// =============================================================================
+// Faith of Saints API Functions
+// =============================================================================
+
+/**
+ * Fetch episodes for the Faith of Saints DVD series
+ * GET /episodes/ - Returns episodes ordered by num (requires authentication)
+ * @returns Array of Episode objects with num and title
+ */
+export async function getEpisodes(): Promise<Episode[]> {
+  const response = await fetch(`${getApiBase()}/episodes/`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error('Authentication required. Please log in to view episodes.');
+    }
+    throw new Error(`Failed to fetch episodes: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  // Handle paginated response (DRF default) or direct array
+  if (Array.isArray(data)) {
+    return data;
+  }
+  return data.results || [];
+}
+
+/**
+ * Construct the video URL for a Faith of Saints episode
+ * @param episodeNum - Episode number
+ * @param audio - Audio preference code ('p'=Mandarin, 'g'=Cantonese, 'r'=Russian)
+ * @returns Full URL to the MP4 video file
+ */
+export function getFaithOfSaintsVideoUrl(episodeNum: number, audio: string): string {
+  const padded = String(episodeNum).padStart(2, '0');
+  return `https://orthodoxy.sgp1.digitaloceanspaces.com/faithofsaints/${padded}-${audio}.mp4`;
 }

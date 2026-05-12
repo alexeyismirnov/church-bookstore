@@ -465,3 +465,16 @@ export interface OscarOrderListResponse {
   previous: string | null;
   results: OscarOrder[];
 }
+
+// ============================================================================
+// Faith of Saints Types
+// ============================================================================
+
+/**
+ * Episode from the Faith of Saints DVD series
+ * Based on MovieEpisode model in apps/faithofsaints/models.py
+ */
+export interface Episode {
+  num: number;
+  title: string;
+}

@@ -34,7 +34,9 @@ export default function ProductCard({ book }: ProductCardProps) {
   };
 
   // Product link without page param - browser back button will naturally return to catalog page
-  const productLink = `/product/${book.id}`;
+  // Faith of Saints DVD (PK=95) redirects to the dedicated episode list page
+  const isFaithOfSaints = book.id === '95';
+  const productLink = isFaithOfSaints ? '/faithofsaints' : `/product/${book.id}`;
 
   const handleClick = () => {
     setIsNavigating(true);

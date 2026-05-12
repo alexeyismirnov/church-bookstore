@@ -498,5 +498,21 @@
     "shipped": "已发货",
     "delivered": "已送达",
     "cancelled": "已取消"
+  },
+  "faithofsaints": {
+    "title": "信仰先贤",
+    "audioTrack": "音轨：",
+    "mandarin": "普通话",
+    "cantonese": "粤语",
+    "russian": "俄语",
+    "loading": "加载剧集中...",
+    "error": "加载剧集失败",
+    "retry": "重试",
+    "loginRequired": "请登录以访问《信仰先贤》",
+    "goHome": "返回首页",
+    "episode": "第{num}集",
+    "back": "返回剧集列表",
+    "previousEpisode": "上一集",
+    "nextEpisode": "下一集"
   }
 }
