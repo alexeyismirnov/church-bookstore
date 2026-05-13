@@ -86,7 +86,13 @@ function ConfirmationContent() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-2 h-2 bg-burgundy rounded-full mt-1.5 flex-shrink-0" />
-                <span>{tCheckout('confirmation.step3')}</span>
+                <span>
+                  {tCheckout('confirmation.step3Before')}
+                  <Link href="/bookshelf" className="text-burgundy underline font-medium">
+                    {tCheckout('confirmation.step3Link')}
+                  </Link>
+                  {tCheckout('confirmation.step3After')}
+                </span>
               </li>
             </ul>
           </div>

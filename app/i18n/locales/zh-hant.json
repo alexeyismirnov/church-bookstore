@@ -248,7 +248,9 @@
       "whatNext": "接下來呢？",
       "step1": "我們會向您發送訂單詳情的郵件確認",
       "step2": "您的訂單將在幾個工作日內處理",
-      "step3": "訂單發貨後您將收到物流追蹤資訊"
+      "step3Before": "如果您訂購了電子書，您可以在個人資料的",
+      "step3Link": "我的圖書",
+      "step3After": "版塊中下載。"
     },
     "orderSummarySection": {
       "qty": "數量："

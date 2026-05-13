@@ -2,8 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { getApiHeaders, resetSession } from './api';
-import { triggerRefreshCart } from './CartContext';
+import { getApiHeaders } from './api';
 
 // Types for user and profile
 export interface User {
@@ -208,9 +207,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Fetch profile after successful login and sync with contexts
       await fetchProfile();
       
-      // Refresh cart to show the user's saved basket items
-      triggerRefreshCart();
-      
       setIsLoading(false);
       return true;
     } catch (err) {
@@ -314,12 +310,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setProfile(null);
 
-    // Reset the session singleton so the next basket fetch creates a fresh
-    // Django session instead of reusing the invalidated one.
-    resetSession();
-
-    // Refresh cart to reset the badge (anonymous user gets an empty basket)
-    triggerRefreshCart();
   };
 
   // Fetch profile

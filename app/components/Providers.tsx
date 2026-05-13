@@ -8,7 +8,7 @@ import { LanguageProvider, type Locale } from '../i18n/LanguageContext';
 import { CurrencyProvider } from '../i18n/CurrencyContext';
 import { type Currency } from '../i18n/settings';
 import { AuthProvider } from '../lib/AuthContext';
-import { CartProvider } from '../lib/CartContext';
+import { LocalCartProvider } from '../lib/localCart';
 
 interface ProvidersProps {
   children: ReactNode;
@@ -21,13 +21,13 @@ interface ProvidersProps {
 export default function Providers({ children, initialLocale, initialCurrency }: ProvidersProps) {
   return (
     <AuthProvider>
-      <CartProvider>
+      <LocalCartProvider>
         <CurrencyProvider initialCurrency={initialCurrency}>
           <LanguageProvider initialLocale={initialLocale}>
             {children}
           </LanguageProvider>
         </CurrencyProvider>
-      </CartProvider>
+      </LocalCartProvider>
     </AuthProvider>
   );
 }

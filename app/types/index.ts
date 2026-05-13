@@ -257,27 +257,6 @@ export interface Basket {
   num_items_without_gifting?: number;
 }
 
-/**
- * Oscar API Add to Basket Request
- */
-export interface AddToBasketRequest {
-  product: number; // Product ID
-  quantity: number;
-  optional?: {
-    options?: Array<{
-      name: string;
-      value: string;
-    }>;
-  };
-}
-
-/**
- * Oscar API Update Basket Line Request
- */
-export interface UpdateBasketLineRequest {
-  quantity: number;
-}
-
 // ============================================================================
 // Checkout Types
 // ============================================================================

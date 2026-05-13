@@ -11,14 +11,14 @@ import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 import { useTranslations } from '../i18n/LanguageContext';
 import { useAuth } from '../lib/AuthContext';
-import { useCart } from '../lib/CartContext';
+import { useLocalCart } from '../lib/localCart';
 
 export default function Header() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { cartCount, isCartLoading } = useCart();
+  const { totalItems } = useLocalCart();
   
   // Get translations for navigation
   const t = useTranslations('nav');
@@ -157,9 +157,9 @@ export default function Header() {
               className="flex items-center gap-1 p-2 hover:bg-parchment-dark/30 rounded-full transition-colors relative"
             >
               <ShoppingCart className="w-5 h-5 text-ink" />
-              {cartCount > 0 && (
+              {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-gold text-ink text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                  {cartCount}
+                  {totalItems}
                 </span>
               )}
             </Link>

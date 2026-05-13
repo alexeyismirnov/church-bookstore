@@ -8,8 +8,8 @@ import { CheckoutForm } from '@/app/components/checkout/CheckoutForm';
 import { OrderSummary } from '@/app/components/checkout/OrderSummary';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShippingAddress, ShippingMethod, Basket } from '@/app/types';
-import { getBasket, basketToCartItems, getShippingMethods, placeOrder, getStoredToken } from '@/app/lib/api';
-import { useCart } from '@/app/lib/CartContext';
+import { getShippingMethods, placeOrder, getStoredToken } from '@/app/lib/api';
+import { useLocalCart, type SyncResult } from '@/app/lib/localCart';
 import { useCurrency } from '@/app/i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
 import { useApiLocale } from '../i18n/useApiLocale';
@@ -41,6 +41,38 @@ interface CheckoutPaymentState {
   clientSecret: string;
   paymentIntentId: string;
   selectedShippingMethod: ShippingMethod | null;
+}
+
+/** Convert a SyncResult into CartItemForDisplay[] for the checkout UI. */
+function syncResultToDisplayItems(result: SyncResult): CartItemForDisplay[] {
+  return result.lines.map(line => {
+    const productUrl: string = line.product || '';
+    const match = productUrl.match(/\/products\/(\d+)\/?$/);
+    const productId = match ? match[1] : '';
+
+    const localItem = result.localItems.find(
+      i => i.productId === parseInt(productId, 10)
+    );
+
+    const linePrice = parseFloat(line.price_incl_tax) || 0;
+    const unitPrice = line.quantity > 0 ? linePrice / line.quantity : 0;
+
+    const lineIdMatch = line.url?.match(/\/lines\/(\d+)\/?$/);
+    const lineId = lineIdMatch ? parseInt(lineIdMatch[1], 10) : line.id;
+
+    return {
+      id: productId,
+      basketLineId: lineId,
+      title: localItem?.title || 'Unknown Product',
+      author: localItem?.author || '',
+      price: unitPrice,
+      quantity: line.quantity,
+      coverImage: localItem?.coverImage || '/images/placeholder-book.jpg',
+      linePrice,
+      variantTitle: localItem?.variantTitle,
+      is_shipping_required: line.is_shipping_required ?? true,
+    };
+  });
 }
 
 // Inner component that uses useSearchParams
@@ -79,9 +111,11 @@ function CheckoutContent() {
   const [paymentFailed, setPaymentFailed] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderPlacementError, setOrderPlacementError] = useState<string | null>(null);
+  const [syncSkippedItems, setSyncSkippedItems] = useState<SyncResult['skippedItems']>([]);
+  const [syncPriceChanges, setSyncPriceChanges] = useState<SyncResult['priceChanges']>([]);
   
-  // Get cart context for refreshing cart count after order placement
-  const { refreshCart } = useCart();
+  // Local cart context for syncToBackend and clearCart
+  const { syncToBackend, clearCart } = useLocalCart();
 
   // Calculate if shipping is required based on cartItems (use cartItems which has is_shipping_required from fetched lines)
   const isShippingRequired = cartItems.some(item => item.is_shipping_required === true);
@@ -119,29 +153,31 @@ function CheckoutContent() {
     }
   }, [redirectStatus, router]);
 
-  // Load cart from Oscar API on mount
+  // Sync local cart to backend basket on mount
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const basketData = await getBasket();
-        setBasket(basketData);
-        const items = await basketToCartItems(basketData);
+        const result = await syncToBackend(currency);
+        const items = syncResultToDisplayItems(result);
         setCartItems(items);
+        setBasket({ ...result.basketData, id: String(result.basketData.id) });
+        setSyncSkippedItems(result.skippedItems);
+        setSyncPriceChanges(result.priceChanges);
         setIsBasketLoaded(true);
       } catch (err) {
-        console.error('Error loading cart from API:', err);
+        console.error('Error syncing cart to backend:', err);
         setError(tCheckout('errors.cartLoadFailed'));
         // Set empty cart on error - will redirect to cart page
         setCartItems([]);
         setIsBasketLoaded(true);
       } finally {
         setIsLoading(false);
-        setIsInitialLoad(false); // Mark initial load as complete
+        setIsInitialLoad(false);
       }
     };
 
     loadCart();
-  }, [currency, locale]);
+  }, [currency]);
 
   // Determine the correct step after basket is loaded
   useEffect(() => {
@@ -200,13 +236,16 @@ function CheckoutContent() {
       const oldCurrency = prevCurrencyRef.current;
       prevCurrencyRef.current = currency;
       
-      // Re-fetch basket to get updated prices
+      // Re-sync cart to get updated prices in the new currency
       const refreshBasket = async () => {
         setIsLoading(true);
         try {
-          const basket = await getBasket();
-          const items = await basketToCartItems(basket);
+          const result = await syncToBackend(currency);
+          const items = syncResultToDisplayItems(result);
           setCartItems(items);
+          setBasket({ ...result.basketData, id: String(result.basketData.id) });
+          setSyncSkippedItems(result.skippedItems);
+          setSyncPriceChanges(result.priceChanges);
           return items;
         } catch (err) {
           console.error('Error refreshing cart after currency change:', err);
@@ -395,8 +434,8 @@ function CheckoutContent() {
       setCheckoutStep('complete');
       // Clear the saved checkout state since payment succeeded
       sessionStorage.removeItem(CHECKOUT_STATE_KEY);
-      // Reset cart count since basket is now consumed
-      refreshCart();
+      // Clear localStorage cart since the order has been placed
+      clearCart();
       // Navigate to confirmation page
       router.push('/checkout/confirmation');
     } catch (err) {
@@ -430,7 +469,12 @@ function CheckoutContent() {
   if ((isLoading && isInitialLoad) || !isBasketLoaded || !isStepDetermined) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy" />
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-burgundy mx-auto" />
+          <p className="mt-4 text-gray-500">
+            {isLoading && isInitialLoad ? 'Syncing your cart...' : 'Loading...'}
+          </p>
+        </div>
       </div>
     );
   }
@@ -443,15 +487,6 @@ function CheckoutContent() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumbs */}
-        <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-burgundy">{t('nav.home')}</Link>
-          <span className="mx-2">/</span>
-          <Link href="/cart" className="hover:text-burgundy">{t('nav.cart')}</Link>
-          <span className="mx-2">/</span>
-          <span className="text-dark">{checkoutStep === 'payment' ? t('checkout.paymentTitle') : t('checkout.shipping')}</span>
-        </nav>
-
         <h1 className="text-3xl md:text-4xl font-bold text-dark mb-8">
           {checkoutStep === 'payment' ? t('checkout.paymentTitle') : t('checkout.shipping')}
         </h1>
@@ -459,6 +494,32 @@ function CheckoutContent() {
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
             {error}
+          </div>
+        )}
+
+        {syncSkippedItems.length > 0 && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+            <p className="font-medium">Some items are no longer available and were removed:</p>
+            <ul className="mt-1 text-sm list-disc list-inside">
+              {syncSkippedItems.map((item) => (
+                <li key={item.product_id}>
+                  Product #{item.product_id} — {item.reason.replace(/_/g, ' ')}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {syncPriceChanges.length > 0 && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+            <p className="font-medium">Some prices have changed since you added items to your cart.</p>
+            <ul className="mt-1 text-sm list-disc list-inside">
+              {syncPriceChanges.map((item) => (
+                <li key={item.product_id}>
+                  Product #{item.product_id}: was ${item.localPrice.toFixed(2)}, now ${item.backendPrice.toFixed(2)}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

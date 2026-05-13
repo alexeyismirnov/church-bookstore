@@ -248,7 +248,9 @@
       "whatNext": "接下来呢？",
       "step1": "我们会向您发送订单详情的邮件确认",
       "step2": "您的订单将在几个工作日内处理",
-      "step3": "订单发货后您将收到物流追踪信息"
+      "step3Before": "如果您订购了电子书，您可以在个人资料的",
+      "step3Link": "我的图书",
+      "step3After": "版块中下载。"
     },
     "orderSummarySection": {
       "qty": "数量："

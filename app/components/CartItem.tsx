@@ -2,29 +2,15 @@
 
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { CartItem as CartItemType } from '../types';
+import { LocalCartItem } from '../lib/localCart';
 import { useTranslations } from '../i18n/LanguageContext';
 import { useCurrency } from '../i18n/CurrencyContext';
 
-interface CartItemDisplay {
-  id: string;
-  basketLineId?: number;
-  title: string;
-  author?: string;
-  price: number;
-  quantity: number;
-  coverImage: string;
-  linePrice?: number;
-  variantTitle?: string;
-  parentId?: string; // Parent product ID for navigation
-}
-
 interface CartItemProps {
-  item: CartItemDisplay;
-  onUpdateQuantity?: (id: string, quantity: number) => void;
+  item: LocalCartItem;
+  onUpdateQuantity?: (productId: number, quantity: number) => void;
   onUpdateQuantityByDelta?: (delta: number) => void;
-  onRemove?: (id: string) => void;
-  onRemoveByBasketLineId?: (basketLineId: number) => void;
+  onRemove?: (productId: number) => void;
 }
 
 export default function CartItem({
@@ -32,19 +18,19 @@ export default function CartItem({
   onUpdateQuantity,
   onUpdateQuantityByDelta,
   onRemove,
-  onRemoveByBasketLineId
 }: CartItemProps) {
   const t = useTranslations();
   const { symbol } = useCurrency();
-  
-  // Use parentId for navigation if available (for variants), otherwise use item.id
-  const productLinkId = item.parentId || item.id;
-  
+  const linePrice = item.price * item.quantity;
+
+  // Use parentProductId for navigation (link back to product page)
+  const productLinkId = item.parentProductId;
+
   const handleDecrease = () => {
     if (onUpdateQuantityByDelta) {
       onUpdateQuantityByDelta(-1);
     } else if (onUpdateQuantity) {
-      onUpdateQuantity(item.id, Math.max(1, item.quantity - 1));
+      onUpdateQuantity(item.productId, Math.max(1, item.quantity - 1));
     }
   };
 
@@ -52,27 +38,25 @@ export default function CartItem({
     if (onUpdateQuantityByDelta) {
       onUpdateQuantityByDelta(1);
     } else if (onUpdateQuantity) {
-      onUpdateQuantity(item.id, item.quantity + 1);
+      onUpdateQuantity(item.productId, item.quantity + 1);
     }
   };
 
   const handleRemove = () => {
-    if (onRemoveByBasketLineId && item.basketLineId) {
-      onRemoveByBasketLineId(item.basketLineId);
-    } else if (onRemove) {
-      onRemove(item.id);
+    if (onRemove) {
+      onRemove(item.productId);
     }
   };
 
   return (
     <div className="flex gap-4 py-6 px-6 border-b border-gray-100">
       {/* Image */}
-      <div className="w-24 h-32 flex-shrink-0">
+      <div className="w-24 h-32 flex-shrink-0 overflow-hidden">
         <Link href={`/product/${productLinkId}`} className="block cursor-pointer">
           <img
             src={item.coverImage}
             alt={item.title}
-            className="w-full h-full object-cover rounded-lg hover:opacity-80 transition-opacity"
+            className="w-full h-full max-h-32 object-cover rounded-lg hover:opacity-80 transition-opacity"
           />
         </Link>
       </div>
@@ -89,7 +73,7 @@ export default function CartItem({
           </div>
           <div className="text-right">
             <p className="font-bold text-lg text-dark">
-              {symbol}{(item.linePrice ?? (item.price * item.quantity)).toFixed(2)}
+              {symbol}{linePrice.toFixed(2)}
             </p>
             {item.quantity > 1 && (
               <p className="text-sm text-gray-400">

@@ -7,11 +7,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Download, FileText, BookOpen, Package, Monitor, ShoppingCart, Check } from 'lucide-react';
-import { getProductById, oscarProductToBook, parseVariantPrice, addToBasket, getStoredToken } from '../../lib/api';
+import { getProductById, oscarProductToBook, parseVariantPrice } from '../../lib/api';
 import { useApiLocale } from '../../i18n/useApiLocale';
 import { useLanguage, useTranslations } from '../../i18n/LanguageContext';
 import { useCurrency } from '../../i18n/CurrencyContext';
-import { useCart } from '../../lib/CartContext';
+import { useLocalCart } from '../../lib/localCart';
 import { Book, Variant } from '../../types';
 import { Loader2 } from 'lucide-react';
 
@@ -112,7 +112,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const t = useTranslations();
   const tProduct = useTranslations('product');
   const { symbol, currency, isLoading: currencyIsLoading } = useCurrency();
-  const { refreshCart } = useCart();
+  const { addItem } = useLocalCart();
   const router = useRouter();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,8 +123,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const [fetchedForKey, setFetchedForKey] = useState<string | undefined>(undefined);
   const currentKey = `${locale}:${currency}`;
   
-  // Add to cart state - track per-variant ID instead of global boolean
-  const [addingToCartVariantId, setAddingToCartVariantId] = useState<number | null>(null);
+  // Add to cart state - track per-variant ID for success feedback
   const [addedToCartVariantId, setAddedToCartVariantId] = useState<number | null>(null);
   const [addToCartError, setAddToCartError] = useState<string | null>(null);
 
@@ -182,30 +181,59 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
     };
   }, [productId, locale, currency, contextLoading]);
 
-  // Handle add to cart
-  const handleAddToCart = async (variantId: number) => {
-    if (!book) return; // Safety check
+  // Handle add to cart — now uses localStorage cart (instant, no API call)
+  const handleAddToCart = (variantId: number) => {
+    if (!book) return;
 
     try {
-      setAddingToCartVariantId(variantId);
       setAddToCartError(null);
-      
-      // For products with variants, we need to pass the VARIANT ID (child product ID),
-      // not the parent product ID. Oscar's pricing is on the variants, not the parent.
-      // The Oscar API add-product endpoint expects the product URL.
-      
-      await addToBasket(variantId, 1);
+
+      const isVariant = book.isParent && book.variants && book.variants.length > 0;
+
+      let itemTitle: string, itemAuthor: string, itemCoverImage: string, itemPrice: number;
+      let itemVariantTitle: string | undefined;
+      let itemIsShippingRequired: boolean;
+      let parentProductId: number;
+
+      if (isVariant) {
+        const variant = book.variants!.find(v => v.id === variantId);
+        if (!variant) return;
+        itemTitle = book.title;
+        itemAuthor = book.author;
+        itemCoverImage = book.coverImage;
+        itemPrice = parseVariantPrice(variant);
+        itemVariantTitle = variant.title;
+        itemIsShippingRequired = variant.is_shipping_required;
+        parentProductId = parseInt(book.id);
+      } else {
+        itemTitle = book.title;
+        itemAuthor = book.author;
+        itemCoverImage = book.coverImage;
+        itemPrice = book.price;
+        itemVariantTitle = undefined;
+        itemIsShippingRequired = book.isShippingRequired ?? true;
+        parentProductId = book.parentId ? book.parentId : parseInt(book.id);
+      }
+
+      addItem({
+        productId: variantId,
+        parentProductId,
+        quantity: 1,
+        title: itemTitle,
+        author: itemAuthor,
+        coverImage: itemCoverImage,
+        variantTitle: itemVariantTitle,
+        price: itemPrice,
+        currency,
+        isShippingRequired: itemIsShippingRequired,
+        addedAt: new Date().toISOString(),
+      });
+
       setAddedToCartVariantId(variantId);
-      // Notify Header to refresh cart count
-      await refreshCart();
-      // Reset success state after 2 seconds
       setTimeout(() => setAddedToCartVariantId(null), 2000);
     } catch (err) {
       console.error('[handleAddToCart] Error adding to cart:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to add to cart';
-      setAddToCartError(errorMessage);
-    } finally {
-      setAddingToCartVariantId(null);
+      setAddToCartError(err instanceof Error ? err.message : 'Failed to add to cart');
     }
   };
 
@@ -316,17 +344,12 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                           <button className="btn-burgundy w-full whitespace-nowrap opacity-50 cursor-not-allowed active:scale-100" disabled>
                             {t('common.outOfStock')}
                           </button>
-                        ) : addingToCartVariantId === variant.id ? (
-                          <button className="btn-burgundy w-full whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
-                            <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
-                            {t('common.adding')}
-                          </button>
                         ) : addedToCartVariantId === variant.id ? (
                           <button className="btn-burgundy w-full whitespace-nowrap bg-green-600 hover:bg-green-600">
                             <Check className="w-4 h-4 inline mr-2" />
                             {t('common.added')}
                           </button>
-                        ) : addToCartError && addingToCartVariantId === null ? (
+                        ) : addToCartError ? (
                           <button className="btn-burgundy w-full whitespace-nowrap bg-red-500 hover:bg-red-600">
                             {t('common.error')}
                           </button>
@@ -386,12 +409,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   {/* Add to Cart Button - hidden for free books */}
                   {book.price !== 0 && (
                     book.isShippingRequired === false || book.isInStock ? (
-                      addingToCartVariantId === parseInt(book.id) ? (
-                        <button className="btn-burgundy whitespace-nowrap opacity-50 cursor-not-allowed" disabled>
-                          <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
-                          {t('common.adding')}
-                        </button>
-                      ) : addedToCartVariantId === parseInt(book.id) ? (
+                      addedToCartVariantId === parseInt(book.id) ? (
                         <button className="btn-burgundy whitespace-nowrap bg-green-600 hover:bg-green-600">
                           <Check className="w-4 h-4 inline mr-2" />
                           {t('common.added')}

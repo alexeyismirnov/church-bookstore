@@ -248,7 +248,9 @@
       "whatNext": "What happens next?",
       "step1": "We'll send you an email confirmation with your order details",
       "step2": "Your order will be processed within a few business days",
-      "step3": "You'll receive tracking information once your order ships"
+      "step3Before": "If you ordered e-books, you can download them in ",
+      "step3Link": "My books",
+      "step3After": " section of your profile."
     },
     "orderSummarySection": {
       "qty": "Qty:"
