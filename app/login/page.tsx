@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import { useTranslations } from '../i18n/LanguageContext';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations('auth.login');
   const { login, isLoading, error } = useAuth();
   
@@ -28,8 +29,9 @@ export default function LoginPage() {
     const success = await login(formData.email, formData.password, formData.rememberMe);
     
     if (success) {
-      // Redirect to home or profile on success
-      router.push('/');
+      // Redirect to the URL specified in the `redirect` query param, or home
+      const redirectTo = searchParams.get('redirect') || '/';
+      router.push(redirectTo);
       router.refresh();
     } else {
       setLocalError(error || t('failed'));

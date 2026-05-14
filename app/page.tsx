@@ -5,15 +5,12 @@ import Link from 'next/link';
 import { Loader2, BookOpen, Headphones, Cross, type LucideIcon } from 'lucide-react';
 import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
-import { getNewArrivals, getCategories } from './lib/api';
+import { getNewArrivals } from './lib/api';
+import { STATIC_CATEGORIES } from './lib/data';
 import { useApiLocale } from './i18n/useApiLocale';
 import { useCurrency } from './i18n/CurrencyContext';
 import { useTranslations } from './i18n/LanguageContext';
-import { Book, Category } from './types';
-
-// Category slugs to exclude from the homepage display
-// "Language" shows all books (same as "Books"), so it's redundant
-const EXCLUDED_CATEGORY_SLUGS = ['language'];
+import { Book } from './types';
 
 // Icons for top-level categories, keyed by slug
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
@@ -33,9 +30,9 @@ export default function HomePage() {
   const locale = useApiLocale();
   const { isLoading: isCurrencyLoading } = useCurrency();
   const t = useTranslations('homepage');
+  const tGlobal = useTranslations();
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
   const [heroBook, setHeroBook] = useState<Book | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,18 +42,12 @@ export default function HomePage() {
     async function fetchData() {
       setLoading(true);
       try {
-        const [newArrivalsData, categoriesData] = await Promise.all([
-          getNewArrivals(5),
-          getCategories(),
-        ]);
+        const newArrivalsData = await getNewArrivals(5);
         // Randomly select a hero book from the fetched arrivals
         const heroIndex = Math.floor(Math.random() * newArrivalsData.length);
         const hero = newArrivalsData[heroIndex];
         setHeroBook(hero);
         setNewArrivals(newArrivalsData.filter((_, i) => i !== heroIndex));
-        setCategories(
-          categoriesData.filter(c => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug))
-        );
       } catch (err) {
         console.error('Error fetching homepage data:', err);
       } finally {
@@ -99,7 +90,7 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {categories.map((category) => {
+              {STATIC_CATEGORIES.map((category) => {
                 const CategoryIcon = CATEGORY_ICONS[category.slug] || BookOpen;
                 return (
                   <div
@@ -115,10 +106,10 @@ export default function HomePage() {
                       {/* Content */}
                       <div className="flex-grow min-w-0">
                         <h3 className="text-lg font-semibold text-ink group-hover:text-burgundy transition-colors">
-                          {category.name}
+                          {tGlobal(category.nameKey)}
                         </h3>
                         <p className="mt-1 text-sm text-ink-light leading-relaxed">
-                          {t(CATEGORY_DESC_KEYS[category.slug] || 'categories.defaultDesc', { name: category.name })}
+                          {t(CATEGORY_DESC_KEYS[category.slug] || 'categories.defaultDesc', { name: tGlobal(category.nameKey) })}
                         </p>
                         {category.children && category.children.length > 0 && (
                           <div className="mt-3 flex flex-wrap gap-2">
@@ -128,7 +119,7 @@ export default function HomePage() {
                                 href={`/catalog?category=${child.id}`}
                                 className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment text-ink-light border border-parchment-dark/20 hover:bg-burgundy/10 hover:text-burgundy hover:border-burgundy/30 hover:shadow-md transition-all"
                               >
-                                {child.name}
+                                {tGlobal(child.nameKey)}
                               </Link>
                             ))}
                           </div>

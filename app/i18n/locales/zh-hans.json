@@ -152,11 +152,6 @@
       "description": "您还没有添加任何书籍到购物车。",
       "button": "开始购物"
     },
-    "signIn": {
-      "title": "请登录",
-      "description": "您需要登录才能查看购物车并进行购买。",
-      "button": "登录"
-    },
     "error": {
       "title": "出错了"
     },
@@ -196,7 +191,9 @@
     "backToCart": "返回购物车",
     "errors": {
       "cartLoadFailed": "无法加载购物车。请重试。",
-      "paymentInitFailed": "无法初始化支付。请重试。"
+      "paymentInitFailed": "无法初始化支付。请重试。",
+      "emptyCart": "您的购物车是空的。请在结账前添加商品。",
+      "belowMinimumAmount": "订单总额低于最低支付金额（{min} {currency}）。请添加更多商品。"
     },
     "validation": {
       "firstNameRequired": "名字为必填项",
@@ -516,5 +513,22 @@
     "back": "返回剧集列表",
     "previousEpisode": "上一集",
     "nextEpisode": "下一集"
+  },
+  "categoryNames": {
+    "books": "书",
+    "ebooks": "电子书",
+    "livesOfSaints": "圣人传记",
+    "liturgicalBooks": "礼仪",
+    "theology": "神学",
+    "historyOfChurch": "教会历史",
+    "forBeginners": "给起步者",
+    "iconography": "圣像画",
+    "parishBulletin": "教会通报",
+    "audiovideo": "音频/视频",
+    "audio": "声音",
+    "movies": "电影",
+    "churchSupplies": "教会用品",
+    "icons": "圣像",
+    "frankincense": "天然乳香"
   }
 }

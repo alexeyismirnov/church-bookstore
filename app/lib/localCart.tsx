@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from 'react';
 
-import { getAuthHeaders, getProductById } from './api';
+import { getAuthHeaders, getProductById, getFullImageUrl } from './api';
 
 // ---------------------------------------------------------------------------
 // Interfaces
@@ -48,7 +48,6 @@ export interface SyncResult {
   basketId: number;
   basketData: any; // full basket response from backend
   skippedItems: Array<{ product_id: number; reason: string }>;
-  priceChanges: Array<{ product_id: number; localPrice: number; backendPrice: number }>;
   /** Local cart items that were synced (for display data) */
   localItems: LocalCartItem[];
   /** Basket lines fetched from the backend (for building display items) */
@@ -75,6 +74,8 @@ export interface LocalCartContextType {
   totalItems: number;
   /** Sum of (item.price * item.quantity) */
   totalPrice: number;
+  /** Whether the cart has been hydrated from localStorage. */
+  isHydrated: boolean;
   /** Add an item. If productId already exists, increment quantity. */
   addItem: (item: LocalCartItem) => void;
   /** Update quantity. If quantity <= 0, remove the item. */
@@ -177,6 +178,7 @@ const LocalCartContext = createContext<LocalCartContextType | null>(null);
 
 export function LocalCartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<LocalCart>(createEmptyCart);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Ref so async callbacks (syncToBackend) always read the latest cart
   const cartRef = useRef(cart);
@@ -185,12 +187,17 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
   // Hydrate from localStorage after first mount (avoids SSR mismatch)
   useEffect(() => {
     setCart(getStoredCart());
+    setIsHydrated(true);
   }, []);
 
-  // Persist every state change
+  // Persist every state change — ONLY after hydration to avoid overwriting
+  // localStorage with the empty initial cart (critical in React Strict Mode
+  // where effects run twice and the first pass would wipe stored data)
   useEffect(() => {
-    saveCart(cart);
-  }, [cart]);
+    if (isHydrated) {
+      saveCart(cart);
+    }
+  }, [cart, isHydrated]);
 
   // ---- Cart operations (all synchronous) ----
 
@@ -321,29 +328,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
       console.warn('[syncToBackend] Failed to fetch basket lines:', err);
     }
 
-    // 3. Detect price changes by comparing backend line prices with local prices
-    const priceChanges: SyncResult['priceChanges'] = [];
-    for (const line of lines) {
-      const productUrl: string = line.product || '';
-      const match = productUrl.match(/\/products\/(\d+)\/?$/);
-      const productId = match ? parseInt(match[1], 10) : 0;
-
-      const localItem = currentCart.items.find(i => i.productId === productId);
-      if (localItem && line.price_incl_tax) {
-        const lineTotal = parseFloat(line.price_incl_tax) || 0;
-        const backendUnitPrice = line.quantity > 0 ? lineTotal / line.quantity : 0;
-
-        if (Math.abs(localItem.price - backendUnitPrice) > 0.01) {
-          priceChanges.push({
-            product_id: productId,
-            localPrice: localItem.price,
-            backendPrice: backendUnitPrice,
-          });
-        }
-      }
-    }
-
-    return { basketId, basketData, skippedItems, priceChanges, lines, localItems: currentCart.items };
+    return { basketId, basketData, skippedItems, lines, localItems: currentCart.items };
   }, []);
 
   // ---- Sprint 3c: refresh cart prices when currency changes ----
@@ -352,15 +337,75 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
     const currentCart = getStoredCart();
     if (currentCart.items.length === 0) return;
 
-    // Fetch updated prices for all items in parallel
-    const priceMap = new Map<number, number>();
+    // Fetch updated data for all items in parallel.
+    // The API returns localized title/author based on Accept-Language header,
+    // so this also serves as a locale refresh when the language has changed.
+    //
+    // For variant products (where parentProductId !== productId):
+    //   - title, author, coverImage come from the PARENT product
+    //   - price and variantTitle come from the VARIANT (child) product
+    // For non-variant products, everything comes from the single product fetch.
+    const updatesMap = new Map<number, { price?: number; title?: string; author?: string; coverImage?: string; variantTitle?: string }>();
 
     await Promise.allSettled(
       currentCart.items.map(async (item) => {
-        const product = await getProductById(item.productId.toString());
-        const newPrice = parseFloat(product.price);
-        if (!isNaN(newPrice) && newPrice > 0) {
-          priceMap.set(item.productId, newPrice);
+        const isVariant = item.parentProductId && item.parentProductId !== item.productId;
+        const update: { price?: number; title?: string; author?: string; coverImage?: string; variantTitle?: string } = {};
+
+        if (isVariant) {
+          // Fetch both parent (for display info) and variant (for price)
+          const [parentProduct, variantProduct] = await Promise.allSettled([
+            getProductById(item.parentProductId.toString()),
+            getProductById(item.productId.toString()),
+          ]);
+
+          // Price from variant
+          if (variantProduct.status === 'fulfilled') {
+            const vp = variantProduct.value;
+            const newPrice = parseFloat(vp.price);
+            if (!isNaN(newPrice) && newPrice > 0) {
+              update.price = newPrice;
+            }
+            if (vp.title) {
+              update.variantTitle = vp.title;
+            }
+          }
+
+          // Title, author, coverImage from parent
+          if (parentProduct.status === 'fulfilled') {
+            const pp = parentProduct.value;
+            if (pp.title) {
+              update.title = pp.title;
+            }
+            if (pp.author) {
+              update.author = pp.author;
+            }
+            const fullImageUrl = getFullImageUrl(pp.image_url);
+            if (fullImageUrl) {
+              update.coverImage = fullImageUrl;
+            }
+          }
+        } else {
+          // Non-variant: everything from the single product
+          const product = await getProductById(item.productId.toString());
+          const newPrice = parseFloat(product.price);
+          if (!isNaN(newPrice) && newPrice > 0) {
+            update.price = newPrice;
+          }
+          if (product.title) {
+            update.title = product.title;
+          }
+          if (product.author) {
+            update.author = product.author;
+          }
+          const fullImageUrl = getFullImageUrl(product.image_url);
+          if (fullImageUrl) {
+            update.coverImage = fullImageUrl;
+          }
+        }
+
+        if (update.price || update.title || update.author || update.coverImage || update.variantTitle) {
+          updatesMap.set(item.productId, update);
         }
       })
     );
@@ -369,9 +414,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
       ...prev,
       items: prev.items.map((item) => ({
         ...item,
-        ...(priceMap.has(item.productId)
-          ? { price: priceMap.get(item.productId)! }
-          : {}),
+        ...(updatesMap.has(item.productId) ? updatesMap.get(item.productId)! : {}),
         currency: newCurrency,
       })),
       lastUpdated: new Date().toISOString(),
@@ -393,6 +436,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
         items: cart.items,
         totalItems,
         totalPrice,
+        isHydrated,
         addItem,
         updateQuantity,
         removeItem,

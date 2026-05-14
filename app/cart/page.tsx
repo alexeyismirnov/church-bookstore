@@ -2,12 +2,12 @@
 
 import { useLayoutEffect, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShoppingBag, LogIn, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, AlertTriangle } from 'lucide-react';
 import CartItem from '../components/CartItem';
 import { useLocalCart } from '../lib/localCart';
 import { useAuth } from '../lib/AuthContext';
 import { useCurrency } from '../i18n/CurrencyContext';
-import { useTranslations } from '../i18n/LanguageContext';
+import { useTranslations, useLanguage } from '../i18n/LanguageContext';
 
 /** Map ISO 4217 currency code to display symbol */
 function getCurrencySymbol(currency: string): string {
@@ -28,6 +28,7 @@ export default function CartPage() {
   const { currency, symbol } = useCurrency();
   const t = useTranslations();
   const tCart = useTranslations('cart');
+  const { locale } = useLanguage();
 
   // Check if user is authenticated
   const { isAuthenticated } = useAuth();
@@ -47,6 +48,12 @@ export default function CartPage() {
 
     refreshPrices(currency);
   }, [currency]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // When locale changes, re-fetch all cart item data (title, author, price) in the new language
+  useEffect(() => {
+    if (items.length === 0) return;
+    refreshPrices(currency);
+  }, [locale]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Use totalPrice from local cart (sum of price * quantity for all items)
   const subtotal = totalPrice;
@@ -93,20 +100,6 @@ export default function CartPage() {
             <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <p className="text-amber-800 text-sm">
               Your cart contains items in different currencies. Switch to a single currency to see the correct total.
-            </p>
-          </div>
-        )}
-
-        {/* Anonymous user banner */}
-        {!isAuthenticated && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-3">
-            <LogIn className="w-5 h-5 text-amber-600 flex-shrink-0" />
-            <p className="text-amber-800 text-sm">
-              <Link href="/login?redirect=/cart" className="font-medium underline hover:text-amber-900">
-                {tCart('signIn.button')}
-              </Link>
-              {' — '}
-              {tCart('signIn.description')}
             </p>
           </div>
         )}

@@ -68,6 +68,8 @@ export function ShippingForm({
 
   // Fetch shipping methods when country or currency changes
   useEffect(() => {
+    let didCancel = false;
+
     const fetchShippingMethods = async () => {
       // Detect if currency changed - we need to force re-select when it does
       const currencyChanged = prevCurrencyRef.current !== currency;
@@ -86,6 +88,7 @@ export function ShippingForm({
       if (!hasRequiredFields) {
         // Address is incomplete - don't call the API yet
         // Clear any previous shipping methods and wait for user to fill the form
+        if (didCancel) return;
         setShippingMethods([]);
         if (onShippingMethodsChange) {
           onShippingMethodsChange([]);
@@ -96,12 +99,18 @@ export function ShippingForm({
         return;
       }
       
-      setIsLoadingShippingMethods(true);
-      setShippingError(null);
+      if (!didCancel) {
+        setIsLoadingShippingMethods(true);
+        setShippingError(null);
+      }
       
       try {
         // Pass the full shipping address to the backend API
         const methods = await getShippingMethods(address);
+        
+        // Skip state updates if this effect has been superseded by a newer run
+        if (didCancel) return;
+        
         setShippingMethods(methods);
         
         // Notify parent of available shipping methods
@@ -125,6 +134,9 @@ export function ShippingForm({
           onSelectedMethodChange(null);
         }
       } catch (err) {
+        // Skip state updates if this effect has been superseded by a newer run
+        if (didCancel) return;
+        
         console.error('Failed to fetch shipping methods:', err);
         setShippingError(tCheckout('shippingSection.unableToLoad'));
         setShippingMethods([]);
@@ -135,11 +147,17 @@ export function ShippingForm({
           onSelectedMethodChange(null);
         }
       } finally {
-        setIsLoadingShippingMethods(false);
+        if (!didCancel) {
+          setIsLoadingShippingMethods(false);
+        }
       }
     };
     
     fetchShippingMethods();
+    
+    return () => {
+      didCancel = true;
+    };
   }, [address.country, address.first_name, address.last_name, address.line1, currency]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle shipping method selection

@@ -152,11 +152,6 @@
       "description": "您還沒有添加任何書籍到購物車。",
       "button": "開始購物"
     },
-    "signIn": {
-      "title": "請登入",
-      "description": "您需要登入才能查看購物車並進行購買。",
-      "button": "登入"
-    },
     "error": {
       "title": "出錯了"
     },
@@ -196,7 +191,9 @@
     "backToCart": "返回購物車",
     "errors": {
       "cartLoadFailed": "無法載入購物車。請重試。",
-      "paymentInitFailed": "無法初始化付款。請重試。"
+      "paymentInitFailed": "無法初始化付款。請重試。",
+      "emptyCart": "您的購物車是空的。請在結帳前添加商品。",
+      "belowMinimumAmount": "訂單總額低於最低付款金額（{min} {currency}）。請添加更多商品。"
     },
     "validation": {
       "firstNameRequired": "名字為必填項",
@@ -516,5 +513,22 @@
     "back": "返回劇集列表",
     "previousEpisode": "上一集",
     "nextEpisode": "下一集"
+  },
+  "categoryNames": {
+    "books": "書",
+    "ebooks": "電子書",
+    "livesOfSaints": "聖人傳記",
+    "liturgicalBooks": "禮儀",
+    "theology": "神學",
+    "historyOfChurch": "教會歷史",
+    "forBeginners": "給起步者",
+    "iconography": "聖像畫",
+    "parishBulletin": "教會通報",
+    "audiovideo": "音訊/視頻",
+    "audio": "聲音",
+    "movies": "電影",
+    "churchSupplies": "教會用品",
+    "icons": "聖像",
+    "frankincense": "天然乳香"
   }
 }

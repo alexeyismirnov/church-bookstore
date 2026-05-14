@@ -152,11 +152,6 @@
       "description": "Looks like you haven't added any books to your cart yet.",
       "button": "Start Shopping"
     },
-    "signIn": {
-      "title": "Please Sign In",
-      "description": "You need to sign in to view your cart and make purchases.",
-      "button": "Sign In"
-    },
     "error": {
       "title": "Something went wrong"
     },
@@ -196,7 +191,9 @@
     "backToCart": "Back to Cart",
     "errors": {
       "cartLoadFailed": "Failed to load cart. Please try again.",
-      "paymentInitFailed": "Failed to initialize payment. Please try again."
+      "paymentInitFailed": "Failed to initialize payment. Please try again.",
+      "emptyCart": "Your cart is empty. Please add items before checkout.",
+      "belowMinimumAmount": "Order total is below the minimum payment amount ({min} {currency}). Please add more items."
     },
     "validation": {
       "firstNameRequired": "First name is required",
@@ -516,5 +513,22 @@
     "back": "Back to Episodes",
     "previousEpisode": "Previous Episode",
     "nextEpisode": "Next Episode"
+  },
+  "categoryNames": {
+    "books": "Books",
+    "ebooks": "E-books",
+    "livesOfSaints": "Lives of the Saints",
+    "liturgicalBooks": "Liturgical books",
+    "theology": "Theology",
+    "historyOfChurch": "History of Church",
+    "forBeginners": "For beginners",
+    "iconography": "Iconography",
+    "parishBulletin": "Parish Bulletin",
+    "audiovideo": "Audio/video",
+    "audio": "Audio",
+    "movies": "Movies",
+    "churchSupplies": "Church supplies",
+    "icons": "Icons",
+    "frankincense": "Frankincense"
   }
 }

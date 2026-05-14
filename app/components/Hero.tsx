@@ -3,6 +3,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useTranslations } from '../i18n/LanguageContext';
@@ -14,6 +15,7 @@ interface HeroProps {
 
 export default function Hero({ book }: HeroProps) {
   const t = useTranslations('homepage.hero');
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   return (
     <section className="relative bg-gradient-to-br from-parchment to-parchment-dark overflow-hidden">
@@ -70,11 +72,24 @@ export default function Hero({ book }: HeroProps) {
             {book && (
               <>
                 <div className="relative z-10 h-full flex items-center justify-end">
+                  {/* Loading Spinner */}
+                  {isImageLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                      <div className="w-16 h-16 relative">
+                        <div className="absolute inset-0 rounded-full border-4 border-burgundy/20" />
+                        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-burgundy animate-spin" />
+                      </div>
+                    </div>
+                  )}
                   <Link href={`/product/${book.id}`} className="flex h-full">
                     <img
                       src={book.coverImage}
                       alt={book.title}
-                      className="block h-full w-auto rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
+                      onLoad={() => setIsImageLoading(false)}
+                      onError={() => setIsImageLoading(false)}
+                      className={`block h-full w-auto rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500 ${
+                        isImageLoading ? 'opacity-0' : 'opacity-100'
+                      }`}
                     />
                   </Link>
                 </div>

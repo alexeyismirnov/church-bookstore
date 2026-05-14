@@ -41,6 +41,9 @@ interface CheckoutPaymentState {
   clientSecret: string;
   paymentIntentId: string;
   selectedShippingMethod: ShippingMethod | null;
+  basketId: string;
+  currency: string;
+  total: string;
 }
 
 /** Convert a SyncResult into CartItemForDisplay[] for the checkout UI. */
@@ -112,13 +115,41 @@ function CheckoutContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderPlacementError, setOrderPlacementError] = useState<string | null>(null);
   const [syncSkippedItems, setSyncSkippedItems] = useState<SyncResult['skippedItems']>([]);
-  const [syncPriceChanges, setSyncPriceChanges] = useState<SyncResult['priceChanges']>([]);
   
-  // Local cart context for syncToBackend and clearCart
-  const { syncToBackend, clearCart } = useLocalCart();
+  // Redirect payment order placement state
+  const [redirectOrderPlacementNeeded, setRedirectOrderPlacementNeeded] = useState(false);
+  const redirectOrderPlacedRef = useRef(false);
+  
+  // Track currency refresh to prevent transient isShippingRequired changes.
+  // When currency changes, we snapshot the current shipping-required state and
+  // hold it steady until the basket refresh completes and the new data is stable.
+  const currencyRefreshInProgressRef = useRef(false);
+  const shippingRequiredSnapshotRef = useRef<boolean>(true);
+  
+  // Local cart context for syncToBackend, clearCart, refreshPrices, and items
+  const { syncToBackend, clearCart, refreshPrices, items: localCartItems, isHydrated } = useLocalCart();
 
   // Calculate if shipping is required based on cartItems (use cartItems which has is_shipping_required from fetched lines)
-  const isShippingRequired = cartItems.some(item => item.is_shipping_required === true);
+  const isShippingRequiredRaw = cartItems.some(item => item.is_shipping_required === true);
+  // During a currency refresh, hold the pre-refresh shipping-required state steady
+  // to prevent transient backend inconsistencies from causing UI flicker or
+  // unintended auto-advance from shipping to payment step.
+  const isShippingRequired = currencyRefreshInProgressRef.current
+    ? shippingRequiredSnapshotRef.current
+    : isShippingRequiredRaw;
+
+  // Clear the currency-refresh guard after the render with updated cartItems.
+  // This useEffect runs post-render, so the snapshot value was used during that render.
+  // A state update forces a re-render so the now-unguarded raw value is applied.
+  const [, setShippingGuardForceUpdate] = useState(0);
+  useEffect(() => {
+    if (!currencyRefreshInProgressRef.current) return;
+    // cartItems was updated while a currency refresh was in progress.
+    // The render that triggered this effect used the snapshotted value.
+    // Now clear the guard so subsequent renders use the live value.
+    currencyRefreshInProgressRef.current = false;
+    setShippingGuardForceUpdate(n => n + 1);
+  }, [cartItems]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle failed payment redirect from Stripe
   useEffect(() => {
@@ -147,49 +178,166 @@ function CheckoutContent() {
       // Clean up the URL by removing the query parameters
       router.replace('/checkout');
     } else if (redirectStatus === 'succeeded') {
-      // Payment succeeded via redirect, clean up and navigate to confirmation
-      sessionStorage.removeItem(CHECKOUT_STATE_KEY);
-      router.replace('/checkout/confirmation');
+      // Payment succeeded via redirect — order placement still needed.
+      // Set a flag so a separate effect can call placeOrder() once the basket is loaded.
+      // Do NOT clear sessionStorage yet; the checkout state is needed for placeOrder().
+      setRedirectOrderPlacementNeeded(true);
+      setIsStepDetermined(true); // Prevent step-determination effect from running
     }
   }, [redirectStatus, router]);
 
-  // Sync local cart to backend basket on mount
+  // Place order after a successful Stripe redirect payment.
+  // Waits for the basket to be loaded, then restores checkout state from sessionStorage
+  // and calls placeOrder() — mirroring what handlePaymentSuccess() does for inline payments.
   useEffect(() => {
+    if (!redirectOrderPlacementNeeded || !isBasketLoaded || redirectOrderPlacedRef.current) return;
+
+    const savedStateJson = sessionStorage.getItem(CHECKOUT_STATE_KEY);
+    if (!savedStateJson) {
+      console.error('[checkout] Redirect succeeded but no checkout state found in sessionStorage');
+      setOrderPlacementError(
+        'Payment succeeded but checkout state was lost. Please contact support with your payment reference.'
+      );
+      return;
+    }
+
+    let checkoutState: CheckoutPaymentState;
+    try {
+      checkoutState = JSON.parse(savedStateJson);
+    } catch {
+      console.error('[checkout] Failed to parse checkout state from sessionStorage');
+      setOrderPlacementError(
+        'Payment succeeded but checkout state is corrupted. Please contact support.'
+      );
+      return;
+    }
+
+    if (!checkoutState.basketId) {
+      console.error('[checkout] Redirect succeeded but basketId is missing from checkout state');
+      setOrderPlacementError(
+        'Payment succeeded but basket information is missing. Please contact support.'
+      );
+      return;
+    }
+
+    // Guard against double invocation (e.g. React Strict Mode)
+    redirectOrderPlacedRef.current = true;
+    setIsPlacingOrder(true);
+    setOrderPlacementError(null);
+
+    const placeRedirectOrder = async () => {
+      try {
+        const order = await placeOrder({
+          basketId: checkoutState.basketId,
+          total: checkoutState.total,
+          currency: checkoutState.currency,
+          shippingMethodCode: checkoutState.selectedShippingMethod?.code || 'free-shipping',
+          shippingCharge: checkoutState.selectedShippingMethod
+            ? {
+                currency: checkoutState.selectedShippingMethod.price.currency,
+                excl_tax: checkoutState.selectedShippingMethod.price.excl_tax,
+                tax: checkoutState.selectedShippingMethod.price.tax,
+              }
+            : undefined,
+          shippingAddress: checkoutState.shippingAddress || undefined,
+        });
+
+        console.log('Order placed successfully after redirect:', order.number);
+        sessionStorage.removeItem(CHECKOUT_STATE_KEY);
+        clearCart();
+        router.replace('/checkout/confirmation');
+      } catch (err) {
+        console.error('Order placement failed after redirect payment:', err);
+        // Keep redirectOrderPlacementNeeded true so the dedicated error screen is shown.
+        // The ref stays true to prevent this effect from re-running;
+        // retries are handled by handleRedirectOrderRetry() via the retry button.
+        setOrderPlacementError(
+          err instanceof Error
+            ? err.message
+            : 'Payment succeeded but order placement failed. Please contact support.'
+        );
+      } finally {
+        setIsPlacingOrder(false);
+      }
+    };
+
+    placeRedirectOrder();
+  }, [redirectOrderPlacementNeeded, isBasketLoaded, router]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Sync local cart to backend basket — wait for localStorage hydration first
+  // to avoid reading an empty cart during React Strict Mode's double effect invocation.
+  // Only runs once on initial load; currency changes are handled by the currency change effect.
+  useEffect(() => {
+    if (!isHydrated || !isInitialLoad) return;
+
+    let didCancel = false;
+
     const loadCart = async () => {
       try {
         const result = await syncToBackend(currency);
+        if (didCancel) return;
         const items = syncResultToDisplayItems(result);
         setCartItems(items);
         setBasket({ ...result.basketData, id: String(result.basketData.id) });
         setSyncSkippedItems(result.skippedItems);
-        setSyncPriceChanges(result.priceChanges);
         setIsBasketLoaded(true);
       } catch (err) {
+        if (didCancel) return;
         console.error('Error syncing cart to backend:', err);
         setError(tCheckout('errors.cartLoadFailed'));
         // Set empty cart on error - will redirect to cart page
         setCartItems([]);
         setIsBasketLoaded(true);
       } finally {
-        setIsLoading(false);
-        setIsInitialLoad(false);
+        if (!didCancel) {
+          setIsLoading(false);
+          setIsInitialLoad(false);
+        }
       }
     };
 
     loadCart();
-  }, [currency]);
+
+    return () => {
+      didCancel = true;
+    };
+  }, [currency, isHydrated, isInitialLoad]);
 
   // Determine the correct step after basket is loaded
   useEffect(() => {
     // Only run once basket is loaded and step not yet determined
     if (!isBasketLoaded || isStepDetermined) return;
+
+    // Guard: if cart is empty, don't proceed to payment — redirect to cart
+    if (cartItems.length === 0) {
+      console.warn('[checkout] Basket loaded with no items, redirecting to cart page');
+      setError(tCheckout('errors.emptyCart'));
+      setIsStepDetermined(true);
+      return;
+    }
     
     if (!isShippingRequired && checkoutStep === 'shipping') {
       // No shipping required - go directly to payment
       // Create payment intent immediately without shipping address
+      console.log('[checkout] Step determination: cartItems=', cartItems.length, 'items, isShippingRequired=', isShippingRequired);
       const createPaymentIntent = async () => {
         // Calculate subtotal from cartItems (no shipping cost for digital-only orders)
         const orderTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        console.log('[checkout] Creating payment intent: orderTotal=', orderTotal, 'currency=', currency);
+
+        // Guard: Stripe has minimum charge amounts per currency (e.g. $0.50 USD).
+        // If the total is below the minimum, show an error instead of failing at Stripe.
+        const stripeMinimums: Record<string, number> = {
+          usd: 0.50, eur: 0.50, gbp: 0.30, cad: 0.50, aud: 0.50,
+          jpy: 50, hkd: 4.00, sgd: 0.50, chf: 0.50,
+        };
+        const minAmount = stripeMinimums[currency.toLowerCase()] ?? 0.50;
+        if (orderTotal < minAmount) {
+          console.error(`[checkout] Order total ${orderTotal} ${currency} is below Stripe minimum ${minAmount}`);
+          setError(tCheckout('errors.belowMinimumAmount', { min: minAmount, currency }));
+          setIsStepDetermined(true);
+          return;
+        }
         
         try {
           const response = await fetch('/api/stripe/create-payment-intent', {
@@ -214,6 +362,22 @@ function CheckoutContent() {
           setSelectedShippingMethod(null); // No shipping method needed
           setCheckoutStep('payment');
           setIsStepDetermined(true);
+    
+          // Save checkout state to sessionStorage for recovery after Stripe redirect
+          try {
+            const checkoutState: CheckoutPaymentState = {
+              shippingAddress: null,
+              clientSecret: data.clientSecret,
+              paymentIntentId: data.paymentIntentId,
+              selectedShippingMethod: null,
+              basketId: basket?.id || '',
+              currency: basket?.currency || currency,
+              total: orderTotal.toFixed(2),
+            };
+            sessionStorage.setItem(CHECKOUT_STATE_KEY, JSON.stringify(checkoutState));
+          } catch (err) {
+            console.error('Error saving checkout state to sessionStorage:', err);
+          }
         } catch (err) {
           console.error('Error creating payment intent for non-shipping order:', err);
           setError(tCheckout('errors.paymentInitFailed'));
@@ -226,7 +390,7 @@ function CheckoutContent() {
       // Shipping required - stay on shipping step, mark step as determined
       setIsStepDetermined(true);
     }
-  }, [isBasketLoaded, isStepDetermined, isShippingRequired, checkoutStep, cartItems, currency]);
+  }, [isBasketLoaded, isStepDetermined, isShippingRequired, checkoutStep, cartItems]);
 
   // Handle currency change - re-fetch basket and refresh payment intent if needed
   const prevCurrencyRef = useRef(currency);
@@ -235,6 +399,11 @@ function CheckoutContent() {
     if (prevCurrencyRef.current !== currency) {
       const oldCurrency = prevCurrencyRef.current;
       prevCurrencyRef.current = currency;
+      
+      // Snapshot current shipping-required state before async refresh to prevent
+      // transient backend inconsistencies from flipping isShippingRequired to false
+      currencyRefreshInProgressRef.current = true;
+      shippingRequiredSnapshotRef.current = isShippingRequired;
       
       // Re-sync cart to get updated prices in the new currency
       const refreshBasket = async () => {
@@ -245,7 +414,6 @@ function CheckoutContent() {
           setCartItems(items);
           setBasket({ ...result.basketData, id: String(result.basketData.id) });
           setSyncSkippedItems(result.skippedItems);
-          setSyncPriceChanges(result.priceChanges);
           return items;
         } catch (err) {
           console.error('Error refreshing cart after currency change:', err);
@@ -311,6 +479,9 @@ function CheckoutContent() {
                 clientSecret: data.clientSecret,
                 paymentIntentId: data.paymentIntentId,
                 selectedShippingMethod: updatedShippingMethod,
+                basketId: basket?.id || '',
+                currency: basket?.currency || currency,
+                total: newTotal.toFixed(2),
               };
               sessionStorage.setItem(CHECKOUT_STATE_KEY, JSON.stringify(checkoutState));
             } catch (err) {
@@ -324,14 +495,39 @@ function CheckoutContent() {
         
         refreshPaymentIntent();
       } else {
-        // Not on payment step, just refresh the basket
+        // Not on payment step, just refresh the basket.
+        // Do NOT clear selectedShippingMethod here — the ShippingForm component's
+        // effect watches currency changes and will re-fetch shipping methods,
+        // then re-select the first method with updated prices. Clearing it here
+        // creates a race condition where the null update can overwrite the valid
+        // method update from ShippingForm's async effect.
         refreshBasket();
-        
-        // Clear selected shipping method as prices may have changed
-        setSelectedShippingMethod(null);
       }
     }
   }, [currency, checkoutStep, shippingAddress, selectedShippingMethod]);
+
+  // When locale changes, re-fetch all cart item data (title, author, coverImage) in the new language
+  useEffect(() => {
+    if (localCartItems.length === 0) return;
+    refreshPrices(currency);
+  }, [locale]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // When local cart items are updated (e.g. after locale-triggered refreshPrices),
+  // propagate the updated title/author/coverImage to the checkout's cartItems state
+  useEffect(() => {
+    if (localCartItems.length === 0 || cartItems.length === 0) return;
+
+    setCartItems(prev => prev.map(ci => {
+      const localItem = localCartItems.find(li => li.productId === parseInt(ci.id, 10));
+      if (!localItem) return ci;
+      return {
+        ...ci,
+        title: localItem.title || ci.title,
+        author: localItem.author || ci.author,
+        coverImage: localItem.coverImage || ci.coverImage,
+      };
+    }));
+  }, [localCartItems]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Note: Currency change handling is done in ShippingForm via prevCurrencyRef
   // No need to clear selectedShippingMethod here as ShippingForm handles re-selection
@@ -391,6 +587,9 @@ function CheckoutContent() {
           clientSecret: data.clientSecret,
           paymentIntentId: data.paymentIntentId,
           selectedShippingMethod: selectedShippingMethod,
+          basketId: basket?.id || '',
+          currency: basket?.currency || currency,
+          total: total.toFixed(2),
         };
         sessionStorage.setItem(CHECKOUT_STATE_KEY, JSON.stringify(checkoutState));
       } catch (err) {
@@ -448,18 +647,113 @@ function CheckoutContent() {
     }
   };
 
-  // Redirect to cart page if cart is empty
+  // Retry order placement after a failed redirect payment.
+  // Reads checkout state from sessionStorage and calls placeOrder() directly.
+  const handleRedirectOrderRetry = async () => {
+    const savedStateJson = sessionStorage.getItem(CHECKOUT_STATE_KEY);
+    if (!savedStateJson) {
+      setOrderPlacementError('Checkout state not found. Cannot retry order placement.');
+      return;
+    }
+
+    let checkoutState: CheckoutPaymentState;
+    try {
+      checkoutState = JSON.parse(savedStateJson);
+    } catch {
+      setOrderPlacementError('Checkout state is corrupted. Cannot retry order placement.');
+      return;
+    }
+
+    if (!checkoutState.basketId) {
+      setOrderPlacementError('Basket information is missing. Cannot retry order placement.');
+      return;
+    }
+
+    setIsPlacingOrder(true);
+    setOrderPlacementError(null);
+
+    try {
+      const order = await placeOrder({
+        basketId: checkoutState.basketId,
+        total: checkoutState.total,
+        currency: checkoutState.currency,
+        shippingMethodCode: checkoutState.selectedShippingMethod?.code || 'free-shipping',
+        shippingCharge: checkoutState.selectedShippingMethod
+          ? {
+              currency: checkoutState.selectedShippingMethod.price.currency,
+              excl_tax: checkoutState.selectedShippingMethod.price.excl_tax,
+              tax: checkoutState.selectedShippingMethod.price.tax,
+            }
+          : undefined,
+        shippingAddress: checkoutState.shippingAddress || undefined,
+      });
+
+      console.log('Order placed successfully after retry:', order.number);
+      sessionStorage.removeItem(CHECKOUT_STATE_KEY);
+      clearCart();
+      router.replace('/checkout/confirmation');
+    } catch (err) {
+      console.error('Order placement retry failed:', err);
+      setOrderPlacementError(
+        err instanceof Error
+          ? err.message
+          : 'Order placement failed again. Please contact support.'
+      );
+    } finally {
+      setIsPlacingOrder(false);
+    }
+  };
+
+  // Redirect to cart page if cart is empty (but not during redirect order placement)
   useEffect(() => {
-    if (!isLoading && cartItems.length === 0) {
+    if (!isLoading && cartItems.length === 0 && !redirectOrderPlacementNeeded) {
       router.push('/cart');
     }
-  }, [isLoading, cartItems.length, router]);
+  }, [isLoading, cartItems.length, router, redirectOrderPlacementNeeded]);
 
   // Auth check - redirect to login if not authenticated
   if (!authChecked) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
+      </div>
+    );
+  }
+
+  // Redirect payment flow — show dedicated screen for order placement
+  if (redirectOrderPlacementNeeded) {
+    if (orderPlacementError) {
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Order Placement Failed</h2>
+              <p className="text-gray-600 mb-4">
+                Your payment was successful but we could not place your order.
+              </p>
+              <p className="text-sm text-red-600 mb-4">{orderPlacementError}</p>
+              <p className="text-sm text-gray-500 mb-6">
+                Please try again or contact support with your payment reference.
+              </p>
+              <button
+                onClick={handleRedirectOrderRetry}
+                disabled={isPlacingOrder}
+                className="w-full btn-burgundy py-3 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isPlacingOrder ? 'Placing order...' : 'Retry Order Placement'}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-burgundy mx-auto" />
+          <p className="mt-4 text-gray-500">Payment confirmed. Placing your order...</p>
+        </div>
       </div>
     );
   }
@@ -504,19 +798,6 @@ function CheckoutContent() {
               {syncSkippedItems.map((item) => (
                 <li key={item.product_id}>
                   Product #{item.product_id} — {item.reason.replace(/_/g, ' ')}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {syncPriceChanges.length > 0 && (
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
-            <p className="font-medium">Some prices have changed since you added items to your cart.</p>
-            <ul className="mt-1 text-sm list-disc list-inside">
-              {syncPriceChanges.map((item) => (
-                <li key={item.product_id}>
-                  Product #{item.product_id}: was ${item.localPrice.toFixed(2)}, now ${item.backendPrice.toFixed(2)}
                 </li>
               ))}
             </ul>
