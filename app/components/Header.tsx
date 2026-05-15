@@ -26,6 +26,7 @@ export default function Header() {
 
   const navLinks = [
     { href: '/catalog', label: t('catalog') },
+    { href: '/resources', label: t('resources') },
     { href: '/contact', label: t('contact') },
   ];
 
@@ -55,7 +56,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 md:w-12 md:h-12 relative">
               <img
-                src="/images/church_logo.jpg"
+                src="/images/church_logo.png"
                 alt="Church Bookstore"
                 className="w-full h-full object-contain"
               />
