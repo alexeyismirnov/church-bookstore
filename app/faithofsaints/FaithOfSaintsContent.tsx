@@ -5,8 +5,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../lib/AuthContext';
 import { useLanguage, useTranslations } from '../i18n/LanguageContext';
 import { getEpisodes, getFaithOfSaintsVideoUrl } from '../lib/api';
 import { Episode } from '../types';
@@ -25,11 +23,8 @@ function getDefaultAudio(locale: string): string {
 }
 
 export default function FaithOfSaintsContent() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { locale } = useLanguage();
   const t = useTranslations('faithofsaints');
-  const router = useRouter();
-
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,15 +39,8 @@ export default function FaithOfSaintsContent() {
     return getDefaultAudio(locale);
   });
 
-  // Fetch episodes when auth is ready
+  // Fetch episodes
   useEffect(() => {
-    if (authLoading) return;
-
-    if (!isAuthenticated) {
-      setLoading(false);
-      return;
-    }
-
     async function fetchEpisodes() {
       try {
         setLoading(true);
@@ -67,7 +55,7 @@ export default function FaithOfSaintsContent() {
     }
 
     fetchEpisodes();
-  }, [authLoading, isAuthenticated]);
+  }, [t]);
 
   // Handle audio track change
   const handleAudioChange = (newAudio: string) => {
@@ -75,31 +63,6 @@ export default function FaithOfSaintsContent() {
     setFosAudio(newAudio);
     localStorage.setItem('fos_audio', newAudio);
   };
-
-  // Auth loading state
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
-        <span className="ml-3 text-gray-500">{t('loading')}</span>
-      </div>
-    );
-  }
-
-  // Not authenticated
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4">
-          <h1 className="text-2xl font-bold text-dark mb-4">{t('title')}</h1>
-          <p className="text-gray-500 mb-6">{t('loginRequired')}</p>
-          <Link href="/" className="btn-burgundy">
-            {t('goHome')}
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   // Loading episodes
   if (loading) {

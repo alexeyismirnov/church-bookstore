@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { Loader2, BookOpen, Headphones, Cross, type LucideIcon } from 'lucide-react';
 import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
-import { getNewArrivals } from './lib/api';
+import { getNewArrivals, getMyBooks, getFullImageUrl } from './lib/api';
+import { useAuth } from './lib/AuthContext';
 import { STATIC_CATEGORIES } from './lib/data';
 import { useApiLocale } from './i18n/useApiLocale';
 import { useCurrency } from './i18n/CurrencyContext';
 import { useTranslations } from './i18n/LanguageContext';
-import { Book } from './types';
+import { Book, MyBook } from './types';
 
 // Icons for top-level categories, keyed by slug
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
@@ -34,6 +35,8 @@ export default function HomePage() {
   const [newArrivals, setNewArrivals] = useState<Book[]>([]);
   const [heroBook, setHeroBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
+  const [miniBookshelf, setMiniBookshelf] = useState<MyBook[]>([]);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     // Don't fetch until currency context is loaded
@@ -58,12 +61,79 @@ export default function HomePage() {
     fetchData();
   }, [locale, isCurrencyLoading]);
 
+  useEffect(() => {
+    if (authLoading || !isAuthenticated) {
+      setMiniBookshelf([]);
+      return;
+    }
+
+    async function fetchMiniBookshelf() {
+      try {
+        const myBooks = await getMyBooks();
+        const visibleBooks = myBooks.filter((book) => {
+          const downloadUrl = book.download_url || '';
+          const epubUrl = book.epub_url || '';
+          const isFree = downloadUrl.includes('orthodoxbookshop') || epubUrl.includes('orthodoxbookshop');
+          return book.purchased || isFree;
+        });
+        setMiniBookshelf(visibleBooks.slice(0, 4));
+      } catch (err) {
+        console.error('Error fetching mini bookshelf:', err);
+        setMiniBookshelf([]);
+      }
+    }
+
+    fetchMiniBookshelf();
+  }, [authLoading, isAuthenticated, locale]);
+
   return (
     <div>
       <Hero book={heroBook} />
 
+      {!authLoading && isAuthenticated && miniBookshelf.length > 0 && (
+        <section className="pt-8 pb-8 md:pt-10 md:pb-10 bg-parchment-dark/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative mb-8 md:mb-10">
+              <h2 className="section-title text-center mb-0">{tGlobal('bookshelf.title')}</h2>
+              <Link
+                href="/bookshelf"
+                className="absolute right-0 top-0 text-sm font-medium text-burgundy hover:text-burgundy-dark hover:underline"
+              >
+                {tGlobal('common.viewAll')}
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              {miniBookshelf.map((book) => (
+                <Link
+                  key={book.book_id}
+                  href={`/product/${book.book_id}`}
+                  className="group block rounded-xl overflow-hidden border border-parchment-dark/30 bg-white hover:shadow-md transition-shadow"
+                >
+                  <div className="aspect-[3/4] overflow-hidden bg-parchment">
+                    <img
+                      src={getFullImageUrl(book.cover_image)}
+                      alt={book.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold text-ink line-clamp-2 group-hover:text-burgundy transition-colors">
+                      {book.title}
+                    </h3>
+                    {book.author_name && (
+                      <p className="mt-1 text-xs text-ink-light line-clamp-1">{book.author_name}</p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* New Arrivals Section */}
-      <section className="pt-8 pb-16 md:pt-12 md:pb-20">
+      <section className="pt-8 pb-16 md:pt-12 md:pb-20 bg-parchment">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="section-title mb-0">{t('featured.newArrivals')}</h2>
@@ -97,7 +167,7 @@ export default function HomePage() {
                     key={category.id}
                     className="group"
                   >
-                    <div className="flex items-start gap-4 p-6 rounded-xl bg-parchment-light border border-parchment-dark/30 hover:border-gold/50 hover:shadow-md transition-all">
+                    <div className="flex items-start gap-4 p-6 rounded-xl bg-parchment border border-parchment-dark/30 hover:border-gold/50 hover:shadow-md transition-all">
                       {/* Icon */}
                       <div className="flex-shrink-0 w-12 h-12 rounded-full bg-burgundy/10 flex items-center justify-center text-burgundy group-hover:bg-burgundy group-hover:text-parchment-light transition-colors">
                         <CategoryIcon className="w-6 h-6" />
@@ -135,7 +205,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="pt-8 md:pt-10 pb-16 md:pb-20">
+      <section className="pt-8 md:pt-10 pb-16 md:pb-20 bg-parchment">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
