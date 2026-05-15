@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Loader2, FileText, BookOpen, Download, Trash2 } from 'lucide-react';
-import { getMyBooks, deleteMyBook, getFullImageUrl } from '../lib/api';
+import { getMyBooks, deleteMyBook, getFullImageUrl, transformToSpacesUrl } from '../lib/api';
 import { useAuth } from '../lib/AuthContext';
 import { useTranslations, useLanguage } from '../i18n/LanguageContext';
 import { MyBook } from '../types';
@@ -201,7 +201,7 @@ export default function BookshelfPage() {
                       <div className="flex flex-row gap-2">
                         {book.download_url && book.download_url.trim() !== '' && (
                           <a
-                            href={book.download_url}
+                            href={transformToSpacesUrl(book.download_url) ?? undefined}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium transition-colors duration-200 active:scale-95 transform"
@@ -212,7 +212,7 @@ export default function BookshelfPage() {
                         )}
                         {book.epub_url && book.epub_url.trim() !== '' && (
                           <a
-                            href={book.epub_url}
+                            href={transformToSpacesUrl(book.epub_url) ?? undefined}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium transition-colors duration-200 active:scale-95 transform"

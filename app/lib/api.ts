@@ -23,6 +23,22 @@ const getApiBase = () => {
 };
 
 const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
+const SPACES_ROOT = 'https://orthodoxy.sgp1.digitaloceanspaces.com';
+
+/**
+ * Transform a legacy S3/pCloud URL to a DigitalOcean Spaces CDN URL.
+ * Extracts the filename from any URL and serves it from the appropriate
+ * DO Spaces bucket. Mirrors the Django logic in oscar-3.1's ProductDetailView:
+ *   - If the original URL contains 'orthodoxbookshop' → orthodoxbookshop bucket
+ *   - Otherwise (e.g. 'orthodoxpaidbooks') → orthodoxpaidbooks bucket
+ */
+export function transformToSpacesUrl(url: string | null | undefined): string | null | undefined {
+  if (!url || url.trim() === '') return url;
+  const filename = url.split('/').pop();
+  if (!filename) return url;
+  const bucket = url.includes('orthodoxbookshop') ? 'orthodoxbookshop' : 'orthodoxpaidbooks';
+  return `${SPACES_ROOT}/${bucket}/${filename}`;
+}
 
 // Get language from localStorage (set by LanguageContext)
 function getLanguagePreference(): string {
@@ -319,9 +335,9 @@ export function oscarProductToBook(product: OscarProduct, locale: string = 'en')
     isParent: product.is_parent,
     parentId: product.parent_id,
     variants: mappedVariants,
-    previewUrl: product.preview_url,
-    downloadUrl: product.download_url,
-    epubUrl: product.epub_url,
+    previewUrl: product.preview_url ? transformToSpacesUrl(product.preview_url) : null,
+    downloadUrl: product.download_url ? transformToSpacesUrl(product.download_url) : null,
+    epubUrl: product.epub_url ? transformToSpacesUrl(product.epub_url) : null,
     translator: product.translator || undefined,
     pubDate: product.pub_date || undefined,
     language: getLanguageFromScript(product.text_script),

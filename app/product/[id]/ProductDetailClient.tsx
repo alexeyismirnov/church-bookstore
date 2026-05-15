@@ -7,7 +7,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Download, FileText, BookOpen, Package, Monitor, ShoppingCart, Check } from 'lucide-react';
-import { getProductById, oscarProductToBook, parseVariantPrice } from '../../lib/api';
+import { getProductById, oscarProductToBook, parseVariantPrice, getMyBooks } from '../../lib/api';
+import { useAuth } from '../../lib/AuthContext';
 import { useApiLocale } from '../../i18n/useApiLocale';
 import { useLanguage, useTranslations } from '../../i18n/LanguageContext';
 import { useCurrency } from '../../i18n/CurrencyContext';
@@ -19,7 +20,7 @@ interface ProductDetailClientProps {
   productId: string;
 }
 
-function DownloadButtons({ book }: { book: Book }) {
+function DownloadButtons({ book, isPurchased }: { book: Book; isPurchased?: boolean }) {
   const t = useTranslations('product');
   
   // If all URLs are null/empty, don't show any download buttons
@@ -29,6 +30,39 @@ function DownloadButtons({ book }: { book: Book }) {
 
   const isPaidBook = book.downloadUrl?.includes('orthodoxpaidbooks');
   const isFreeBook = book.downloadUrl?.includes('orthodoxbookshop');
+
+  // Purchased book: show full PDF and EPUB download buttons (same as free books)
+  if (isPurchased) {
+    return (
+      <div className="flex flex-col gap-3 pt-4 border-t">
+        <span className="text-sm text-gray-500 font-medium">{t('freeDownload')}</span>
+        <div className="flex flex-wrap gap-3">
+          {book.downloadUrl && (
+            <a
+              href={book.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink rounded-lg font-medium hover:bg-gold-light transition-colors duration-200 active:scale-95 transform"
+            >
+              <FileText className="w-4 h-4" />
+              <span>{t('downloadPdf')}</span>
+            </a>
+          )}
+          {book.epubUrl && (
+            <a
+              href={book.epubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink rounded-lg font-medium hover:bg-gold-light transition-colors duration-200 active:scale-95 transform"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>{t('downloadEpub')}</span>
+            </a>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   // Paid book: show only PDF preview button
   if (isPaidBook) {
@@ -114,9 +148,11 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
   const { symbol, currency, isLoading: currencyIsLoading } = useCurrency();
   const { addItem } = useLocalCart();
   const router = useRouter();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [purchasedBookIds, setPurchasedBookIds] = useState<Set<number>>(new Set());
   // Track the locale+currency combination for which the currently displayed book data
   // was fetched. Only updated after a successful fetch completes, ensuring the loading
   // spinner stays visible until the new-locale/currency data is actually in state.
@@ -180,6 +216,36 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
       abortController.abort();
     };
   }, [productId, locale, currency, contextLoading]);
+
+  // Fetch purchased book IDs for the logged-in user
+  useEffect(() => {
+    if (authLoading || !isAuthenticated) return;
+
+    async function fetchPurchasedBooks() {
+      try {
+        const myBooks = await getMyBooks();
+        const purchasedIds = new Set<number>();
+        for (const mb of myBooks) {
+          if (mb.purchased) {
+            purchasedIds.add(mb.book_id);
+          }
+        }
+        setPurchasedBookIds(purchasedIds);
+      } catch (err) {
+        // Silently ignore — isPurchased will remain false
+        console.error('Failed to fetch purchased books:', err);
+      }
+    }
+
+    fetchPurchasedBooks();
+  }, [authLoading, isAuthenticated]);
+
+  // Determine if the current book (or its ebook variant) has been purchased
+  const isPurchased = book ? (
+    purchasedBookIds.has(parseInt(book.id)) ||
+    (book.parentId != null && purchasedBookIds.has(book.parentId)) ||
+    (book.variants?.some(v => v.book_type === 'ebook' && purchasedBookIds.has(v.id)) ?? false)
+  ) : false;
 
   // Handle add to cart — now uses localStorage cart (instant, no API call)
   const handleAddToCart = (variantId: number) => {
@@ -444,7 +510,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             )}
 
             {/* Download Buttons */}
-            <DownloadButtons book={book} />
+            <DownloadButtons book={book} isPurchased={isPurchased} />
 
 
 
