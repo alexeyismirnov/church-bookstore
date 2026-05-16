@@ -41,7 +41,6 @@
     "resources": "Resources",
     "home": "Home",
     "myBooks": "My Books",
-    "favorites": "Favorites",
     "dashboard": "Dashboard",
     "myProfile": "My Profile",
     "myOrders": "My Orders",
@@ -135,6 +134,7 @@
     "noReviews": "No reviews yet",
     "writeReview": "Write a Review",
     "digitalVersion": "Digital Version",
+    "downloadPurchasedBook": "Download purchased book",
     "freeDownload": "Free Download",
     "previewPdf": "Preview PDF",
     "downloadPdf": "Download PDF",
@@ -274,7 +274,7 @@
       "noAccount": "Don't have an account?",
       "register": "Register",
       "failed": "Login failed. Please check your credentials.",
-      "description": "Sign in to your account to access your orders and favorites"
+      "description": "Sign in to your account to access your orders"
     },
     "register": {
       "title": "Create Account",

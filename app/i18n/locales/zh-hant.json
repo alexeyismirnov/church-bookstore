@@ -41,7 +41,6 @@
     "resources": "資源",
     "home": "首頁",
     "myBooks": "我的書籍",
-    "favorites": "收藏夾",
     "dashboard": "控制面板",
     "myProfile": "我的資料",
     "myOrders": "我的訂單",
@@ -135,6 +134,7 @@
     "noReviews": "暫無評論",
     "writeReview": "撰寫評論",
     "digitalVersion": "電子版",
+    "downloadPurchasedBook": "下載已購書籍",
     "freeDownload": "免費下載",
     "previewPdf": "預覽PDF",
     "downloadPdf": "下載PDF",
@@ -274,7 +274,7 @@
       "noAccount": "沒有帳戶？",
       "register": "註冊",
       "failed": "登入失敗，請檢查您的憑據。",
-      "description": "登入您的帳戶以存取您的訂單和收藏"
+      "description": "登入您的帳戶以存取您的訂單"
     },
     "register": {
       "title": "建立帳戶",

@@ -60,7 +60,6 @@ church-bookstore/
 │   ├── register/           # Registration page
 │   ├── about/              # About us page
 │   ├── contact/            # Contact page
-│   └── favorites/          # Saved items
 ├── public/images/         # Static images (book covers, logo)
 ├── dist/                   # Built static files (after npm run build)
 └── package.json            # Project dependencies
@@ -126,7 +125,6 @@ Changes to `countries.json` won't take effect until the app is redeployed. The f
 7. **Register** (`/register`) - Account creation
 8. **About** (`/about`) - About the bookstore
 9. **Contact** (`/contact`) - Contact form and information
-10. **Favorites** (`/favorites`) - Saved items
 
 ## Deployment
 

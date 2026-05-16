@@ -41,7 +41,6 @@
     "resources": "资源",
     "home": "首页",
     "myBooks": "我的书籍",
-    "favorites": "收藏夹",
     "dashboard": "控制面板",
     "myProfile": "我的资料",
     "myOrders": "我的订单",
@@ -135,6 +134,7 @@
     "noReviews": "暂无评论",
     "writeReview": "撰写评论",
     "digitalVersion": "电子版",
+    "downloadPurchasedBook": "下载已购书籍",
     "freeDownload": "免费下载",
     "previewPdf": "预览PDF",
     "downloadPdf": "下载PDF",
@@ -274,7 +274,7 @@
       "noAccount": "没有账户？",
       "register": "注册",
       "failed": "登录失败，请检查您的凭据。",
-      "description": "登录您的账户以访问您的订单和收藏"
+      "description": "登录您的账户以访问您的订单"
     },
     "register": {
       "title": "创建账户",

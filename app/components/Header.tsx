@@ -204,13 +204,6 @@ export default function Header() {
               <p className="text-sm text-ink-muted mb-2">{t('selectCurrency')}</p>
               <CurrencySelector />
             </div>
-            <Link
-              href="/favorites"
-              className="px-4 py-3 text-ink hover:bg-parchment-dark/20 transition-colors sm:hidden"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('favorites')}
-            </Link>
             {/* Mobile Account - Show login or profile/logout */}
             {isAuthenticated ? (
               <>

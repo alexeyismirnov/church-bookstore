@@ -35,7 +35,7 @@ function DownloadButtons({ book, isPurchased }: { book: Book; isPurchased?: bool
   if (isPurchased) {
     return (
       <div className="flex flex-col gap-3 pt-4 border-t">
-        <span className="text-sm text-gray-500 font-medium">{t('freeDownload')}</span>
+        <span className="text-sm text-gray-500 font-medium">{t('downloadPurchasedBook')}</span>
         <div className="flex flex-wrap gap-3">
           {book.downloadUrl && (
             <a
