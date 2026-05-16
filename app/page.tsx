@@ -103,21 +103,21 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {miniBookshelf.map((book) => (
                 <Link
                   key={book.book_id}
                   href={`/product/${book.book_id}`}
-                  className="group block rounded-xl overflow-hidden border border-parchment-dark/30 bg-white hover:shadow-md transition-shadow"
+                  className="group flex flex-row sm:flex-col rounded-xl overflow-hidden border border-parchment-dark/30 bg-white hover:shadow-md transition-shadow"
                 >
-                  <div className="aspect-[3/4] overflow-hidden bg-parchment">
+                  <div className="w-16 sm:w-full h-20 sm:h-auto sm:aspect-[3/4] overflow-hidden bg-parchment flex-shrink-0">
                     <img
                       src={getFullImageUrl(book.cover_image)}
                       alt={book.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <div className="p-3">
+                  <div className="p-3 flex flex-col justify-center min-w-0">
                     <h3 className="text-sm font-semibold text-ink line-clamp-2 group-hover:text-burgundy transition-colors">
                       {book.title}
                     </h3>

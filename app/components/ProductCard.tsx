@@ -45,7 +45,7 @@ export default function ProductCard({ book }: ProductCardProps) {
   return (
     <Link
       href={productLink}
-      className="card-link card group relative flex flex-col h-full"
+      className="card-link card group relative flex flex-row sm:flex-col h-full"
       onClick={handleClick}
     >
       {/* Loading Overlay */}
@@ -55,26 +55,26 @@ export default function ProductCard({ book }: ProductCardProps) {
         </div>
       )}
       {/* Image */}
-      <div className="block relative aspect-[3/4] overflow-hidden rounded-t-xl">
+      <div className="relative w-20 sm:w-full h-28 sm:h-auto sm:aspect-[3/4] overflow-hidden rounded-lg sm:rounded-t-xl flex-shrink-0">
         <img
           src={book.coverImage}
           alt={book.title}
           className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
         />
         {book.isNew && (
-          <span className="absolute top-3 left-3 bg-gold text-ink text-xs font-semibold px-2 py-1 rounded">
+          <span className="absolute top-1 left-1 sm:top-3 sm:left-3 bg-gold text-ink text-[10px] sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
             New
           </span>
         )}
         {book.originalPrice && (
-          <span className="absolute top-3 left-3 bg-burgundy text-parchment-light text-xs font-semibold px-2 py-1 rounded">
+          <span className="absolute top-1 left-1 sm:top-3 sm:left-3 bg-burgundy text-parchment-light text-[10px] sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
             Sale
           </span>
         )}
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-grow">
+      <div className="p-3 sm:p-4 flex flex-col flex-grow min-w-0">
         {/* Title */}
         <h3 className="card-title font-semibold text-ink mb-1 line-clamp-2 transition-colors">
           {book.title}

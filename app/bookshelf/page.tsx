@@ -143,11 +143,11 @@ export default function BookshelfPage() {
       <section className="py-12 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="max-w-7xl mx-auto">
           {filteredBooks.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
             {filteredBooks.map((book) => (
               <div
                 key={book.book_id}
-                className="card group relative flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                className="card group relative flex flex-row sm:flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
               >
                 <button
                   onClick={(e) => {
@@ -164,7 +164,7 @@ export default function BookshelfPage() {
                 {/* Cover Image - Clickable */}
                 <Link
                   href={`/product/${book.book_id}`}
-                  className="block relative aspect-[3/4] overflow-hidden rounded-t-xl"
+                  className="relative w-20 sm:w-full h-28 sm:h-auto sm:aspect-[3/4] overflow-hidden rounded-lg sm:rounded-t-xl flex-shrink-0"
                 >
                   <img
                     src={getFullImageUrl(book.cover_image)}
@@ -172,14 +172,14 @@ export default function BookshelfPage() {
                     className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
                   />
                   {isFreeBook(book) && !book.purchased && (
-                    <span className="absolute top-3 left-3 bg-accent-green text-white text-xs font-semibold px-2 py-1 rounded">
+                    <span className="absolute top-1 left-1 sm:top-3 sm:left-3 bg-accent-green text-white text-[10px] sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
                       {tBookshelf('free')}
                     </span>
                   )}
                 </Link>
 
                 {/* Content */}
-                <div className="p-4 flex flex-col flex-grow">
+                <div className="p-3 sm:p-4 flex flex-col flex-grow min-w-0">
                   {/* Title - Clickable */}
                   <Link
                     href={`/product/${book.book_id}`}
@@ -204,7 +204,7 @@ export default function BookshelfPage() {
                             href={transformToSpacesUrl(book.download_url) ?? undefined}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium transition-colors duration-200 active:scale-95 transform"
+                            className="flex-1 flex items-center justify-center gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium text-sm sm:text-base transition-colors duration-200 active:scale-95 transform"
                           >
                             <FileText className="w-3 h-3" />
                             PDF
@@ -215,7 +215,7 @@ export default function BookshelfPage() {
                             href={transformToSpacesUrl(book.epub_url) ?? undefined}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium transition-colors duration-200 active:scale-95 transform"
+                            className="flex-1 flex items-center justify-center gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-gold text-ink hover:bg-gold-light rounded-lg font-medium text-sm sm:text-base transition-colors duration-200 active:scale-95 transform"
                           >
                             <BookOpen className="w-3 h-3" />
                             EPUB
