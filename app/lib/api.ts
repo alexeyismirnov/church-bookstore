@@ -139,10 +139,14 @@ export async function searchProducts(query: string, page: number = 1, inStock?: 
  * @param id - Product ID
  * @returns Product details
  */
-export async function getProductById(id: string, signal?: AbortSignal): Promise<OscarProduct> {
+export async function getProductById(
+  id: string,
+  signal?: AbortSignal,
+  locale?: string
+): Promise<OscarProduct> {
   const response = await fetch(`${getApiBase()}/products/${id}/`, {
     method: 'GET',
-    headers: getApiHeaders(),
+    headers: getApiHeaders(locale !== undefined ? { locale } : undefined),
     cache: 'no-store',
     signal,
   });

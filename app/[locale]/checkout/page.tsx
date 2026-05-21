@@ -507,11 +507,14 @@ function CheckoutContent() {
     }
   }, [currency, checkoutStep, shippingAddress, selectedShippingMethod]);
 
-  // When locale changes, re-fetch all cart item data (title, author, coverImage) in the new language
+  // When locale changes, re-fetch all cart item data (title, author, coverImage)
+  // in the new language.
+  // Pass locale explicitly to avoid stale Accept-Language reads from localStorage
+  // during navbar locale switch timing.
   useEffect(() => {
-    if (localCartItems.length === 0) return;
-    refreshPrices(currency);
-  }, [locale]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!isHydrated || localCartItems.length === 0) return;
+    refreshPrices(currency, locale);
+  }, [locale, currency, isHydrated, localCartItems.length, refreshPrices]);
 
   // When local cart items are updated (e.g. after locale-triggered refreshPrices),
   // propagate the updated title/author/coverImage to the checkout's cartItems state

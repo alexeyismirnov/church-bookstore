@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useEffect } from 'react';
+import { useLayoutEffect, useEffect, useRef } from 'react';
 import LocalizedLink from '../../components/LocalizedLink';
 import { ArrowLeft, ShoppingBag, AlertTriangle } from 'lucide-react';
 import CartItem from '../../components/CartItem';
@@ -39,21 +39,29 @@ export default function CartPage() {
   // Detect mixed currencies in cart items
   const hasMixedCurrencies = items.length > 0 && new Set(items.map(i => i.currency)).size > 1;
 
-  // When currency changes, re-fetch all cart item prices in the new currency
-  useEffect(() => {
-    if (items.length === 0) return;
-    // Only refresh if at least one item's currency doesn't match the selected currency
-    const needsRefresh = items.some(item => item.currency !== currency);
-    if (!needsRefresh) return;
+  const lastRefreshKeyRef = useRef<string>('');
 
-    refreshPrices(currency);
-  }, [currency]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // When locale changes, re-fetch all cart item data (title, author, price) in the new language
+  // Refresh cart item data when cart first appears, and when locale/currency changes.
+  // Intentionally does NOT depend on `items` to avoid self-trigger loops after setCart writes.
   useEffect(() => {
-    if (items.length === 0) return;
-    refreshPrices(currency);
-  }, [locale]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (items.length === 0) {
+      return;
+    }
+
+    const refreshKey = `${locale}__${currency}__${items.map((i) => i.productId).sort((a, b) => a - b).join(',')}`;
+    const alreadyRefreshedForKey = lastRefreshKeyRef.current === refreshKey;
+
+    if (alreadyRefreshedForKey) return;
+
+    lastRefreshKeyRef.current = refreshKey;
+    refreshPrices(currency, locale).catch((err) => {
+      console.warn('[cart/page] refreshPrices failed', err);
+      // Allow retry on next effect run after failure.
+      if (lastRefreshKeyRef.current === refreshKey) {
+        lastRefreshKeyRef.current = '';
+      }
+    });
+  }, [currency, locale, items.length, refreshPrices]);
 
   // Use totalPrice from local cart (sum of price * quantity for all items)
   const subtotal = totalPrice;

@@ -87,7 +87,7 @@ export interface LocalCartContextType {
   /** Sync local cart items to the Oscar backend basket. */
   syncToBackend: (currencyOverride?: string) => Promise<SyncResult>;
   /** Re-fetch prices for all cart items in the given currency. */
-  refreshPrices: (newCurrency: string) => Promise<void>;
+  refreshPrices: (newCurrency: string, localeOverride?: string) => Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -333,7 +333,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
 
   // ---- Sprint 3c: refresh cart prices when currency changes ----
 
-  const refreshPrices = useCallback(async (newCurrency: string): Promise<void> => {
+  const refreshPrices = useCallback(async (newCurrency: string, localeOverride?: string): Promise<void> => {
     const currentCart = getStoredCart();
     if (currentCart.items.length === 0) return;
 
@@ -355,8 +355,8 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
         if (isVariant) {
           // Fetch both parent (for display info) and variant (for price)
           const [parentProduct, variantProduct] = await Promise.allSettled([
-            getProductById(item.parentProductId.toString()),
-            getProductById(item.productId.toString()),
+            getProductById(item.parentProductId.toString(), undefined, localeOverride),
+            getProductById(item.productId.toString(), undefined, localeOverride),
           ]);
 
           // Price from variant
@@ -387,7 +387,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
           }
         } else {
           // Non-variant: everything from the single product
-          const product = await getProductById(item.productId.toString());
+          const product = await getProductById(item.productId.toString(), undefined, localeOverride);
           const newPrice = parseFloat(product.price);
           if (!isNaN(newPrice) && newPrice > 0) {
             update.price = newPrice;
@@ -404,7 +404,13 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        if (update.price || update.title || update.author || update.coverImage || update.variantTitle) {
+        if (
+          update.price !== undefined ||
+          update.title !== undefined ||
+          update.author !== undefined ||
+          update.coverImage !== undefined ||
+          update.variantTitle !== undefined
+        ) {
           updatesMap.set(item.productId, update);
         }
       })
