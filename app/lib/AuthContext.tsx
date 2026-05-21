@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLocalizedPath } from '../i18n/useLocalizedPath';
 import { getApiHeaders } from './api';
 
 // Types for user and profile
@@ -99,6 +100,7 @@ function cacheProfilePreferences(language?: string, currency?: string): void {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const localizedPath = useLocalizedPath();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -391,7 +393,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.status === 204) {
         logout();
-        router.push('/');
+        router.push(localizedPath('/'));
         return { success: true };
       }
 

@@ -4,8 +4,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import LocalizedLink from './LocalizedLink';
+import { useLocalizedPath } from '../i18n/useLocalizedPath';
 import { Search, User, ShoppingCart, Menu, X, Heart, LogOut, User as UserIcon, BookOpen } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
@@ -15,6 +16,7 @@ import { useLocalCart } from '../lib/localCart';
 
 export default function Header() {
   const router = useRouter();
+  const localizedPath = useLocalizedPath();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,7 +46,7 @@ export default function Header() {
   const handleLogout = () => {
     logout();
     setIsDropdownOpen(false);
-    router.push('/');
+    router.push(localizedPath('/'));
     router.refresh();
   };
 
@@ -53,7 +55,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
+          <LocalizedLink href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 md:w-12 md:h-12 relative">
               <img
                 src="/images/church_logo.png"
@@ -64,18 +66,18 @@ export default function Header() {
             <span className="hidden md:block text-lg font-bold text-ink">
               {t('title')}
             </span>
-          </Link>
+          </LocalizedLink>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <Link
+              <LocalizedLink
                 key={link.href}
                 href={link.href}
                 className="text-ink hover:text-burgundy transition-colors font-medium"
               >
                 {link.label}
-              </Link>
+              </LocalizedLink>
             ))}
           </nav>
 
@@ -109,30 +111,30 @@ export default function Header() {
                 {/* Dropdown Menu */}
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-parchment-light rounded-lg shadow-lg py-2 z-50 border">
-                      <Link
+                      <LocalizedLink
                         href="/profile"
                         className="flex items-center gap-2 px-4 py-2 text-ink hover:bg-parchment-dark/20 transition-colors"
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <UserIcon className="w-4 h-4" />
                         {t('myProfile')}
-                      </Link>
-                      <Link
+                      </LocalizedLink>
+                      <LocalizedLink
                         href="/orders"
                         className="flex items-center gap-2 px-4 py-2 text-ink hover:bg-parchment-dark/20 transition-colors"
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <UserIcon className="w-4 h-4" />
                         {t('myOrders')}
-                      </Link>
-                      <Link
+                      </LocalizedLink>
+                      <LocalizedLink
                         href="/bookshelf"
                         className="flex items-center gap-2 px-4 py-2 text-ink hover:bg-parchment-dark/20 transition-colors"
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <BookOpen className="w-4 h-4" />
                         {t('bookshelf')}
-                      </Link>
+                      </LocalizedLink>
                       <button
                         onClick={handleLogout}
                         className="flex items-center gap-2 px-4 py-2 text-burgundy hover:bg-burgundy/10 transition-colors w-full"
@@ -144,16 +146,16 @@ export default function Header() {
                 )}
               </div>
             ) : (
-              <Link
+              <LocalizedLink
                 href="/login"
                 className="hidden sm:flex p-2 hover:bg-parchment-dark/30 rounded-full transition-colors"
               >
                 <User className="w-5 h-5 text-ink" />
-              </Link>
+              </LocalizedLink>
             )}
 
             {/* Cart */}
-            <Link
+            <LocalizedLink
               href="/cart"
               className="flex items-center gap-1 p-2 hover:bg-parchment-dark/30 rounded-full transition-colors relative"
             >
@@ -163,7 +165,7 @@ export default function Header() {
                   {totalItems}
                 </span>
               )}
-            </Link>
+            </LocalizedLink>
 
             {/* Mobile Menu Button */}
             <button
@@ -185,14 +187,14 @@ export default function Header() {
         <div className="md:hidden bg-parchment-light border-t">
           <nav className="flex flex-col py-4">
             {navLinks.map((link) => (
-              <Link
+              <LocalizedLink
                 key={link.href}
                 href={link.href}
                 className="px-4 py-3 text-ink hover:bg-parchment-dark/20 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
-              </Link>
+              </LocalizedLink>
             ))}
             {/* Language Switcher in Mobile Menu */}
             <div className="px-4 py-3 border-t">
@@ -207,27 +209,27 @@ export default function Header() {
             {/* Mobile Account - Show login or profile/logout */}
             {isAuthenticated ? (
               <>
-                <Link
+                <LocalizedLink
                   href="/profile"
                   className="px-4 py-3 text-ink hover:bg-parchment-dark/20 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('myProfile')}
-                </Link>
-                <Link
+                </LocalizedLink>
+                <LocalizedLink
                   href="/orders"
                   className="px-4 py-3 text-ink hover:bg-parchment-dark/20 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('myOrders')}
-                </Link>
-                <Link
+                </LocalizedLink>
+                <LocalizedLink
                   href="/bookshelf"
                   className="px-4 py-3 text-ink hover:bg-parchment-dark/20 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('bookshelf')}
-                </Link>
+                </LocalizedLink>
                 <button
                   onClick={() => {
                     handleLogout();
@@ -239,13 +241,13 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <Link
+              <LocalizedLink
                 href="/login"
                 className="px-4 py-3 text-ink hover:bg-parchment-dark/20 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('account')}
-              </Link>
+              </LocalizedLink>
             )}
           </nav>
         </div>

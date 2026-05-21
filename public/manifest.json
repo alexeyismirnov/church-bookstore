@@ -1,0 +1,17 @@
+{
+  "name": "Orthodox Christian Bookstore",
+  "short_name": "Orthodox Books",
+  "description": "Orthodox Christian books, prayer books, icons, and liturgical resources",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f0e8",
+  "theme_color": "#722f37",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

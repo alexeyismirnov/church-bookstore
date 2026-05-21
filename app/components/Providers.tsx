@@ -20,14 +20,12 @@ interface ProvidersProps {
 
 export default function Providers({ children, initialLocale, initialCurrency }: ProvidersProps) {
   return (
-    <AuthProvider>
-      <LocalCartProvider>
-        <CurrencyProvider initialCurrency={initialCurrency}>
-          <LanguageProvider initialLocale={initialLocale}>
-            {children}
-          </LanguageProvider>
-        </CurrencyProvider>
-      </LocalCartProvider>
-    </AuthProvider>
+    <LanguageProvider initialLocale={initialLocale}>
+      <CurrencyProvider initialCurrency={initialCurrency}>
+        <AuthProvider>
+          <LocalCartProvider>{children}</LocalCartProvider>
+        </AuthProvider>
+      </CurrencyProvider>
+    </LanguageProvider>
   );
 }

@@ -1,44 +1,23 @@
-// app/components/LanguageSwitcher.tsx
-// Language switcher component - similar to Django's navbar dropdown
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useLanguage, locales, languageNames, languageFlags, type Locale } from '../i18n/LanguageContext';
 import { useTranslations } from '../i18n/LanguageContext';
+import { replaceLocaleInPathname } from '../i18n/routing';
 import { useAuth } from '../lib/AuthContext';
 import { ChevronDown } from 'lucide-react';
 
 export default function LanguageSwitcher() {
-  const { locale, setLocale } = useLanguage();
+  const { locale } = useLanguage();
   const t = useTranslations('nav');
-  const { isAuthenticated, profile, updateProfile } = useAuth();
+  const { isAuthenticated, updateProfile } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Keep a ref to the latest locale so the profile-sync effect always compares
-  // against the current locale, not a stale closure value.
-  // (locale is intentionally excluded from the effect's dep array to prevent a
-  // feedback loop, but that caused the guard `profileLocale !== locale` to use
-  // a stale value — this ref solves that without re-introducing the loop.)
-  const localeRef = useRef<Locale>(locale);
-  useEffect(() => {
-    localeRef.current = locale;
-  });
-
-  // Sync with profile language when profile changes and user is authenticated.
-  // Only syncs FROM profile TO context (not the other way around).
-  useEffect(() => {
-    if (isAuthenticated && profile?.language) {
-      const profileLocale = profile.language as Locale;
-      // Use the ref to get the current locale without adding it to deps
-      if (locales.includes(profileLocale) && profileLocale !== localeRef.current) {
-        setLocale(profileLocale);
-      }
-    }
-  }, [profile, isAuthenticated, setLocale]);
-
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -49,21 +28,37 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLanguageSelect = async (newLocale: Locale) => {
-    setLocale(newLocale);
+  const handleLanguageSelect = (newLocale: Locale) => {
+    // Only persist the preference — do NOT call setLocale() here.
+    // Calling setLocale() would update React state immediately, causing all
+    // t() calls to re-render in the new language BEFORE router.push() triggers
+    // a full page navigation. That creates a visible flicker (double-render).
+    // Instead, we write the cookie + localStorage so the server-rendered page
+    // at the new URL will pick up the correct locale.
+    try {
+      document.cookie = `locale=${newLocale}; max-age=${60 * 60 * 24 * 365}; path=/; SameSite=Lax`;
+    } catch (e) {
+      console.warn('Could not save language preference to cookie');
+    }
+    try {
+      localStorage.setItem('locale', newLocale);
+    } catch (e) {
+      console.warn('Could not save language preference to localStorage');
+    }
+
     setIsOpen(false);
-    
-    // If user is authenticated, update profile with new language.
-    // Note: rapid switching may cause out-of-order updateProfile responses.
-    // The localeRef guard in the profile-sync effect prevents the UI locale
-    // from being overwritten by a stale response, since localeRef.current will
-    // already reflect the latest selection by the time any response arrives.
+    const newPath = replaceLocaleInPathname(pathname, newLocale);
+    const searchString = searchParams.toString();
+    const hash = typeof window !== 'undefined' ? window.location.hash : '';
+    const target = searchString ? `${newPath}?${searchString}${hash}` : `${newPath}${hash}`;
+    router.push(target);
+
+    // Save to user profile non-blocking (fire and forget).
+    // We intentionally do NOT await this — navigation should not be delayed.
     if (isAuthenticated) {
-      try {
-        await updateProfile({ language: newLocale });
-      } catch (error) {
+      updateProfile({ language: newLocale }).catch((error: unknown) => {
         console.error('Failed to update profile language:', error);
-      }
+      });
     }
   };
 
@@ -96,7 +91,11 @@ export default function LanguageSwitcher() {
               <span>{languageNames[loc]}</span>
               {locale === loc && (
                 <svg className="w-4 h-4 ml-auto text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               )}
             </button>

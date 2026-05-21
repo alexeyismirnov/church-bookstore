@@ -106,6 +106,151 @@ The sprint order is designed to maximize early wins while respecting technical d
 
 ---
 
+# Post-Implementation Review: Fix Sprints
+
+> **Sprints 1–5 have been completed** and have undergone a thorough code review.
+>
+> **Summary:** 39 of 44 tasks were implemented successfully. The architecture is solid with clean TypeScript types and well-designed server/client component boundaries. The following fix sprints address issues found during code review.
+
+---
+
+## Fix Sprint P0 — Before Launch (Critical)
+
+These issues must be resolved before the site goes live. They affect browser compatibility, social sharing, search engine rich results, or HTTP correctness.
+
+### P0.1 — Generate Missing Icon Assets
+- **From:** Sprint 1, Task 1.4 (incomplete)
+- **Problem:** `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` were never generated from `church_logo.png`. Browsers show a default tab icon; Apple devices have no touch icon; PWA install prompts won't work.
+- **Files:** `public/favicon.ico`, `public/apple-touch-icon.png`, `public/icon-192.png`, `public/icon-512.png` (new)
+- **Also update:** `public/manifest.json` — add `icon-192.png` and `icon-512.png` to icons array; `app/layout.tsx` — update `icons` metadata to reference the new PNG files
+- **Acceptance criteria:**
+  - [ ] All 4 icon files exist in `public/`
+  - [ ] `manifest.json` references 192px and 512px PNG icons
+  - [ ] `layout.tsx` icons config includes `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`
+  - [ ] Browser tab shows custom favicon
+  - [ ] Lighthouse PWA audit passes icon checks
+
+### P0.2 — Create Default OG Image (1200×630)
+- **From:** Sprint 2, Task 2.7 (not done)
+- **Problem:** No dedicated 1200×630 Open Graph image exists. The fallback is a 512×512 logo, which appears small or letterboxed on Facebook/Twitter/LinkedIn shares.
+- **Files:** `public/images/og-default.png` (new), `app/lib/metadata.ts` (modify)
+- **Acceptance criteria:**
+  - [ ] `public/images/og-default.png` exists at 1200×630 pixels
+  - [ ] `DEFAULT_OG_IMAGE` constant in `metadata.ts` updated to point to new image
+  - [ ] `buildOpenGraph()` dimensions updated to `width: 1200, height: 630`
+  - [ ] Root layout `openGraph.images` updated with correct dimensions
+  - [ ] Facebook Sharing Debugger shows correct image
+
+### P0.3 — Add Product Schema to Catalog Cards
+- **From:** Sprint 3, Task 3.6 (not implemented)
+- **Problem:** `ProductCard.tsx` is a client component and contains zero structured data. Catalog pages miss product rich snippets for all listed products.
+- **Solution:** Generate lightweight Product schemas server-side in `catalog/page.tsx` and render via `StructuredData` component alongside existing breadcrumb and ItemList schemas.
+- **Files:** `app/[locale]/catalog/page.tsx` (modify)
+- **Each schema should include:** `@type: "Product"`, `name`, `url` (absolute), `image`, `offers` (price, priceCurrency)
+- **Acceptance criteria:**
+  - [ ] Catalog page renders one `<script type="application/ld+json">` per product with `@type: "Product"`
+  - [ ] Each schema has `name`, `url`, `image`, `offers`
+  - [ ] URLs are absolute
+  - [ ] Google Rich Results Test validates the schemas
+
+### P0.4 — Return HTTP 404 for Missing Products
+- **From:** Sprint 5, Task 5.3 (partial)
+- **Problem:** When a product is not found, the page returns HTTP 200 with a client-side "not found" UI instead of a proper 404 status. Search engines may index these empty pages despite the `noindex` directive.
+- **Files:** `app/[locale]/product/[id]/page.tsx` (modify)
+- **Fix:** Call `notFound()` from `next/navigation` when `getCachedProductById()` returns null, instead of passing null to the client component.
+- **Acceptance criteria:**
+  - [ ] Visiting `/product/999999` returns HTTP 404
+  - [ ] Next.js default not-found page (or custom one) is rendered
+  - [ ] `generateMetadata` still handles the case gracefully (no runtime error)
+
+---
+
+## Fix Sprint P1 — Post-Launch Sprint (High Priority)
+
+These issues should be addressed in the first post-launch sprint. They affect SEO quality, schema completeness, and international user experience.
+
+### P1.1 — Implement Slug-Based Product URLs
+- **From:** Sprint 5, Task 5.12 (not implemented)
+- **Problem:** Product URLs use numeric IDs (`/product/381`) instead of human-readable slugs (`/product/lives-of-the-saints`). This is a significant SEO gap.
+- **Files:** `app/types/index.ts` (add `slug` field to `Book`), `app/[locale]/product/[id]/page.tsx` (rename to `[slug]`), `app/sitemap.ts` (use slugs), `middleware.ts` or `next.config.js` (redirects from old URLs)
+- **Dependencies:** Backend Oscar API must include `slug` in product responses
+- **Acceptance criteria:**
+  - [ ] `Book` type has `slug: string` field
+  - [ ] Route renamed from `[id]` to `[slug]`
+  - [ ] Sitemap generates slug-based URLs
+  - [ ] Old numeric URLs (`/product/381`) redirect 301 to slug equivalents
+  - [ ] Internal links use slug-based URLs
+
+### P1.2 — Add ISBN to Book Type and Product Schema
+- **From:** Sprint 3, Task 3.4 (partial)
+- **Problem:** The `Book` type has no `isbn` field. The `OscarProduct.upc` field likely contains ISBN data but isn't mapped. Google Book rich results require ISBN.
+- **Files:** `app/types/index.ts` (add `isbn` field), `app/lib/structured-data.ts` (include in `buildProductBookSchema()`), `app/lib/api.ts` (map `upc` → `isbn`)
+- **Acceptance criteria:**
+  - [ ] `Book` type has `isbn?: string` field
+  - [ ] API mapping converts `upc` to `isbn` where applicable
+  - [ ] `buildProductBookSchema()` includes `isbn` when available
+  - [ ] Google Rich Results Test shows ISBN in Book schema
+
+### P1.3 — Fix SearchAction URL Template
+- **From:** Sprint 3, Task 3.2 (partial)
+- **Problem:** `urlTemplate` in WebSite schema uses `/catalog?q=...` without locale prefix. Since the app uses `[locale]` routing, the bare `/catalog` path may not resolve correctly.
+- **Files:** `app/lib/structured-data.ts` (line ~78)
+- **Fix:** Change to `${SITE_URL}/en/catalog?q={search_term_string}` or use `buildAbsoluteUrl('/catalog', 'en')`
+- **Acceptance criteria:**
+  - [ ] `urlTemplate` includes locale prefix (e.g., `/en/catalog?q=...`)
+  - [ ] Google Sitelinks Search Box works correctly
+
+### P1.4 — Improve Accept-Language Parsing
+- **From:** Sprint 4, Task 4.2 (partial)
+- **Problem:** Middleware uses simplistic `lower.includes('ru')` matching instead of proper RFC 4647 quality-factor parsing. Users with complex language preferences may get the wrong locale.
+- **Files:** `middleware.ts`
+- **Fix:** Implement proper quality-factor parsing or use a library like `accept-language`
+- **Acceptance criteria:**
+  - [ ] `Accept-Language: ru;q=0.1,zh-Hans;q=0.9` correctly resolves to `zh-hans`
+  - [ ] Quality factors (`q=` values) are respected
+  - [ ] Fallback to default locale still works
+
+### P1.5 — Add Address/ContactPoint to Organization Schema
+- **From:** Sprint 3, Task 3.1 (partial)
+- **Problem:** Organization schema missing `address` and `contactPoint` properties recommended by Google for rich results.
+- **Files:** `app/lib/structured-data.ts` (`buildOrganizationSchema()`)
+- **Acceptance criteria:**
+  - [ ] Schema includes `address` with `@type: PostalAddress`
+  - [ ] Schema includes `contactPoint` with `@type: ContactPoint`
+  - [ ] Google Rich Results Test validates Organization schema
+
+---
+
+## Fix Sprint P2 — Future Improvements (Nice to Have)
+
+These are quality-of-life improvements that don't block launch but would improve code quality, performance, and completeness over time.
+
+### P2.1 — Convert Remaining `<img>` Tags to Next.js `<Image>`
+- **Files:** `app/components/HomePageClient.tsx` (bookshelf), `app/components/Header.tsx` (logo), `app/components/CartItem.tsx`, `app/components/OrderSummary.tsx`, `app/[locale]/bookshelf/page.tsx`, `app/[locale]/orders/[id]/page.tsx`, `app/[locale]/resources/page.tsx`
+- **Note:** Use the existing `ProductImage` component where applicable; for non-product images (logo, etc.) use `<Image>` directly
+
+### P2.2 — Add `secure` Flag to Locale Cookie in Production
+- **Files:** `middleware.ts`, `app/i18n/LanguageContext.tsx`
+- **Note:** Add `secure: true` when `NODE_ENV === 'production'`
+
+### P2.3 — Add MAX_PAGES Safety Limit to Sitemap Pagination
+- **Files:** `app/lib/api.ts` (`getAllProductsForSitemap()`)
+- **Note:** Prevents infinite loop if API returns corrupted `next` URLs
+
+### P2.4 — Use Build-Time Timestamps for Sitemap `lastModified`
+- **Files:** `app/sitemap.ts`
+- **Note:** Replace `new Date()` with a fixed build timestamp or git commit date for static pages
+
+### P2.5 — Add `og:locale:alternate` Tags
+- **Files:** `app/lib/metadata.ts` (`buildOpenGraph()`)
+- **Note:** Open Graph spec supports `locale:alternate` for multi-language pages
+
+### P2.6 — Handle Partial Sitemap Pagination Failures Gracefully
+- **Files:** `app/lib/api.ts` (`getAllProductsForSitemap()`)
+- **Note:** If API fails on page 3 of 10, return partial results instead of discarding all entries
+
+---
+
 ### Sprint 1: SEO Infrastructure Foundation
 
 **Goal:** Establish the basic SEO infrastructure that enables crawlers to discover, access, and understand the site structure.

@@ -47,7 +47,8 @@
     "bookshelf": "我的圖書",
     "logout": "登出",
     "account": "帳戶",
-    "cart": "購物車"
+    "cart": "購物車",
+    "faithofsaints": "信仰先賢"
   },
   "homepage": {
     "hero": {
@@ -73,6 +74,7 @@
       "defaultDesc": "瀏覽我們的{name}系列。"
     },
     "features": {
+      "sectionTitle": "為什麼選擇我們",
       "curatedTitle": "精心甄選",
       "curatedDesc": "精選來自全球東正教出版社的書籍，確保教義純正和屬靈價值。",
       "qualityTitle": "品質保證",
@@ -112,6 +114,8 @@
       "popular": "熱門"
     },
     "empty": "未找到產品",
+    "allProducts": "全部東正教書籍",
+    "relatedProducts": "您可能還喜歡",
     "showingResults": "顯示 {start}-{end} 條結果，共 {total} 條"
   },
   "product": {
@@ -252,6 +256,18 @@
     },
     "orderSummarySection": {
       "qty": "數量："
+    },
+    "syncingCart": "正在同步您的購物車...",
+    "placingOrder": "付款已確認。正在提交訂單...",
+    "skippedItems": {
+      "title": "部分商品已不可用，已被移除：",
+      "itemLabel": "商品 #{id}"
+    },
+    "orderPlacementFailed": {
+      "title": "付款成功但訂單提交失敗",
+      "contactSupport": "請憑付款憑證聯繫客服。",
+      "retrying": "正在重試...",
+      "retry": "重試提交訂單"
     }
   },
   "account": {
@@ -538,5 +554,54 @@
     "iconostasDescription": "Iconostas.shop 是一個專門致力於定製手繪東正教聖像的在線平台。該網站不銷售現成商品，而是作為連接客戶與專業聖像畫師的樞紐，每件作品均從零開始精心繪製。每個訂單都圍繞具體的主題、尺寸和傳統（拜占庭或俄羅斯風格）進行定製。網站管理從初始設計到全球快遞配送的整個過程。",
     "agiosDescription": "Agios.bio 是一個專門致力於東正教聖人傳記的在線資料庫。該平台收錄了由俄羅斯東正教司鐸、專門研究聖潔神學的神學家奧古斯丁·索科洛夫斯基博士撰寫的詳細傳記和神學文章。條目按月份按時間順序排列，追蹤全年的傳統節日曆法和歷史記載。",
     "orthodoxyDescription": "Orthodoxy.hk 是聖彼得與聖保羅東正教會（俄羅斯東正教會管轄下的香港堂區）的官方網站。該平台提供本地堂區動態和即將舉行的禮拜日程。它還作為堂區廣泛出版計劃的數字資料庫，提供中文東正教書籍翻譯、禮儀文本和傳教媒體資源。"
+  },
+  "meta": {
+    "homepage": {
+      "title": "東正教基督教書店 — 英語、俄語、中文書籍",
+      "description": "瀏覽200多種東正教書籍、祈禱書、聖像和禮儀資源。自2014年起從香港全球發貨。",
+      "ogTitle": "東正教基督教書店",
+      "ogDescription": "英語、俄語、簡體與繁體中文東正教書籍、祈禱書、神學、聖像等。"
+    },
+    "catalog": {
+      "title": "東正教書籍 — 完整目錄",
+      "description": "瀏覽我們完整的東正教書籍、禮儀文本、靈修資源與教會用品收藏。",
+      "ogTitle": "東正教書籍目錄",
+      "ogDescription": "探索200多種多語言東正教書籍。"
+    },
+    "catalogCategory": {
+      "title": "{category} — 東正教書籍",
+      "description": "在東正教書店瀏覽「{category}」。神學、聖人傳記、禮儀文本等。"
+    },
+    "catalogSearch": {
+      "title": "搜尋：{query} — 東正教書店",
+      "description": "在東正教書店目錄中搜尋「{query}」的結果。"
+    },
+    "catalogPage": {
+      "titleSuffix": " — 第 {page} 頁"
+    },
+    "product": {
+      "titleTemplate": "{title} — 東正教書店",
+      "descriptionFallback": "在東正教書店購買 {author} 的《{title}》。",
+      "notFoundTitle": "未找到商品 — 東正教書店",
+      "notFoundDescription": "目錄中未找到您請求的商品。"
+    },
+    "contact": {
+      "title": "聯絡我們 — 東正教書店",
+      "description": "如有關於訂單、書籍或堂區資源的問題，請聯絡東正教書店。我們從香港全球發貨。",
+      "ogTitle": "聯絡東正教書店",
+      "ogDescription": "訂單支援、書籍推薦與一般諮詢。"
+    },
+    "resources": {
+      "title": "東正教資源 — 東正教書店",
+      "description": "精選東正教網站與資源：聖像、聖人傳記、堂區出版與靈修閱讀。",
+      "ogTitle": "東正教資源",
+      "ogDescription": "東正教聖像、聖人傳記與堂區資源的有用連結。"
+    },
+    "faithofsaints": {
+      "title": "聖徒的信心 — 東正教書店",
+      "description": "收聽普通話、粵語和俄語版《聖徒的信心》音頻系列。",
+      "ogTitle": "《聖徒的信心》音頻系列",
+      "ogDescription": "《聖徒的信心》系列東正教音頻節目。"
+    }
   }
 }

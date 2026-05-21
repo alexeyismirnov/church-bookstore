@@ -14,6 +14,7 @@ interface FilterSidebarProps {
   onStockChange: (value: boolean) => void;
   onCategorySelect?: (categoryId: string | null) => void;
   selectedCategoryId?: string | null;
+  initialCategories?: Category[];
 }
 
 // Check if a category or any of its children is selected
@@ -34,6 +35,7 @@ export default function FilterSidebar({
   onStockChange,
   onCategorySelect,
   selectedCategoryId,
+  initialCategories,
 }: FilterSidebarProps) {
   const t = useTranslations();
   const tCatalog = useTranslations('catalog');
@@ -49,10 +51,13 @@ export default function FilterSidebar({
   // Track expanded parent categories
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   
-  // Fetch categories from API
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Categories: seeded from server-side fetch, only re-fetched when locale changes
+  const [categories, setCategories] = useState<Category[]>(initialCategories ?? []);
+  const [loading, setLoading] = useState(!initialCategories || initialCategories.length === 0);
   const [error, setError] = useState<string | null>(null);
+  const [fetchedLocale, setFetchedLocale] = useState<string | null>(
+    initialCategories && initialCategories.length > 0 ? locale : null
+  );
 
   // Helper function to find all ancestor categories of a given category
   const findCategoryAncestors = (cats: Category[], targetId: string, ancestors: string[] = []): string[] => {
@@ -70,12 +75,19 @@ export default function FilterSidebar({
     return [];
   };
 
+  // Only re-fetch categories when the locale changes (not on every mount / navigation)
   useEffect(() => {
+    if (initialCategories && initialCategories.length > 0 && fetchedLocale === locale) {
+      // Server already provided categories for this locale — skip fetch
+      return;
+    }
+
     const fetchCategories = async () => {
       try {
         setLoading(true);
         const data = await getCategories();
         setCategories(data);
+        setFetchedLocale(locale);
         setError(null);
       } catch (err) {
         console.error('Failed to fetch categories:', err);
@@ -86,7 +98,7 @@ export default function FilterSidebar({
     };
 
     fetchCategories();
-  }, [locale]);
+  }, [locale, fetchedLocale, initialCategories]);
 
   // Auto-expand parent categories when selectedCategoryId changes on mount
   useEffect(() => {

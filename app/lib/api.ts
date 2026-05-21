@@ -53,9 +53,12 @@ function getCurrencyPreference(): string {
 }
 
 // Get common headers for API requests
-export function getApiHeaders(): HeadersInit {
-  const lang = getLanguagePreference();
-  const currency = getCurrencyPreference();
+export function getApiHeaders(options?: {
+  locale?: string;
+  currency?: string;
+}): HeadersInit {
+  const lang = options?.locale ?? getLanguagePreference();
+  const currency = options?.currency ?? getCurrencyPreference();
   return {
     'Content-Type': 'application/json',
     'Accept-Language': lang,
@@ -153,6 +156,99 @@ export async function getProductById(id: string, signal?: AbortSignal): Promise<
 }
 
 /**
+ * Fetch a single product on the server (metadata, SSR).
+ */
+export async function getProductByIdForServer(
+  id: string,
+  locale: string = 'en',
+  currency: string = 'USD'
+): Promise<OscarProduct | null> {
+  try {
+    const response = await fetch(`${getApiBase()}/products/${id}/`, {
+      method: 'GET',
+      headers: getApiHeaders({ locale, currency }),
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) return null;
+    return response.json();
+  } catch (err) {
+    console.error(`Failed to fetch product ${id} (server):`, err);
+    return null;
+  }
+}
+
+export interface CatalogListingOptions {
+  page?: number;
+  categoryId?: string;
+  query?: string;
+  inStock?: boolean;
+  locale?: string;
+  currency?: string;
+}
+
+/**
+ * Fetch catalog listing on the server for metadata pagination hints.
+ */
+export interface CatalogListingBooksResult {
+  books: Book[];
+  totalCount: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export async function getCatalogListingBooksForServer(
+  options: CatalogListingOptions = {}
+): Promise<CatalogListingBooksResult | null> {
+  const response = await getCatalogListingForServer(options);
+  if (!response) return null;
+
+  const locale = options.locale ?? 'en';
+  return {
+    books: response.results.map((product) => oscarProductToBook(product, locale)),
+    totalCount: response.count,
+    hasNextPage: !!response.next,
+    hasPrevPage: !!response.previous,
+  };
+}
+
+export async function getCatalogListingForServer(
+  options: CatalogListingOptions = {}
+): Promise<OscarPaginationResponse<OscarProduct> | null> {
+  const page = options.page ?? 1;
+  const locale = options.locale ?? 'en';
+  const currency = options.currency ?? 'USD';
+  const inStock = options.inStock ?? false;
+
+  let url: string;
+  if (options.query?.trim()) {
+    url = `${getApiBase()}/search/?q=${encodeURIComponent(options.query.trim())}&page=${page}`;
+  } else if (options.categoryId) {
+    url = `${getApiBase()}/prodcat/${options.categoryId}/?page=${page}`;
+  } else {
+    url = `${getApiBase()}/products/?page=${page}`;
+  }
+
+  if (inStock) url += `${url.includes('?') ? '&' : '?'}in_stock=true`;
+
+  const revalidateSeconds = options.query?.trim() ? 300 : 1800;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getApiHeaders({ locale, currency }),
+      next: { revalidate: revalidateSeconds },
+    });
+
+    if (!response.ok) return null;
+    return response.json();
+  } catch (err) {
+    console.error('Failed to fetch catalog listing (server):', err);
+    return null;
+  }
+}
+
+/**
  * API response for categories from /api/categories/
  * Backend returns: { id, name, slug, num_products, children }
  */
@@ -168,6 +264,30 @@ interface ApiCategory {
  * Fetch categories from the API
  * @returns Array of categories with product counts (hierarchical)
  */
+/**
+ * Fetch categories on the server (ISR).
+ */
+export async function getCategoriesForServer(
+  locale: string = 'en',
+  currency: string = 'USD'
+): Promise<Category[]> {
+  try {
+    const response = await fetch(`${getApiBase()}/categories/`, {
+      method: 'GET',
+      headers: getApiHeaders({ locale, currency }),
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) return [];
+    const data: unknown = await response.json();
+    const categories: ApiCategory[] = Array.isArray(data) ? data : (data as { results?: ApiCategory[] }).results || [];
+    return mapApiCategoriesToCategories(categories);
+  } catch (err) {
+    console.error('Failed to fetch categories (server):', err);
+    return [];
+  }
+}
+
 export async function getCategories(): Promise<Category[]> {
   const response = await fetch(`${getApiBase()}/categories/`, {
     method: 'GET',
@@ -366,6 +486,72 @@ export async function getNewArrivals(limit: number = 6): Promise<Book[]> {
     console.error('Failed to fetch new arrivals:', err);
     return [];
   }
+}
+
+/**
+ * Fetch new arrivals on the server (SSR, sitemap, metadata).
+ */
+export async function getNewArrivalsForServer(
+  limit: number = 6,
+  locale: string = 'en',
+  currency: string = 'USD'
+): Promise<Book[]> {
+  try {
+    const response = await fetch(`${getApiBase()}/products/?page=1`, {
+      method: 'GET',
+      headers: getApiHeaders({ locale, currency }),
+      next: { revalidate: 1800 },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch new arrivals: ${response.status}`);
+    }
+
+    const data: OscarPaginationResponse<OscarProduct> = await response.json();
+    return data.results.slice(0, limit).map((product) => oscarProductToBook(product, locale));
+  } catch (err) {
+    console.error('Failed to fetch new arrivals (server):', err);
+    return [];
+  }
+}
+
+export interface SitemapProductEntry {
+  id: string;
+  pubDate?: string;
+}
+
+/**
+ * Fetch all product IDs for sitemap generation (paginates through API).
+ */
+export async function getAllProductsForSitemap(): Promise<SitemapProductEntry[]> {
+  const entries: SitemapProductEntry[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await fetch(`${getApiBase()}/products/?page=${page}`, {
+      method: 'GET',
+      headers: getApiHeaders({ locale: 'en', currency: 'USD' }),
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products for sitemap: ${response.status}`);
+    }
+
+    const data: OscarPaginationResponse<OscarProduct> = await response.json();
+    for (const product of data.results) {
+      entries.push({
+        id: product.id.toString(),
+        pubDate: product.pub_date,
+      });
+    }
+
+    hasMore = data.next !== null;
+    page += 1;
+  }
+
+  return entries;
 }
 
 // =============================================================================

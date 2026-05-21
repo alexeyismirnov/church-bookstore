@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import LocalizedLink from './LocalizedLink';
+import ProductImage from './ProductImage';
 import { BookOpen, Loader2 } from 'lucide-react';
 import { BsFilePdf } from 'react-icons/bs';
 import { Book } from '../types';
@@ -43,7 +44,7 @@ export default function ProductCard({ book }: ProductCardProps) {
   };
 
   return (
-    <Link
+    <LocalizedLink
       href={productLink}
       className="card-link card group relative flex flex-row sm:flex-col h-full"
       onClick={handleClick}
@@ -56,10 +57,12 @@ export default function ProductCard({ book }: ProductCardProps) {
       )}
       {/* Image */}
       <div className="relative w-20 sm:w-full h-28 sm:h-auto sm:aspect-[3/4] overflow-hidden rounded-lg sm:rounded-t-xl flex-shrink-0">
-        <img
+        <ProductImage
           src={book.coverImage}
           alt={book.title}
-          className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
+          fill
+          sizes="(max-width: 640px) 80px, 25vw"
+          className="object-cover md:group-hover:scale-105 transition-transform duration-300"
         />
         {book.isNew && (
           <span className="absolute top-1 left-1 sm:top-3 sm:left-3 bg-gold text-ink text-[10px] sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
@@ -190,6 +193,6 @@ export default function ProductCard({ book }: ProductCardProps) {
           })()}
         </div>
       </div>
-    </Link>
+    </LocalizedLink>
   );
 }

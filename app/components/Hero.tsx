@@ -4,7 +4,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import LocalizedLink from './LocalizedLink';
+import ProductImage from './ProductImage';
 import { ArrowRight } from 'lucide-react';
 import { useTranslations } from '../i18n/LanguageContext';
 import { Book } from '../types';
@@ -31,13 +32,13 @@ export default function Hero({ book }: HeroProps) {
               {t('subtitle')}
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
-              <Link
+              <LocalizedLink
                 href="/catalog"
                 className="btn-burgundy inline-flex items-center gap-2"
               >
                 {t('cta')}
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </LocalizedLink>
             </div>
             
             {/* Stats */}
@@ -81,17 +82,19 @@ export default function Hero({ book }: HeroProps) {
                       </div>
                     </div>
                   )}
-                  <Link href={`/product/${book.id}`} className="flex h-full">
-                    <img
+                  <LocalizedLink href={`/product/${book.id}`} className="flex h-full relative">
+                    <ProductImage
                       src={book.coverImage}
                       alt={book.title}
+                      width={400}
+                      height={600}
+                      priority
                       onLoad={() => setIsImageLoading(false)}
-                      onError={() => setIsImageLoading(false)}
                       className={`block h-full w-auto rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-all duration-500 ${
                         isImageLoading ? 'opacity-0' : 'opacity-100'
                       }`}
                     />
-                  </Link>
+                  </LocalizedLink>
                 </div>
                 {/* Decorative Elements */}
                 <div className="absolute top-10 right-10 w-32 h-32 bg-burgundy/10 rounded-full blur-3xl" />
