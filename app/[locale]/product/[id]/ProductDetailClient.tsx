@@ -590,7 +590,7 @@ export default function ProductDetailClient({
         </div>
 
         {relatedBooks.length > 0 && (
-          <section className="mt-16 pt-12 border-t border-parchment-dark/30">
+          <section className="mt-8 pt-6 pb-12 border-t border-parchment-dark/30">
             <h2 className="section-title text-center mb-8">{t('catalog.relatedProducts')}</h2>
             <ProductGrid books={relatedBooks} />
           </section>

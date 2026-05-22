@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "recommendations:generate": "npx tsx scripts/recommendations/generate.ts",
+    "recommendations:validate": "npx tsx scripts/recommendations/validate.ts",
+    "recommendations:enhance": "npx tsx scripts/recommendations/llm/enhance.ts",
+    "recommendations:blend": "npx tsx scripts/recommendations/llm/blend.ts",
+    "recommendations:diff": "npx tsx scripts/recommendations/diff.ts"
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^2.0.2",

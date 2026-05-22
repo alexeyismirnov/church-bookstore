@@ -37,3 +37,6 @@ Thumbs.db
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Recommendation intermediate data
+scripts/recommendations/data/

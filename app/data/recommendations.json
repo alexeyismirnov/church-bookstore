@@ -1,0 +1,5056 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-05-22T14:21:19.751Z",
+  "productCount": 194,
+  "llmEnhanced": true,
+  "blendWeights": {
+    "algo": 0.4,
+    "llm": 0.6
+  },
+  "recommendations": {
+    "1": [
+      {
+        "id": 72,
+        "score": 1,
+        "algoScore": 0.3363,
+        "llmScore": 1
+      },
+      {
+        "id": 75,
+        "score": 0.8137,
+        "algoScore": 0.2301,
+        "llmScore": 0.9
+      },
+      {
+        "id": 349,
+        "score": 0.7651,
+        "algoScore": 0.2396,
+        "llmScore": 0.8
+      },
+      {
+        "id": 325,
+        "score": 0.7609,
+        "algoScore": 0.2362,
+        "llmScore": 0.8
+      }
+    ],
+    "2": [
+      {
+        "id": 366,
+        "score": 0.7188,
+        "algoScore": 0.3022,
+        "llmScore": 0.8
+      },
+      {
+        "id": 36,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 67,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 48,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "3": [
+      {
+        "id": 16,
+        "score": 1,
+        "algoScore": 0.6149,
+        "llmScore": 1
+      },
+      {
+        "id": 218,
+        "score": 0.7465,
+        "algoScore": 0.502,
+        "llmScore": 0.7
+      },
+      {
+        "id": 257,
+        "score": 0.7216,
+        "algoScore": 0.2792,
+        "llmScore": 0.9
+      },
+      {
+        "id": 341,
+        "score": 0.693,
+        "algoScore": 0.3274,
+        "llmScore": 0.8
+      }
+    ],
+    "4": [
+      {
+        "id": 362,
+        "score": 0.7185,
+        "algoScore": 0.3593,
+        "llmScore": 0.8
+      },
+      {
+        "id": 116,
+        "score": 0.669,
+        "algoScore": 0.375,
+        "llmScore": 0.7
+      },
+      {
+        "id": 3,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 46,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "5": [
+      {
+        "id": 19,
+        "score": 1,
+        "algoScore": 0.777,
+        "llmScore": 1
+      },
+      {
+        "id": 72,
+        "score": 0.8503,
+        "algoScore": 0.6029,
+        "llmScore": 0.9
+      },
+      {
+        "id": 82,
+        "score": 0.789,
+        "algoScore": 0.6003,
+        "llmScore": 0.8
+      },
+      {
+        "id": 86,
+        "score": 0.7481,
+        "algoScore": 0.4043,
+        "llmScore": 0.9
+      }
+    ],
+    "6": [
+      {
+        "id": 9,
+        "score": 1,
+        "algoScore": 0.6122,
+        "llmScore": 1
+      },
+      {
+        "id": 76,
+        "score": 0.6821,
+        "algoScore": 0.4011,
+        "llmScore": 0.7
+      },
+      {
+        "id": 16,
+        "score": 0.6375,
+        "algoScore": 0.3329,
+        "llmScore": 0.7
+      },
+      {
+        "id": 75,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "7": [
+      {
+        "id": 75,
+        "score": 0.8732,
+        "algoScore": 0.5044,
+        "llmScore": 0.8
+      },
+      {
+        "id": 86,
+        "score": 0.8727,
+        "algoScore": 0.5038,
+        "llmScore": 0.8
+      },
+      {
+        "id": 34,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 85,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "9": [
+      {
+        "id": 6,
+        "score": 1,
+        "algoScore": 0.6122,
+        "llmScore": 1
+      },
+      {
+        "id": 356,
+        "score": 0.7413,
+        "algoScore": 0.4,
+        "llmScore": 0.8
+      },
+      {
+        "id": 368,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 31,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "10": [
+      {
+        "id": 16,
+        "score": 0.6869,
+        "algoScore": 0.3019,
+        "llmScore": 0.7
+      },
+      {
+        "id": 85,
+        "score": 0.6586,
+        "algoScore": 0.2021,
+        "llmScore": 0.8
+      },
+      {
+        "id": 6,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 9,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "11": [
+      {
+        "id": 13,
+        "score": 0.9787,
+        "algoScore": 0.6,
+        "llmScore": 0.9
+      },
+      {
+        "id": 6,
+        "score": 0.7322,
+        "algoScore": 0.4206,
+        "llmScore": 0.7
+      },
+      {
+        "id": 341,
+        "score": 0.707,
+        "algoScore": 0.2751,
+        "llmScore": 0.8
+      },
+      {
+        "id": 378,
+        "score": 0.6798,
+        "algoScore": 0.3376,
+        "llmScore": 0.7
+      }
+    ],
+    "12": [
+      {
+        "id": 341,
+        "score": 0.6,
+        "algoScore": 0.2751,
+        "llmScore": 0.7
+      },
+      {
+        "id": 51,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 59,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 67,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "13": [
+      {
+        "id": 3,
+        "score": 0.9253,
+        "algoScore": 0.4881,
+        "llmScore": 1
+      },
+      {
+        "id": 16,
+        "score": 0.8653,
+        "algoScore": 0.4881,
+        "llmScore": 0.9
+      },
+      {
+        "id": 218,
+        "score": 0.7385,
+        "algoScore": 0.3879,
+        "llmScore": 0.8
+      },
+      {
+        "id": 378,
+        "score": 0.7052,
+        "algoScore": 0.3379,
+        "llmScore": 0.8
+      }
+    ],
+    "14": [
+      {
+        "id": 85,
+        "score": 0.7035,
+        "algoScore": 0.1682,
+        "llmScore": 1
+      },
+      {
+        "id": 32,
+        "score": 0.7033,
+        "algoScore": 0.1678,
+        "llmScore": 1
+      },
+      {
+        "id": 34,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 86,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "15": [
+      {
+        "id": 85,
+        "score": 0.9189,
+        "algoScore": 0.5182,
+        "llmScore": 1
+      },
+      {
+        "id": 34,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 72,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 86,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "16": [
+      {
+        "id": 3,
+        "score": 0.9784,
+        "algoScore": 0.6149,
+        "llmScore": 1
+      },
+      {
+        "id": 257,
+        "score": 0.7155,
+        "algoScore": 0.2852,
+        "llmScore": 0.9
+      },
+      {
+        "id": 352,
+        "score": 0.6585,
+        "algoScore": 0.2901,
+        "llmScore": 0.8
+      },
+      {
+        "id": 217,
+        "score": 0.5963,
+        "algoScore": 0.2865,
+        "llmScore": 0.7
+      }
+    ],
+    "17": [
+      {
+        "id": 18,
+        "score": 1,
+        "algoScore": 0.7533,
+        "llmScore": 1
+      },
+      {
+        "id": 16,
+        "score": 0.879,
+        "algoScore": 0.6384,
+        "llmScore": 0.9
+      },
+      {
+        "id": 197,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      },
+      {
+        "id": 194,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "18": [
+      {
+        "id": 17,
+        "score": 1,
+        "algoScore": 0.7533,
+        "llmScore": 1
+      },
+      {
+        "id": 16,
+        "score": 0.9441,
+        "algoScore": 0.648,
+        "llmScore": 1
+      },
+      {
+        "id": 169,
+        "score": 0.7654,
+        "algoScore": 0.5375,
+        "llmScore": 0.8
+      },
+      {
+        "id": 194,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "19": [
+      {
+        "id": 5,
+        "score": 1,
+        "algoScore": 0.777,
+        "llmScore": 1
+      },
+      {
+        "id": 72,
+        "score": 0.856,
+        "algoScore": 0.6139,
+        "llmScore": 0.9
+      },
+      {
+        "id": 82,
+        "score": 0.7338,
+        "algoScore": 0.6095,
+        "llmScore": 0.7
+      },
+      {
+        "id": 177,
+        "score": 0.6377,
+        "algoScore": 0.3064,
+        "llmScore": 0.8
+      }
+    ],
+    "20": [
+      {
+        "id": 73,
+        "score": 1,
+        "algoScore": 0.6528,
+        "llmScore": 1
+      },
+      {
+        "id": 178,
+        "score": 0.8394,
+        "algoScore": 0.4887,
+        "llmScore": 0.9
+      },
+      {
+        "id": 74,
+        "score": 0.8327,
+        "algoScore": 0.4777,
+        "llmScore": 0.9
+      },
+      {
+        "id": 103,
+        "score": 0.7807,
+        "algoScore": 0.4908,
+        "llmScore": 0.8
+      }
+    ],
+    "22": [
+      {
+        "id": 168,
+        "score": 0.8961,
+        "algoScore": 0.1946,
+        "llmScore": 1
+      },
+      {
+        "id": 247,
+        "score": 0.8183,
+        "algoScore": 0.2223,
+        "llmScore": 0.8
+      },
+      {
+        "id": 214,
+        "score": 0.8037,
+        "algoScore": 0.1733,
+        "llmScore": 0.9
+      },
+      {
+        "id": 79,
+        "score": 0.7529,
+        "algoScore": 0.2188,
+        "llmScore": 0.7
+      }
+    ],
+    "23": [
+      {
+        "id": 42,
+        "score": 0.9194,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 27,
+        "score": 0.7994,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 46,
+        "score": 0.6318,
+        "algoScore": 0.2,
+        "llmScore": 0.8
+      },
+      {
+        "id": 61,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "25": [
+      {
+        "id": 29,
+        "score": 1,
+        "algoScore": 0.5231,
+        "llmScore": 1
+      },
+      {
+        "id": 28,
+        "score": 0.9824,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 191,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 42,
+        "score": 0.5729,
+        "algoScore": 0.2,
+        "llmScore": 0.7
+      }
+    ],
+    "26": [
+      {
+        "id": 37,
+        "score": 0.9326,
+        "algoScore": 0.5173,
+        "llmScore": 0.9
+      },
+      {
+        "id": 27,
+        "score": 0.8011,
+        "algoScore": 0.5022,
+        "llmScore": 0.7
+      },
+      {
+        "id": 53,
+        "score": 0.7645,
+        "algoScore": 0.2167,
+        "llmScore": 1
+      },
+      {
+        "id": 39,
+        "score": 0.6345,
+        "algoScore": 0.2036,
+        "llmScore": 0.8
+      }
+    ],
+    "27": [
+      {
+        "id": 41,
+        "score": 0.9378,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 38,
+        "score": 0.7043,
+        "algoScore": 0.2065,
+        "llmScore": 0.9
+      },
+      {
+        "id": 52,
+        "score": 0.6451,
+        "algoScore": 0.2075,
+        "llmScore": 0.8
+      },
+      {
+        "id": 72,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "28": [
+      {
+        "id": 25,
+        "score": 1,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 29,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 41,
+        "score": 0.7,
+        "algoScore": 0.2,
+        "llmScore": 0.9
+      },
+      {
+        "id": 27,
+        "score": 0.64,
+        "algoScore": 0.2,
+        "llmScore": 0.8
+      }
+    ],
+    "29": [
+      {
+        "id": 28,
+        "score": 0.9824,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 25,
+        "score": 0.94,
+        "algoScore": 0.5231,
+        "llmScore": 0.9
+      },
+      {
+        "id": 53,
+        "score": 0.8045,
+        "algoScore": 0.5027,
+        "llmScore": 0.7
+      },
+      {
+        "id": 27,
+        "score": 0.6344,
+        "algoScore": 0.2019,
+        "llmScore": 0.8
+      }
+    ],
+    "31": [
+      {
+        "id": 34,
+        "score": 1,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 32,
+        "score": 0.94,
+        "algoScore": 0.6,
+        "llmScore": 0.9
+      },
+      {
+        "id": 38,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 52,
+        "score": 0.8133,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      }
+    ],
+    "32": [
+      {
+        "id": 34,
+        "score": 1,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 39,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 31,
+        "score": 0.82,
+        "algoScore": 0.6,
+        "llmScore": 0.7
+      },
+      {
+        "id": 52,
+        "score": 0.8154,
+        "algoScore": 0.5032,
+        "llmScore": 0.8
+      }
+    ],
+    "34": [
+      {
+        "id": 32,
+        "score": 0.94,
+        "algoScore": 0.6,
+        "llmScore": 0.9
+      },
+      {
+        "id": 31,
+        "score": 0.88,
+        "algoScore": 0.6,
+        "llmScore": 0.8
+      },
+      {
+        "id": 52,
+        "score": 0.8133,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 48,
+        "score": 0.7533,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      }
+    ],
+    "36": [
+      {
+        "id": 70,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 67,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      },
+      {
+        "id": 68,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      },
+      {
+        "id": 69,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      }
+    ],
+    "37": [
+      {
+        "id": 27,
+        "score": 0.9888,
+        "algoScore": 0.5028,
+        "llmScore": 1
+      },
+      {
+        "id": 42,
+        "score": 0.9266,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 39,
+        "score": 0.7198,
+        "algoScore": 0.3102,
+        "llmScore": 0.8
+      },
+      {
+        "id": 53,
+        "score": 0.6386,
+        "algoScore": 0.2051,
+        "llmScore": 0.8
+      }
+    ],
+    "38": [
+      {
+        "id": 52,
+        "score": 0.87,
+        "algoScore": 0.5101,
+        "llmScore": 0.9
+      },
+      {
+        "id": 34,
+        "score": 0.8035,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 27,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 86,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "39": [
+      {
+        "id": 36,
+        "score": 1,
+        "algoScore": 0.6124,
+        "llmScore": 1
+      },
+      {
+        "id": 70,
+        "score": 1,
+        "algoScore": 0.6124,
+        "llmScore": 1
+      },
+      {
+        "id": 67,
+        "score": 0.9997,
+        "algoScore": 0.612,
+        "llmScore": 1
+      },
+      {
+        "id": 68,
+        "score": 0.9997,
+        "algoScore": 0.612,
+        "llmScore": 1
+      }
+    ],
+    "41": [
+      {
+        "id": 27,
+        "score": 1,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 42,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 43,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 28,
+        "score": 0.7,
+        "algoScore": 0.2,
+        "llmScore": 0.9
+      }
+    ],
+    "42": [
+      {
+        "id": 27,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 41,
+        "score": 0.88,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 32,
+        "score": 0.76,
+        "algoScore": 0.2,
+        "llmScore": 1
+      },
+      {
+        "id": 34,
+        "score": 0.76,
+        "algoScore": 0.2,
+        "llmScore": 1
+      }
+    ],
+    "43": [
+      {
+        "id": 27,
+        "score": 1,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 41,
+        "score": 1,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 38,
+        "score": 0.7,
+        "algoScore": 0.2,
+        "llmScore": 0.9
+      },
+      {
+        "id": 46,
+        "score": 0.64,
+        "algoScore": 0.2,
+        "llmScore": 0.8
+      }
+    ],
+    "46": [
+      {
+        "id": 61,
+        "score": 1,
+        "algoScore": 0.234,
+        "llmScore": 1
+      },
+      {
+        "id": 48,
+        "score": 0.8946,
+        "algoScore": 0.2074,
+        "llmScore": 0.9
+      },
+      {
+        "id": 27,
+        "score": 0.8324,
+        "algoScore": 0.2062,
+        "llmScore": 0.8
+      },
+      {
+        "id": 52,
+        "score": 0.823,
+        "algoScore": 0.2007,
+        "llmScore": 0.8
+      }
+    ],
+    "47": [
+      {
+        "id": 64,
+        "score": 1,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 49,
+        "score": 0.7533,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 32,
+        "score": 0.5533,
+        "algoScore": 0.2,
+        "llmScore": 0.7
+      },
+      {
+        "id": 160,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "48": [
+      {
+        "id": 39,
+        "score": 0.8775,
+        "algoScore": 0.5062,
+        "llmScore": 0.9
+      },
+      {
+        "id": 52,
+        "score": 0.8252,
+        "algoScore": 0.5179,
+        "llmScore": 0.8
+      },
+      {
+        "id": 67,
+        "score": 0.8182,
+        "algoScore": 0.5073,
+        "llmScore": 0.8
+      },
+      {
+        "id": 38,
+        "score": 0.7567,
+        "algoScore": 0.5051,
+        "llmScore": 0.7
+      }
+    ],
+    "49": [
+      {
+        "id": 64,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 65,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 47,
+        "score": 0.82,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 230,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "50": [
+      {
+        "id": 48,
+        "score": 0.8133,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 108,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 197,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 200,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "51": [
+      {
+        "id": 59,
+        "score": 1,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 36,
+        "score": 0.9333,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 67,
+        "score": 0.9333,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 39,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      }
+    ],
+    "52": [
+      {
+        "id": 38,
+        "score": 0.9364,
+        "algoScore": 0.5101,
+        "llmScore": 1
+      },
+      {
+        "id": 34,
+        "score": 0.8698,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 48,
+        "score": 0.8216,
+        "algoScore": 0.5179,
+        "llmScore": 0.8
+      },
+      {
+        "id": 39,
+        "score": 0.8119,
+        "algoScore": 0.5032,
+        "llmScore": 0.8
+      }
+    ],
+    "53": [
+      {
+        "id": 65,
+        "score": 0.8865,
+        "algoScore": 0.3601,
+        "llmScore": 1
+      },
+      {
+        "id": 51,
+        "score": 0.7187,
+        "algoScore": 0.3,
+        "llmScore": 0.8
+      },
+      {
+        "id": 39,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 37,
+        "score": 0.5832,
+        "algoScore": 0.2051,
+        "llmScore": 0.7
+      }
+    ],
+    "54": [
+      {
+        "id": 60,
+        "score": 1,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 52,
+        "score": 0.62,
+        "algoScore": 0.3,
+        "llmScore": 0.7
+      },
+      {
+        "id": 80,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 380,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "55": [
+      {
+        "id": 49,
+        "score": 0.82,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 63,
+        "score": 0.72,
+        "algoScore": 0.3,
+        "llmScore": 0.8
+      },
+      {
+        "id": 27,
+        "score": 0.7,
+        "algoScore": 0.2,
+        "llmScore": 0.9
+      },
+      {
+        "id": 57,
+        "score": 0.66,
+        "algoScore": 0.3,
+        "llmScore": 0.7
+      }
+    ],
+    "57": [
+      {
+        "id": 61,
+        "score": 0.94,
+        "algoScore": 0.6,
+        "llmScore": 0.9
+      },
+      {
+        "id": 52,
+        "score": 0.88,
+        "algoScore": 0.6,
+        "llmScore": 0.8
+      },
+      {
+        "id": 59,
+        "score": 0.88,
+        "algoScore": 0.6,
+        "llmScore": 0.8
+      },
+      {
+        "id": 39,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      }
+    ],
+    "58": [
+      {
+        "id": 48,
+        "score": 0.9333,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 46,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 87,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 112,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "59": [
+      {
+        "id": 51,
+        "score": 0.9957,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 36,
+        "score": 0.8824,
+        "algoScore": 0.5192,
+        "llmScore": 0.9
+      },
+      {
+        "id": 67,
+        "score": 0.8819,
+        "algoScore": 0.5184,
+        "llmScore": 0.9
+      },
+      {
+        "id": 39,
+        "score": 0.8098,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      }
+    ],
+    "60": [
+      {
+        "id": 54,
+        "score": 1,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 52,
+        "score": 0.6887,
+        "algoScore": 0.313,
+        "llmScore": 0.8
+      },
+      {
+        "id": 80,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 380,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "61": [
+      {
+        "id": 62,
+        "score": 0.9376,
+        "algoScore": 0.6,
+        "llmScore": 0.9
+      },
+      {
+        "id": 39,
+        "score": 0.8827,
+        "algoScore": 0.5172,
+        "llmScore": 0.9
+      },
+      {
+        "id": 52,
+        "score": 0.8776,
+        "algoScore": 0.6,
+        "llmScore": 0.8
+      },
+      {
+        "id": 48,
+        "score": 0.8228,
+        "algoScore": 0.5172,
+        "llmScore": 0.8
+      }
+    ],
+    "62": [
+      {
+        "id": 61,
+        "score": 1,
+        "algoScore": 0.6,
+        "llmScore": 1
+      },
+      {
+        "id": 51,
+        "score": 0.94,
+        "algoScore": 0.6,
+        "llmScore": 0.9
+      },
+      {
+        "id": 50,
+        "score": 0.88,
+        "algoScore": 0.6,
+        "llmScore": 0.8
+      },
+      {
+        "id": 39,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      }
+    ],
+    "63": [
+      {
+        "id": 27,
+        "score": 1,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 37,
+        "score": 0.82,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 46,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 341,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "64": [
+      {
+        "id": 65,
+        "score": 0.88,
+        "algoScore": 0.6002,
+        "llmScore": 0.8
+      },
+      {
+        "id": 49,
+        "score": 0.8732,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 47,
+        "score": 0.8199,
+        "algoScore": 0.6,
+        "llmScore": 0.7
+      },
+      {
+        "id": 302,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "65": [
+      {
+        "id": 64,
+        "score": 0.94,
+        "algoScore": 0.6002,
+        "llmScore": 0.9
+      },
+      {
+        "id": 49,
+        "score": 0.8732,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 53,
+        "score": 0.84,
+        "algoScore": 0.3601,
+        "llmScore": 1
+      },
+      {
+        "id": 48,
+        "score": 0.6271,
+        "algoScore": 0.3108,
+        "llmScore": 0.7
+      }
+    ],
+    "66": [
+      {
+        "id": 48,
+        "score": 0.94,
+        "algoScore": 0.6,
+        "llmScore": 0.9
+      },
+      {
+        "id": 39,
+        "score": 0.9333,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 67,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 52,
+        "score": 0.8133,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      }
+    ],
+    "67": [
+      {
+        "id": 68,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 69,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 36,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      },
+      {
+        "id": 70,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      }
+    ],
+    "68": [
+      {
+        "id": 67,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 69,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 36,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      },
+      {
+        "id": 70,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      }
+    ],
+    "69": [
+      {
+        "id": 67,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 68,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 36,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      },
+      {
+        "id": 70,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      }
+    ],
+    "70": [
+      {
+        "id": 36,
+        "score": 1,
+        "algoScore": 1,
+        "llmScore": 1
+      },
+      {
+        "id": 67,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      },
+      {
+        "id": 68,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      },
+      {
+        "id": 69,
+        "score": 0.9945,
+        "algoScore": 0.9904,
+        "llmScore": 1
+      }
+    ],
+    "71": [
+      {
+        "id": 80,
+        "score": 0.94,
+        "algoScore": 0.2453,
+        "llmScore": 0.9
+      },
+      {
+        "id": 60,
+        "score": 0.8879,
+        "algoScore": 0.1765,
+        "llmScore": 1
+      },
+      {
+        "id": 380,
+        "score": 0.754,
+        "algoScore": 0.168,
+        "llmScore": 0.8
+      },
+      {
+        "id": 381,
+        "score": 0.754,
+        "algoScore": 0.168,
+        "llmScore": 0.8
+      }
+    ],
+    "72": [
+      {
+        "id": 5,
+        "score": 0.8128,
+        "algoScore": 0.6029,
+        "llmScore": 0.7
+      },
+      {
+        "id": 86,
+        "score": 0.8086,
+        "algoScore": 0.4122,
+        "llmScore": 0.9
+      },
+      {
+        "id": 166,
+        "score": 0.7472,
+        "algoScore": 0.318,
+        "llmScore": 0.9
+      },
+      {
+        "id": 75,
+        "score": 0.6855,
+        "algoScore": 0.3154,
+        "llmScore": 0.8
+      }
+    ],
+    "73": [
+      {
+        "id": 20,
+        "score": 1,
+        "algoScore": 0.6528,
+        "llmScore": 1
+      },
+      {
+        "id": 103,
+        "score": 0.8662,
+        "algoScore": 0.6382,
+        "llmScore": 0.8
+      },
+      {
+        "id": 161,
+        "score": 0.8342,
+        "algoScore": 0.5403,
+        "llmScore": 0.9
+      },
+      {
+        "id": 306,
+        "score": 0.7648,
+        "algoScore": 0.5303,
+        "llmScore": 0.8
+      }
+    ],
+    "74": [
+      {
+        "id": 178,
+        "score": 1,
+        "algoScore": 0.5737,
+        "llmScore": 1
+      },
+      {
+        "id": 20,
+        "score": 0.8131,
+        "algoScore": 0.4777,
+        "llmScore": 0.8
+      },
+      {
+        "id": 73,
+        "score": 0.777,
+        "algoScore": 0.3398,
+        "llmScore": 0.9
+      },
+      {
+        "id": 161,
+        "score": 0.7719,
+        "algoScore": 0.3326,
+        "llmScore": 0.9
+      }
+    ],
+    "75": [
+      {
+        "id": 325,
+        "score": 0.9933,
+        "algoScore": 0.5037,
+        "llmScore": 1
+      },
+      {
+        "id": 349,
+        "score": 0.9929,
+        "algoScore": 0.5031,
+        "llmScore": 1
+      },
+      {
+        "id": 166,
+        "score": 0.933,
+        "algoScore": 0.5032,
+        "llmScore": 0.9
+      },
+      {
+        "id": 72,
+        "score": 0.7263,
+        "algoScore": 0.3154,
+        "llmScore": 0.8
+      }
+    ],
+    "76": [
+      {
+        "id": 325,
+        "score": 0.7625,
+        "algoScore": 0.3363,
+        "llmScore": 0.9
+      },
+      {
+        "id": 6,
+        "score": 0.6854,
+        "algoScore": 0.4011,
+        "llmScore": 0.7
+      },
+      {
+        "id": 72,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 86,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "77": [
+      {
+        "id": 78,
+        "score": 1,
+        "algoScore": 0.65,
+        "llmScore": 1
+      },
+      {
+        "id": 208,
+        "score": 0.6662,
+        "algoScore": 0.3025,
+        "llmScore": 0.8
+      },
+      {
+        "id": 167,
+        "score": 0.6376,
+        "algoScore": 0.256,
+        "llmScore": 0.8
+      },
+      {
+        "id": 168,
+        "score": 0.6375,
+        "algoScore": 0.2559,
+        "llmScore": 0.8
+      }
+    ],
+    "78": [
+      {
+        "id": 77,
+        "score": 1,
+        "algoScore": 0.65,
+        "llmScore": 1
+      },
+      {
+        "id": 87,
+        "score": 0.8365,
+        "algoScore": 0.4818,
+        "llmScore": 0.9
+      },
+      {
+        "id": 46,
+        "score": 0.6361,
+        "algoScore": 0.1562,
+        "llmScore": 0.9
+      },
+      {
+        "id": 376,
+        "score": 0.5379,
+        "algoScore": 0.1916,
+        "llmScore": 0.7
+      }
+    ],
+    "79": [
+      {
+        "id": 22,
+        "score": 0.8539,
+        "algoScore": 0.2188,
+        "llmScore": 1
+      },
+      {
+        "id": 73,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 74,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 161,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "80": [
+      {
+        "id": 71,
+        "score": 0.8889,
+        "algoScore": 0.2453,
+        "llmScore": 0.9
+      },
+      {
+        "id": 380,
+        "score": 0.829,
+        "algoScore": 0.2454,
+        "llmScore": 0.8
+      },
+      {
+        "id": 60,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 54,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "82": [
+      {
+        "id": 19,
+        "score": 0.8771,
+        "algoScore": 0.6095,
+        "llmScore": 0.8
+      },
+      {
+        "id": 5,
+        "score": 0.8712,
+        "algoScore": 0.6003,
+        "llmScore": 0.8
+      },
+      {
+        "id": 86,
+        "score": 0.819,
+        "algoScore": 0.4281,
+        "llmScore": 0.9
+      },
+      {
+        "id": 177,
+        "score": 0.7384,
+        "algoScore": 0.3045,
+        "llmScore": 0.9
+      }
+    ],
+    "83": [
+      {
+        "id": 27,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 86,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 52,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 166,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "84": [
+      {
+        "id": 76,
+        "score": 0.8098,
+        "algoScore": 0.3234,
+        "llmScore": 1
+      },
+      {
+        "id": 177,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 372,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 373,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "85": [
+      {
+        "id": 34,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 32,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 7,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 27,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "86": [
+      {
+        "id": 177,
+        "score": 0.9357,
+        "algoScore": 0.5138,
+        "llmScore": 0.9
+      },
+      {
+        "id": 166,
+        "score": 0.88,
+        "algoScore": 0.5194,
+        "llmScore": 0.8
+      },
+      {
+        "id": 52,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 34,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "87": [
+      {
+        "id": 78,
+        "score": 0.94,
+        "algoScore": 0.4818,
+        "llmScore": 0.9
+      },
+      {
+        "id": 77,
+        "score": 0.691,
+        "algoScore": 0.1818,
+        "llmScore": 0.9
+      },
+      {
+        "id": 46,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 48,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "88": [
+      {
+        "id": 85,
+        "score": 0.9298,
+        "algoScore": 0.5008,
+        "llmScore": 0.9
+      },
+      {
+        "id": 83,
+        "score": 0.8116,
+        "algoScore": 0.5031,
+        "llmScore": 0.7
+      },
+      {
+        "id": 5,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 86,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "89": [
+      {
+        "id": 90,
+        "score": 0.7566,
+        "algoScore": 0.5064,
+        "llmScore": 0.7
+      },
+      {
+        "id": 212,
+        "score": 0.6895,
+        "algoScore": 0.3152,
+        "llmScore": 0.8
+      },
+      {
+        "id": 50,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 86,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "90": [
+      {
+        "id": 85,
+        "score": 0.8116,
+        "algoScore": 0.5096,
+        "llmScore": 0.7
+      },
+      {
+        "id": 212,
+        "score": 0.778,
+        "algoScore": 0.3096,
+        "llmScore": 0.9
+      },
+      {
+        "id": 2,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 39,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "91": [
+      {
+        "id": 230,
+        "score": 0.875,
+        "algoScore": 0.6031,
+        "llmScore": 0.8
+      },
+      {
+        "id": 257,
+        "score": 0.8422,
+        "algoScore": 0.553,
+        "llmScore": 0.8
+      },
+      {
+        "id": 325,
+        "score": 0.6666,
+        "algoScore": 0.3764,
+        "llmScore": 0.7
+      },
+      {
+        "id": 111,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "92": [
+      {
+        "id": 166,
+        "score": 0.8802,
+        "algoScore": 0.2493,
+        "llmScore": 1
+      },
+      {
+        "id": 257,
+        "score": 0.8558,
+        "algoScore": 0.2276,
+        "llmScore": 1
+      },
+      {
+        "id": 349,
+        "score": 0.743,
+        "algoScore": 0.234,
+        "llmScore": 0.8
+      },
+      {
+        "id": 225,
+        "score": 0.7347,
+        "algoScore": 0.2267,
+        "llmScore": 0.8
+      }
+    ],
+    "93": [
+      {
+        "id": 247,
+        "score": 0.9157,
+        "algoScore": 0.575,
+        "llmScore": 0.9
+      },
+      {
+        "id": 338,
+        "score": 0.8735,
+        "algoScore": 0.5105,
+        "llmScore": 0.9
+      },
+      {
+        "id": 222,
+        "score": 0.82,
+        "algoScore": 0.6123,
+        "llmScore": 0.7
+      },
+      {
+        "id": 167,
+        "score": 0.7873,
+        "algoScore": 0.4704,
+        "llmScore": 0.8
+      }
+    ],
+    "95": [
+      {
+        "id": 257,
+        "score": 0.8522,
+        "algoScore": 0.2207,
+        "llmScore": 1
+      },
+      {
+        "id": 325,
+        "score": 0.7656,
+        "algoScore": 0.1974,
+        "llmScore": 0.9
+      },
+      {
+        "id": 217,
+        "score": 0.6524,
+        "algoScore": 0.2033,
+        "llmScore": 0.7
+      },
+      {
+        "id": 349,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "103": [
+      {
+        "id": 73,
+        "score": 1,
+        "algoScore": 0.6382,
+        "llmScore": 1
+      },
+      {
+        "id": 20,
+        "score": 0.8476,
+        "algoScore": 0.4908,
+        "llmScore": 0.9
+      },
+      {
+        "id": 336,
+        "score": 0.8369,
+        "algoScore": 0.4736,
+        "llmScore": 0.9
+      },
+      {
+        "id": 306,
+        "score": 0.8163,
+        "algoScore": 0.5366,
+        "llmScore": 0.8
+      }
+    ],
+    "104": [
+      {
+        "id": 251,
+        "score": 0.8795,
+        "algoScore": 0.5134,
+        "llmScore": 0.8
+      },
+      {
+        "id": 73,
+        "score": 0.8564,
+        "algoScore": 0.3295,
+        "llmScore": 1
+      },
+      {
+        "id": 273,
+        "score": 0.8295,
+        "algoScore": 0.4493,
+        "llmScore": 0.8
+      },
+      {
+        "id": 161,
+        "score": 0.7722,
+        "algoScore": 0.2985,
+        "llmScore": 0.9
+      }
+    ],
+    "105": [
+      {
+        "id": 172,
+        "score": 0.8699,
+        "algoScore": 0.3,
+        "llmScore": 0.8
+      },
+      {
+        "id": 188,
+        "score": 0.8676,
+        "algoScore": 0.252,
+        "llmScore": 0.9
+      },
+      {
+        "id": 73,
+        "score": 0.7956,
+        "algoScore": 0.1505,
+        "llmScore": 1
+      },
+      {
+        "id": 74,
+        "score": 0.785,
+        "algoScore": 0.1885,
+        "llmScore": 0.9
+      }
+    ],
+    "106": [
+      {
+        "id": 107,
+        "score": 1,
+        "algoScore": 0.5605,
+        "llmScore": 1
+      },
+      {
+        "id": 278,
+        "score": 0.87,
+        "algoScore": 0.4624,
+        "llmScore": 0.9
+      },
+      {
+        "id": 302,
+        "score": 0.7062,
+        "algoScore": 0.317,
+        "llmScore": 0.8
+      },
+      {
+        "id": 341,
+        "score": 0.6146,
+        "algoScore": 0.1886,
+        "llmScore": 0.8
+      }
+    ],
+    "107": [
+      {
+        "id": 106,
+        "score": 1,
+        "algoScore": 0.5605,
+        "llmScore": 1
+      },
+      {
+        "id": 278,
+        "score": 0.8652,
+        "algoScore": 0.4558,
+        "llmScore": 0.9
+      },
+      {
+        "id": 302,
+        "score": 0.7041,
+        "algoScore": 0.314,
+        "llmScore": 0.8
+      },
+      {
+        "id": 341,
+        "score": 0.677,
+        "algoScore": 0.1919,
+        "llmScore": 0.9
+      }
+    ],
+    "108": [
+      {
+        "id": 200,
+        "score": 0.9265,
+        "algoScore": 0.5106,
+        "llmScore": 0.9
+      },
+      {
+        "id": 197,
+        "score": 0.859,
+        "algoScore": 0.5007,
+        "llmScore": 0.8
+      },
+      {
+        "id": 157,
+        "score": 0.7387,
+        "algoScore": 0.5003,
+        "llmScore": 0.6
+      },
+      {
+        "id": 50,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "109": [
+      {
+        "id": 338,
+        "score": 0.8629,
+        "algoScore": 0.5031,
+        "llmScore": 0.8
+      },
+      {
+        "id": 303,
+        "score": 0.8605,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 182,
+        "score": 0.8077,
+        "algoScore": 0.5094,
+        "llmScore": 0.7
+      },
+      {
+        "id": 116,
+        "score": 0.8005,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      }
+    ],
+    "110": [
+      {
+        "id": 93,
+        "score": 0.9075,
+        "algoScore": 0.3374,
+        "llmScore": 1
+      },
+      {
+        "id": 237,
+        "score": 0.862,
+        "algoScore": 0.4192,
+        "llmScore": 0.8
+      },
+      {
+        "id": 240,
+        "score": 0.8384,
+        "algoScore": 0.3933,
+        "llmScore": 0.8
+      },
+      {
+        "id": 109,
+        "score": 0.8012,
+        "algoScore": 0.2867,
+        "llmScore": 0.9
+      }
+    ],
+    "111": [
+      {
+        "id": 112,
+        "score": 1,
+        "algoScore": 0.6022,
+        "llmScore": 1
+      },
+      {
+        "id": 91,
+        "score": 0.7814,
+        "algoScore": 0.3634,
+        "llmScore": 0.9
+      },
+      {
+        "id": 257,
+        "score": 0.7069,
+        "algoScore": 0.3416,
+        "llmScore": 0.8
+      },
+      {
+        "id": 3,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "112": [
+      {
+        "id": 111,
+        "score": 1,
+        "algoScore": 0.6022,
+        "llmScore": 1
+      },
+      {
+        "id": 91,
+        "score": 0.6624,
+        "algoScore": 0.3649,
+        "llmScore": 0.7
+      },
+      {
+        "id": 87,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 48,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "113": [
+      {
+        "id": 366,
+        "score": 0.9271,
+        "algoScore": 0.5114,
+        "llmScore": 0.9
+      },
+      {
+        "id": 2,
+        "score": 0.8339,
+        "algoScore": 0.309,
+        "llmScore": 1
+      },
+      {
+        "id": 36,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 53,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "114": [
+      {
+        "id": 377,
+        "score": 0.9154,
+        "algoScore": 0.475,
+        "llmScore": 1
+      },
+      {
+        "id": 257,
+        "score": 0.8403,
+        "algoScore": 0.4523,
+        "llmScore": 0.9
+      },
+      {
+        "id": 349,
+        "score": 0.6748,
+        "algoScore": 0.2934,
+        "llmScore": 0.8
+      },
+      {
+        "id": 325,
+        "score": 0.6677,
+        "algoScore": 0.2827,
+        "llmScore": 0.8
+      }
+    ],
+    "116": [
+      {
+        "id": 109,
+        "score": 1,
+        "algoScore": 0.5,
+        "llmScore": 1
+      },
+      {
+        "id": 182,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 208,
+        "score": 0.94,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 167,
+        "score": 0.77,
+        "algoScore": 0.3625,
+        "llmScore": 0.8
+      }
+    ],
+    "154": [
+      {
+        "id": 362,
+        "score": 0.8256,
+        "algoScore": 0.284,
+        "llmScore": 0.9
+      },
+      {
+        "id": 208,
+        "score": 0.8007,
+        "algoScore": 0.2593,
+        "llmScore": 0.9
+      },
+      {
+        "id": 218,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 116,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "155": [
+      {
+        "id": 3,
+        "score": 0.7008,
+        "algoScore": 0.276,
+        "llmScore": 0.8
+      },
+      {
+        "id": 16,
+        "score": 0.64,
+        "algoScore": 0.275,
+        "llmScore": 0.7
+      },
+      {
+        "id": 156,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 341,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "156": [
+      {
+        "id": 302,
+        "score": 0.84,
+        "algoScore": 0.225,
+        "llmScore": 0.9
+      },
+      {
+        "id": 238,
+        "score": 0.72,
+        "algoScore": 0.225,
+        "llmScore": 0.7
+      },
+      {
+        "id": 155,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 341,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "157": [
+      {
+        "id": 177,
+        "score": 0.9153,
+        "algoScore": 0.5011,
+        "llmScore": 0.9
+      },
+      {
+        "id": 197,
+        "score": 0.88,
+        "algoScore": 0.534,
+        "llmScore": 0.8
+      },
+      {
+        "id": 154,
+        "score": 0.8595,
+        "algoScore": 0.3465,
+        "llmScore": 1
+      },
+      {
+        "id": 86,
+        "score": 0.7997,
+        "algoScore": 0.507,
+        "llmScore": 0.7
+      }
+    ],
+    "160": [
+      {
+        "id": 238,
+        "score": 0.88,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 182,
+        "score": 0.76,
+        "algoScore": 0.275,
+        "llmScore": 0.9
+      },
+      {
+        "id": 106,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 107,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "161": [
+      {
+        "id": 73,
+        "score": 1,
+        "algoScore": 0.5403,
+        "llmScore": 1
+      },
+      {
+        "id": 306,
+        "score": 0.9206,
+        "algoScore": 0.5141,
+        "llmScore": 0.9
+      },
+      {
+        "id": 178,
+        "score": 0.7964,
+        "algoScore": 0.3463,
+        "llmScore": 0.9
+      },
+      {
+        "id": 20,
+        "score": 0.7618,
+        "algoScore": 0.3806,
+        "llmScore": 0.8
+      }
+    ],
+    "162": [
+      {
+        "id": 185,
+        "score": 0.94,
+        "algoScore": 0.5306,
+        "llmScore": 0.9
+      },
+      {
+        "id": 73,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 161,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 172,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "166": [
+      {
+        "id": 358,
+        "score": 0.974,
+        "algoScore": 0.575,
+        "llmScore": 1
+      },
+      {
+        "id": 349,
+        "score": 0.8726,
+        "algoScore": 0.5114,
+        "llmScore": 0.9
+      },
+      {
+        "id": 86,
+        "score": 0.8178,
+        "algoScore": 0.5194,
+        "llmScore": 0.8
+      },
+      {
+        "id": 325,
+        "score": 0.7508,
+        "algoScore": 0.5086,
+        "llmScore": 0.7
+      }
+    ],
+    "167": [
+      {
+        "id": 168,
+        "score": 1,
+        "algoScore": 0.6327,
+        "llmScore": 1
+      },
+      {
+        "id": 213,
+        "score": 0.8654,
+        "algoScore": 0.5147,
+        "llmScore": 0.9
+      },
+      {
+        "id": 223,
+        "score": 0.7249,
+        "algoScore": 0.4823,
+        "llmScore": 0.7
+      },
+      {
+        "id": 109,
+        "score": 0.6527,
+        "algoScore": 0.3681,
+        "llmScore": 0.7
+      }
+    ],
+    "168": [
+      {
+        "id": 167,
+        "score": 1,
+        "algoScore": 0.6327,
+        "llmScore": 1
+      },
+      {
+        "id": 214,
+        "score": 0.7417,
+        "algoScore": 0.5089,
+        "llmScore": 0.7
+      },
+      {
+        "id": 109,
+        "score": 0.5927,
+        "algoScore": 0.368,
+        "llmScore": 0.6
+      },
+      {
+        "id": 22,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "169": [
+      {
+        "id": 16,
+        "score": 1,
+        "algoScore": 0.65,
+        "llmScore": 1
+      },
+      {
+        "id": 218,
+        "score": 0.8477,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 341,
+        "score": 0.6221,
+        "algoScore": 0.3284,
+        "llmScore": 0.7
+      },
+      {
+        "id": 111,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "172": [
+      {
+        "id": 188,
+        "score": 0.91,
+        "algoScore": 0.4625,
+        "llmScore": 0.9
+      },
+      {
+        "id": 185,
+        "score": 0.764,
+        "algoScore": 0.28,
+        "llmScore": 0.9
+      },
+      {
+        "id": 161,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 73,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "177": [
+      {
+        "id": 166,
+        "score": 0.9361,
+        "algoScore": 0.615,
+        "llmScore": 0.9
+      },
+      {
+        "id": 86,
+        "score": 0.9309,
+        "algoScore": 0.5138,
+        "llmScore": 1
+      },
+      {
+        "id": 325,
+        "score": 0.862,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 349,
+        "score": 0.7447,
+        "algoScore": 0.5041,
+        "llmScore": 0.7
+      }
+    ],
+    "178": [
+      {
+        "id": 74,
+        "score": 1,
+        "algoScore": 0.5737,
+        "llmScore": 1
+      },
+      {
+        "id": 73,
+        "score": 0.8546,
+        "algoScore": 0.3651,
+        "llmScore": 1
+      },
+      {
+        "id": 20,
+        "score": 0.8207,
+        "algoScore": 0.4887,
+        "llmScore": 0.8
+      },
+      {
+        "id": 161,
+        "score": 0.7815,
+        "algoScore": 0.3463,
+        "llmScore": 0.9
+      }
+    ],
+    "182": [
+      {
+        "id": 208,
+        "score": 1,
+        "algoScore": 0.6255,
+        "llmScore": 1
+      },
+      {
+        "id": 109,
+        "score": 0.8657,
+        "algoScore": 0.5094,
+        "llmScore": 0.9
+      },
+      {
+        "id": 116,
+        "score": 0.8597,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 61,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "185": [
+      {
+        "id": 188,
+        "score": 1,
+        "algoScore": 0.7867,
+        "llmScore": 1
+      },
+      {
+        "id": 172,
+        "score": 0.6824,
+        "algoScore": 0.28,
+        "llmScore": 0.9
+      },
+      {
+        "id": 73,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 161,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "188": [
+      {
+        "id": 185,
+        "score": 1,
+        "algoScore": 0.7867,
+        "llmScore": 1
+      },
+      {
+        "id": 172,
+        "score": 0.7752,
+        "algoScore": 0.4625,
+        "llmScore": 0.9
+      },
+      {
+        "id": 73,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 161,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "191": [
+      {
+        "id": 161,
+        "score": 0.8193,
+        "algoScore": 0.4882,
+        "llmScore": 0.7
+      },
+      {
+        "id": 20,
+        "score": 0.7533,
+        "algoScore": 0.3342,
+        "llmScore": 0.8
+      },
+      {
+        "id": 172,
+        "score": 0.6858,
+        "algoScore": 0.325,
+        "llmScore": 0.7
+      },
+      {
+        "id": 242,
+        "score": 0.618,
+        "algoScore": 0.2422,
+        "llmScore": 0.7
+      }
+    ],
+    "194": [
+      {
+        "id": 238,
+        "score": 0.82,
+        "algoScore": 0.6109,
+        "llmScore": 0.7
+      },
+      {
+        "id": 160,
+        "score": 0.7474,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 308,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 84,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "197": [
+      {
+        "id": 157,
+        "score": 0.944,
+        "algoScore": 0.534,
+        "llmScore": 1
+      },
+      {
+        "id": 177,
+        "score": 0.88,
+        "algoScore": 0.6211,
+        "llmScore": 0.8
+      },
+      {
+        "id": 200,
+        "score": 0.8672,
+        "algoScore": 0.6012,
+        "llmScore": 0.8
+      },
+      {
+        "id": 208,
+        "score": 0.6625,
+        "algoScore": 0.3765,
+        "llmScore": 0.7
+      }
+    ],
+    "200": [
+      {
+        "id": 201,
+        "score": 0.9761,
+        "algoScore": 0.575,
+        "llmScore": 1
+      },
+      {
+        "id": 108,
+        "score": 0.934,
+        "algoScore": 0.5106,
+        "llmScore": 1
+      },
+      {
+        "id": 197,
+        "score": 0.9333,
+        "algoScore": 0.6012,
+        "llmScore": 0.9
+      },
+      {
+        "id": 50,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "201": [
+      {
+        "id": 200,
+        "score": 0.9761,
+        "algoScore": 0.575,
+        "llmScore": 1
+      },
+      {
+        "id": 197,
+        "score": 0.6934,
+        "algoScore": 0.3262,
+        "llmScore": 0.8
+      },
+      {
+        "id": 50,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 108,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "208": [
+      {
+        "id": 182,
+        "score": 0.94,
+        "algoScore": 0.6255,
+        "llmScore": 0.9
+      },
+      {
+        "id": 116,
+        "score": 0.7997,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 109,
+        "score": 0.7397,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 61,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "212": [
+      {
+        "id": 90,
+        "score": 0.6847,
+        "algoScore": 0.3096,
+        "llmScore": 0.8
+      },
+      {
+        "id": 39,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 36,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 48,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "213": [
+      {
+        "id": 214,
+        "score": 1,
+        "algoScore": 0.6268,
+        "llmScore": 1
+      },
+      {
+        "id": 167,
+        "score": 0.8085,
+        "algoScore": 0.5147,
+        "llmScore": 0.8
+      },
+      {
+        "id": 185,
+        "score": 0.7462,
+        "algoScore": 0.3232,
+        "llmScore": 0.9
+      },
+      {
+        "id": 309,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "214": [
+      {
+        "id": 213,
+        "score": 1,
+        "algoScore": 0.6268,
+        "llmScore": 1
+      },
+      {
+        "id": 168,
+        "score": 0.8047,
+        "algoScore": 0.5089,
+        "llmScore": 0.8
+      },
+      {
+        "id": 309,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 73,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "216": [
+      {
+        "id": 109,
+        "score": 0.8745,
+        "algoScore": 0.3209,
+        "llmScore": 1
+      },
+      {
+        "id": 338,
+        "score": 0.7973,
+        "algoScore": 0.3009,
+        "llmScore": 0.9
+      },
+      {
+        "id": 339,
+        "score": 0.7973,
+        "algoScore": 0.3009,
+        "llmScore": 0.9
+      },
+      {
+        "id": 241,
+        "score": 0.7972,
+        "algoScore": 0.3007,
+        "llmScore": 0.9
+      }
+    ],
+    "217": [
+      {
+        "id": 352,
+        "score": 0.9519,
+        "algoScore": 0.5319,
+        "llmScore": 1
+      },
+      {
+        "id": 325,
+        "score": 0.8194,
+        "algoScore": 0.3317,
+        "llmScore": 1
+      },
+      {
+        "id": 349,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 75,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "218": [
+      {
+        "id": 3,
+        "score": 1,
+        "algoScore": 0.502,
+        "llmScore": 1
+      },
+      {
+        "id": 16,
+        "score": 0.9396,
+        "algoScore": 0.5015,
+        "llmScore": 0.9
+      },
+      {
+        "id": 257,
+        "score": 0.8039,
+        "algoScore": 0.4064,
+        "llmScore": 0.8
+      },
+      {
+        "id": 154,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "222": [
+      {
+        "id": 303,
+        "score": 0.8795,
+        "algoScore": 0.6394,
+        "llmScore": 0.8
+      },
+      {
+        "id": 237,
+        "score": 0.8657,
+        "algoScore": 0.4253,
+        "llmScore": 1
+      },
+      {
+        "id": 109,
+        "score": 0.8611,
+        "algoScore": 0.5138,
+        "llmScore": 0.9
+      },
+      {
+        "id": 223,
+        "score": 0.82,
+        "algoScore": 0.6402,
+        "llmScore": 0.7
+      }
+    ],
+    "223": [
+      {
+        "id": 303,
+        "score": 0.94,
+        "algoScore": 0.7782,
+        "llmScore": 0.9
+      },
+      {
+        "id": 167,
+        "score": 0.8479,
+        "algoScore": 0.4823,
+        "llmScore": 1
+      },
+      {
+        "id": 168,
+        "score": 0.8478,
+        "algoScore": 0.4822,
+        "llmScore": 1
+      },
+      {
+        "id": 93,
+        "score": 0.7926,
+        "algoScore": 0.6083,
+        "llmScore": 0.8
+      }
+    ],
+    "224": [
+      {
+        "id": 257,
+        "score": 0.8949,
+        "algoScore": 0.55,
+        "llmScore": 0.9
+      },
+      {
+        "id": 114,
+        "score": 0.8026,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 3,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 16,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "225": [
+      {
+        "id": 257,
+        "score": 0.8964,
+        "algoScore": 0.5524,
+        "llmScore": 0.9
+      },
+      {
+        "id": 357,
+        "score": 0.8082,
+        "algoScore": 0.6016,
+        "llmScore": 0.7
+      },
+      {
+        "id": 114,
+        "score": 0.7439,
+        "algoScore": 0.5019,
+        "llmScore": 0.7
+      },
+      {
+        "id": 92,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "230": [
+      {
+        "id": 263,
+        "score": 0.9983,
+        "algoScore": 0.6125,
+        "llmScore": 1
+      },
+      {
+        "id": 225,
+        "score": 0.82,
+        "algoScore": 0.6151,
+        "llmScore": 0.7
+      },
+      {
+        "id": 257,
+        "score": 0.7784,
+        "algoScore": 0.551,
+        "llmScore": 0.7
+      },
+      {
+        "id": 49,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "236": [
+      {
+        "id": 214,
+        "score": 0.88,
+        "algoScore": 0.124,
+        "llmScore": 0.8
+      },
+      {
+        "id": 213,
+        "score": 0.8632,
+        "algoScore": 0.1188,
+        "llmScore": 0.8
+      },
+      {
+        "id": 223,
+        "score": 0.7998,
+        "algoScore": 0.0806,
+        "llmScore": 0.9
+      },
+      {
+        "id": 167,
+        "score": 0.6782,
+        "algoScore": 0.0243,
+        "llmScore": 1
+      }
+    ],
+    "237": [
+      {
+        "id": 168,
+        "score": 0.8631,
+        "algoScore": 0.5428,
+        "llmScore": 0.9
+      },
+      {
+        "id": 222,
+        "score": 0.8531,
+        "algoScore": 0.4253,
+        "llmScore": 1
+      },
+      {
+        "id": 214,
+        "score": 0.8083,
+        "algoScore": 0.5516,
+        "llmScore": 0.8
+      },
+      {
+        "id": 338,
+        "score": 0.7277,
+        "algoScore": 0.517,
+        "llmScore": 0.7
+      }
+    ],
+    "238": [
+      {
+        "id": 160,
+        "score": 0.7474,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 322,
+        "score": 0.6821,
+        "algoScore": 0.3086,
+        "llmScore": 0.8
+      },
+      {
+        "id": 341,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 302,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "239": [
+      {
+        "id": 185,
+        "score": 0.7571,
+        "algoScore": 0.19,
+        "llmScore": 0.9
+      },
+      {
+        "id": 172,
+        "score": 0.7229,
+        "algoScore": 0.2125,
+        "llmScore": 0.8
+      },
+      {
+        "id": 22,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 73,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "240": [
+      {
+        "id": 338,
+        "score": 0.8978,
+        "algoScore": 0.5003,
+        "llmScore": 1
+      },
+      {
+        "id": 214,
+        "score": 0.8507,
+        "algoScore": 0.522,
+        "llmScore": 0.9
+      },
+      {
+        "id": 168,
+        "score": 0.7872,
+        "algoScore": 0.5162,
+        "llmScore": 0.8
+      },
+      {
+        "id": 93,
+        "score": 0.7612,
+        "algoScore": 0.3717,
+        "llmScore": 0.9
+      }
+    ],
+    "241": [
+      {
+        "id": 338,
+        "score": 0.9717,
+        "algoScore": 0.5693,
+        "llmScore": 1
+      },
+      {
+        "id": 240,
+        "score": 0.8338,
+        "algoScore": 0.4501,
+        "llmScore": 0.9
+      },
+      {
+        "id": 222,
+        "score": 0.8149,
+        "algoScore": 0.605,
+        "llmScore": 0.7
+      },
+      {
+        "id": 93,
+        "score": 0.7967,
+        "algoScore": 0.5771,
+        "llmScore": 0.7
+      }
+    ],
+    "242": [
+      {
+        "id": 185,
+        "score": 0.817,
+        "algoScore": 0.3905,
+        "llmScore": 0.8
+      },
+      {
+        "id": 41,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 72,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 27,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "245": [
+      {
+        "id": 208,
+        "score": 0.889,
+        "algoScore": 0.5262,
+        "llmScore": 0.9
+      },
+      {
+        "id": 182,
+        "score": 0.8207,
+        "algoScore": 0.5136,
+        "llmScore": 0.8
+      },
+      {
+        "id": 116,
+        "score": 0.7517,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 154,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "247": [
+      {
+        "id": 339,
+        "score": 0.8951,
+        "algoScore": 0.5105,
+        "llmScore": 0.9
+      },
+      {
+        "id": 345,
+        "score": 0.7995,
+        "algoScore": 0.373,
+        "llmScore": 0.9
+      },
+      {
+        "id": 22,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 352,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "249": [
+      {
+        "id": 93,
+        "score": 0.9534,
+        "algoScore": 0.6072,
+        "llmScore": 1
+      },
+      {
+        "id": 109,
+        "score": 0.8363,
+        "algoScore": 0.509,
+        "llmScore": 0.9
+      },
+      {
+        "id": 222,
+        "score": 0.8341,
+        "algoScore": 0.6083,
+        "llmScore": 0.8
+      },
+      {
+        "id": 182,
+        "score": 0.8331,
+        "algoScore": 0.5036,
+        "llmScore": 0.9
+      }
+    ],
+    "250": [
+      {
+        "id": 182,
+        "score": 0.773,
+        "algoScore": 0.5034,
+        "llmScore": 0.8
+      },
+      {
+        "id": 109,
+        "score": 0.771,
+        "algoScore": 0.5,
+        "llmScore": 0.8
+      },
+      {
+        "id": 222,
+        "score": 0.7692,
+        "algoScore": 0.6,
+        "llmScore": 0.7
+      },
+      {
+        "id": 237,
+        "score": 0.649,
+        "algoScore": 0.3934,
+        "llmScore": 0.7
+      }
+    ],
+    "251": [
+      {
+        "id": 284,
+        "score": 1,
+        "algoScore": 0.9501,
+        "llmScore": 1
+      },
+      {
+        "id": 312,
+        "score": 1,
+        "algoScore": 0.9501,
+        "llmScore": 1
+      },
+      {
+        "id": 264,
+        "score": 0.9991,
+        "algoScore": 0.948,
+        "llmScore": 1
+      },
+      {
+        "id": 273,
+        "score": 0.7478,
+        "algoScore": 0.4936,
+        "llmScore": 0.9
+      }
+    ],
+    "254": [
+      {
+        "id": 281,
+        "score": 1,
+        "algoScore": 0.975,
+        "llmScore": 1
+      },
+      {
+        "id": 316,
+        "score": 1,
+        "algoScore": 0.975,
+        "llmScore": 1
+      },
+      {
+        "id": 268,
+        "score": 0.999,
+        "algoScore": 0.9726,
+        "llmScore": 1
+      },
+      {
+        "id": 251,
+        "score": 0.8866,
+        "algoScore": 0.6986,
+        "llmScore": 1
+      }
+    ],
+    "257": [
+      {
+        "id": 349,
+        "score": 0.8851,
+        "algoScore": 0.3942,
+        "llmScore": 1
+      },
+      {
+        "id": 325,
+        "score": 0.6615,
+        "algoScore": 0.3339,
+        "llmScore": 0.7
+      },
+      {
+        "id": 352,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 166,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "263": [
+      {
+        "id": 230,
+        "score": 1,
+        "algoScore": 0.6125,
+        "llmScore": 1
+      },
+      {
+        "id": 12,
+        "score": 0.5996,
+        "algoScore": 0.275,
+        "llmScore": 0.7
+      },
+      {
+        "id": 341,
+        "score": 0.5765,
+        "algoScore": 0.2396,
+        "llmScore": 0.7
+      },
+      {
+        "id": 49,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "264": [
+      {
+        "id": 312,
+        "score": 1,
+        "algoScore": 0.9711,
+        "llmScore": 1
+      },
+      {
+        "id": 251,
+        "score": 0.9905,
+        "algoScore": 0.948,
+        "llmScore": 1
+      },
+      {
+        "id": 268,
+        "score": 0.8986,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 273,
+        "score": 0.7438,
+        "algoScore": 0.4948,
+        "llmScore": 0.9
+      }
+    ],
+    "268": [
+      {
+        "id": 254,
+        "score": 1,
+        "algoScore": 0.9726,
+        "llmScore": 1
+      },
+      {
+        "id": 281,
+        "score": 0.9993,
+        "algoScore": 0.9711,
+        "llmScore": 1
+      },
+      {
+        "id": 316,
+        "score": 0.9993,
+        "algoScore": 0.9711,
+        "llmScore": 1
+      },
+      {
+        "id": 273,
+        "score": 0.7435,
+        "algoScore": 0.4948,
+        "llmScore": 0.9
+      }
+    ],
+    "273": [
+      {
+        "id": 251,
+        "score": 0.9217,
+        "algoScore": 0.4936,
+        "llmScore": 1
+      },
+      {
+        "id": 104,
+        "score": 0.7728,
+        "algoScore": 0.4493,
+        "llmScore": 0.8
+      },
+      {
+        "id": 214,
+        "score": 0.696,
+        "algoScore": 0.3315,
+        "llmScore": 0.8
+      },
+      {
+        "id": 73,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "278": [
+      {
+        "id": 106,
+        "score": 0.82,
+        "algoScore": 0.4624,
+        "llmScore": 0.7
+      },
+      {
+        "id": 217,
+        "score": 0.7497,
+        "algoScore": 0.173,
+        "llmScore": 1
+      },
+      {
+        "id": 352,
+        "score": 0.688,
+        "algoScore": 0.1711,
+        "llmScore": 0.9
+      },
+      {
+        "id": 358,
+        "score": 0.6257,
+        "algoScore": 0.1684,
+        "llmScore": 0.8
+      }
+    ],
+    "281": [
+      {
+        "id": 254,
+        "score": 1,
+        "algoScore": 0.975,
+        "llmScore": 1
+      },
+      {
+        "id": 316,
+        "score": 0.9993,
+        "algoScore": 0.9734,
+        "llmScore": 1
+      },
+      {
+        "id": 268,
+        "score": 0.9984,
+        "algoScore": 0.9711,
+        "llmScore": 1
+      },
+      {
+        "id": 273,
+        "score": 0.7431,
+        "algoScore": 0.4951,
+        "llmScore": 0.9
+      }
+    ],
+    "284": [
+      {
+        "id": 312,
+        "score": 0.94,
+        "algoScore": 0.9734,
+        "llmScore": 0.9
+      },
+      {
+        "id": 264,
+        "score": 0.939,
+        "algoScore": 0.9711,
+        "llmScore": 0.9
+      },
+      {
+        "id": 251,
+        "score": 0.9304,
+        "algoScore": 0.9501,
+        "llmScore": 0.9
+      },
+      {
+        "id": 281,
+        "score": 0.8979,
+        "algoScore": 0.725,
+        "llmScore": 1
+      }
+    ],
+    "302": [
+      {
+        "id": 106,
+        "score": 0.875,
+        "algoScore": 0.317,
+        "llmScore": 0.9
+      },
+      {
+        "id": 107,
+        "score": 0.8719,
+        "algoScore": 0.314,
+        "llmScore": 0.9
+      },
+      {
+        "id": 341,
+        "score": 0.7659,
+        "algoScore": 0.3273,
+        "llmScore": 0.7
+      },
+      {
+        "id": 322,
+        "score": 0.7391,
+        "algoScore": 0.3019,
+        "llmScore": 0.7
+      }
+    ],
+    "303": [
+      {
+        "id": 223,
+        "score": 0.94,
+        "algoScore": 0.7782,
+        "llmScore": 0.9
+      },
+      {
+        "id": 342,
+        "score": 0.8393,
+        "algoScore": 0.4656,
+        "llmScore": 1
+      },
+      {
+        "id": 167,
+        "score": 0.7186,
+        "algoScore": 0.4642,
+        "llmScore": 0.8
+      },
+      {
+        "id": 168,
+        "score": 0.7186,
+        "algoScore": 0.4642,
+        "llmScore": 0.8
+      }
+    ],
+    "306": [
+      {
+        "id": 73,
+        "score": 0.9922,
+        "algoScore": 0.5303,
+        "llmScore": 1
+      },
+      {
+        "id": 103,
+        "score": 0.94,
+        "algoScore": 0.5366,
+        "llmScore": 0.9
+      },
+      {
+        "id": 161,
+        "score": 0.7921,
+        "algoScore": 0.5141,
+        "llmScore": 0.7
+      },
+      {
+        "id": 20,
+        "score": 0.7428,
+        "algoScore": 0.3776,
+        "llmScore": 0.9
+      }
+    ],
+    "307": [
+      {
+        "id": 309,
+        "score": 1,
+        "algoScore": 0.85,
+        "llmScore": 1
+      },
+      {
+        "id": 308,
+        "score": 0.94,
+        "algoScore": 0.85,
+        "llmScore": 0.9
+      },
+      {
+        "id": 369,
+        "score": 0.7992,
+        "algoScore": 0.8113,
+        "llmScore": 0.7
+      },
+      {
+        "id": 370,
+        "score": 0.7992,
+        "algoScore": 0.8113,
+        "llmScore": 0.7
+      }
+    ],
+    "308": [
+      {
+        "id": 307,
+        "score": 1,
+        "algoScore": 0.85,
+        "llmScore": 1
+      },
+      {
+        "id": 309,
+        "score": 1,
+        "algoScore": 0.85,
+        "llmScore": 1
+      },
+      {
+        "id": 369,
+        "score": 0.9818,
+        "algoScore": 0.8113,
+        "llmScore": 1
+      },
+      {
+        "id": 370,
+        "score": 0.9218,
+        "algoScore": 0.8113,
+        "llmScore": 0.9
+      }
+    ],
+    "309": [
+      {
+        "id": 307,
+        "score": 1,
+        "algoScore": 0.85,
+        "llmScore": 1
+      },
+      {
+        "id": 308,
+        "score": 1,
+        "algoScore": 0.85,
+        "llmScore": 1
+      },
+      {
+        "id": 369,
+        "score": 0.9218,
+        "algoScore": 0.8113,
+        "llmScore": 0.9
+      },
+      {
+        "id": 340,
+        "score": 0.86,
+        "algoScore": 0.5526,
+        "llmScore": 1
+      }
+    ],
+    "312": [
+      {
+        "id": 284,
+        "score": 0.94,
+        "algoScore": 0.9734,
+        "llmScore": 0.9
+      },
+      {
+        "id": 316,
+        "score": 0.8979,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 264,
+        "score": 0.879,
+        "algoScore": 0.9711,
+        "llmScore": 0.8
+      },
+      {
+        "id": 251,
+        "score": 0.8704,
+        "algoScore": 0.9501,
+        "llmScore": 0.8
+      }
+    ],
+    "316": [
+      {
+        "id": 254,
+        "score": 0.94,
+        "algoScore": 0.975,
+        "llmScore": 0.9
+      },
+      {
+        "id": 281,
+        "score": 0.9393,
+        "algoScore": 0.9734,
+        "llmScore": 0.9
+      },
+      {
+        "id": 268,
+        "score": 0.9384,
+        "algoScore": 0.9711,
+        "llmScore": 0.9
+      },
+      {
+        "id": 312,
+        "score": 0.8974,
+        "algoScore": 0.725,
+        "llmScore": 1
+      }
+    ],
+    "319": [
+      {
+        "id": 254,
+        "score": 0.9064,
+        "algoScore": 0.4701,
+        "llmScore": 1
+      },
+      {
+        "id": 251,
+        "score": 0.8026,
+        "algoScore": 0.3108,
+        "llmScore": 1
+      },
+      {
+        "id": 185,
+        "score": 0.7571,
+        "algoScore": 0.3332,
+        "llmScore": 0.9
+      },
+      {
+        "id": 213,
+        "score": 0.6176,
+        "algoScore": 0.3033,
+        "llmScore": 0.7
+      }
+    ],
+    "322": [
+      {
+        "id": 341,
+        "score": 0.7163,
+        "algoScore": 0.1839,
+        "llmScore": 0.8
+      },
+      {
+        "id": 106,
+        "score": 0.6758,
+        "algoScore": 0.1523,
+        "llmScore": 0.8
+      },
+      {
+        "id": 36,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 2,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "325": [
+      {
+        "id": 349,
+        "score": 0.9928,
+        "algoScore": 0.5184,
+        "llmScore": 1
+      },
+      {
+        "id": 166,
+        "score": 0.9253,
+        "algoScore": 0.5086,
+        "llmScore": 0.9
+      },
+      {
+        "id": 86,
+        "score": 0.8694,
+        "algoScore": 0.5139,
+        "llmScore": 0.8
+      },
+      {
+        "id": 75,
+        "score": 0.8616,
+        "algoScore": 0.5037,
+        "llmScore": 0.8
+      }
+    ],
+    "336": [
+      {
+        "id": 103,
+        "score": 1,
+        "algoScore": 0.4736,
+        "llmScore": 1
+      },
+      {
+        "id": 73,
+        "score": 0.7621,
+        "algoScore": 0.263,
+        "llmScore": 0.9
+      },
+      {
+        "id": 185,
+        "score": 0.7421,
+        "algoScore": 0.3814,
+        "llmScore": 0.7
+      },
+      {
+        "id": 161,
+        "score": 0.696,
+        "algoScore": 0.2558,
+        "llmScore": 0.8
+      }
+    ],
+    "338": [
+      {
+        "id": 339,
+        "score": 0.9427,
+        "algoScore": 0.575,
+        "llmScore": 1
+      },
+      {
+        "id": 93,
+        "score": 0.8443,
+        "algoScore": 0.5105,
+        "llmScore": 0.9
+      },
+      {
+        "id": 241,
+        "score": 0.7593,
+        "algoScore": 0.5693,
+        "llmScore": 0.7
+      },
+      {
+        "id": 240,
+        "score": 0.7182,
+        "algoScore": 0.5003,
+        "llmScore": 0.7
+      }
+    ],
+    "339": [
+      {
+        "id": 338,
+        "score": 1,
+        "algoScore": 0.575,
+        "llmScore": 1
+      },
+      {
+        "id": 247,
+        "score": 0.8351,
+        "algoScore": 0.5105,
+        "llmScore": 0.8
+      },
+      {
+        "id": 345,
+        "score": 0.8256,
+        "algoScore": 0.4967,
+        "llmScore": 0.8
+      },
+      {
+        "id": 22,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "340": [
+      {
+        "id": 307,
+        "score": 1,
+        "algoScore": 0.5526,
+        "llmScore": 1
+      },
+      {
+        "id": 308,
+        "score": 1,
+        "algoScore": 0.5526,
+        "llmScore": 1
+      },
+      {
+        "id": 309,
+        "score": 1,
+        "algoScore": 0.5526,
+        "llmScore": 1
+      },
+      {
+        "id": 185,
+        "score": 0.5708,
+        "algoScore": 0.1255,
+        "llmScore": 0.8
+      }
+    ],
+    "341": [
+      {
+        "id": 3,
+        "score": 0.9387,
+        "algoScore": 0.3274,
+        "llmScore": 0.9
+      },
+      {
+        "id": 302,
+        "score": 0.9387,
+        "algoScore": 0.3273,
+        "llmScore": 0.9
+      },
+      {
+        "id": 106,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      },
+      {
+        "id": 107,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "342": [
+      {
+        "id": 345,
+        "score": 0.912,
+        "algoScore": 0.4,
+        "llmScore": 1
+      },
+      {
+        "id": 303,
+        "score": 0.9032,
+        "algoScore": 0.4656,
+        "llmScore": 0.9
+      },
+      {
+        "id": 222,
+        "score": 0.8438,
+        "algoScore": 0.4663,
+        "llmScore": 0.8
+      },
+      {
+        "id": 109,
+        "score": 0.8232,
+        "algoScore": 0.3631,
+        "llmScore": 0.9
+      }
+    ],
+    "345": [
+      {
+        "id": 342,
+        "score": 0.9221,
+        "algoScore": 0.4,
+        "llmScore": 1
+      },
+      {
+        "id": 339,
+        "score": 0.88,
+        "algoScore": 0.4967,
+        "llmScore": 0.8
+      },
+      {
+        "id": 78,
+        "score": 0.7828,
+        "algoScore": 0.4505,
+        "llmScore": 0.7
+      },
+      {
+        "id": 247,
+        "score": 0.7204,
+        "algoScore": 0.373,
+        "llmScore": 0.7
+      }
+    ],
+    "348": [
+      {
+        "id": 338,
+        "score": 0.94,
+        "algoScore": 0.6711,
+        "llmScore": 0.9
+      },
+      {
+        "id": 93,
+        "score": 0.9103,
+        "algoScore": 0.5207,
+        "llmScore": 1
+      },
+      {
+        "id": 372,
+        "score": 0.8125,
+        "algoScore": 0.5578,
+        "llmScore": 0.8
+      },
+      {
+        "id": 109,
+        "score": 0.7933,
+        "algoScore": 0.5256,
+        "llmScore": 0.8
+      }
+    ],
+    "349": [
+      {
+        "id": 352,
+        "score": 1,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 166,
+        "score": 0.8822,
+        "algoScore": 0.5114,
+        "llmScore": 1
+      },
+      {
+        "id": 325,
+        "score": 0.826,
+        "algoScore": 0.5184,
+        "llmScore": 0.9
+      },
+      {
+        "id": 86,
+        "score": 0.7606,
+        "algoScore": 0.5086,
+        "llmScore": 0.8
+      }
+    ],
+    "352": [
+      {
+        "id": 349,
+        "score": 1,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 358,
+        "score": 0.8222,
+        "algoScore": 0.5114,
+        "llmScore": 0.9
+      },
+      {
+        "id": 217,
+        "score": 0.7135,
+        "algoScore": 0.5319,
+        "llmScore": 0.7
+      },
+      {
+        "id": 257,
+        "score": 0.6506,
+        "algoScore": 0.3092,
+        "llmScore": 0.8
+      }
+    ],
+    "353": [
+      {
+        "id": 356,
+        "score": 1,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 166,
+        "score": 0.8205,
+        "algoScore": 0.5084,
+        "llmScore": 0.9
+      },
+      {
+        "id": 349,
+        "score": 0.8142,
+        "algoScore": 0.6057,
+        "llmScore": 0.8
+      },
+      {
+        "id": 325,
+        "score": 0.7586,
+        "algoScore": 0.505,
+        "llmScore": 0.8
+      }
+    ],
+    "356": [
+      {
+        "id": 353,
+        "score": 1,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 352,
+        "score": 0.8142,
+        "algoScore": 0.6057,
+        "llmScore": 0.8
+      },
+      {
+        "id": 358,
+        "score": 0.7605,
+        "algoScore": 0.5084,
+        "llmScore": 0.8
+      },
+      {
+        "id": 368,
+        "score": 0.7124,
+        "algoScore": 0.3125,
+        "llmScore": 0.9
+      }
+    ],
+    "357": [
+      {
+        "id": 257,
+        "score": 0.9665,
+        "algoScore": 0.5513,
+        "llmScore": 1
+      },
+      {
+        "id": 325,
+        "score": 0.7997,
+        "algoScore": 0.3907,
+        "llmScore": 0.9
+      },
+      {
+        "id": 75,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 86,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      }
+    ],
+    "358": [
+      {
+        "id": 166,
+        "score": 0.9761,
+        "algoScore": 0.575,
+        "llmScore": 1
+      },
+      {
+        "id": 352,
+        "score": 0.8745,
+        "algoScore": 0.5114,
+        "llmScore": 0.9
+      },
+      {
+        "id": 177,
+        "score": 0.6424,
+        "algoScore": 0.34,
+        "llmScore": 0.7
+      },
+      {
+        "id": 349,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "361": [
+      {
+        "id": 338,
+        "score": 0.94,
+        "algoScore": 0.5417,
+        "llmScore": 0.9
+      },
+      {
+        "id": 342,
+        "score": 0.9187,
+        "algoScore": 0.5128,
+        "llmScore": 0.9
+      },
+      {
+        "id": 237,
+        "score": 0.8676,
+        "algoScore": 0.3624,
+        "llmScore": 1
+      },
+      {
+        "id": 109,
+        "score": 0.8585,
+        "algoScore": 0.35,
+        "llmScore": 1
+      }
+    ],
+    "362": [
+      {
+        "id": 208,
+        "score": 0.917,
+        "algoScore": 0.2875,
+        "llmScore": 1
+      },
+      {
+        "id": 182,
+        "score": 0.866,
+        "algoScore": 0.2956,
+        "llmScore": 0.9
+      },
+      {
+        "id": 154,
+        "score": 0.7932,
+        "algoScore": 0.284,
+        "llmScore": 0.8
+      },
+      {
+        "id": 61,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "365": [
+      {
+        "id": 20,
+        "score": 0.9604,
+        "algoScore": 0.4663,
+        "llmScore": 1
+      },
+      {
+        "id": 178,
+        "score": 0.94,
+        "algoScore": 0.5176,
+        "llmScore": 0.9
+      },
+      {
+        "id": 73,
+        "score": 0.7818,
+        "algoScore": 0.3129,
+        "llmScore": 0.9
+      },
+      {
+        "id": 306,
+        "score": 0.7177,
+        "algoScore": 0.3076,
+        "llmScore": 0.8
+      }
+    ],
+    "366": [
+      {
+        "id": 367,
+        "score": 1,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 2,
+        "score": 0.6467,
+        "algoScore": 0.3022,
+        "llmScore": 0.8
+      },
+      {
+        "id": 36,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 51,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "367": [
+      {
+        "id": 366,
+        "score": 1,
+        "algoScore": 0.725,
+        "llmScore": 1
+      },
+      {
+        "id": 212,
+        "score": 0.7582,
+        "algoScore": 0.5043,
+        "llmScore": 0.8
+      },
+      {
+        "id": 39,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 51,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ],
+    "368": [
+      {
+        "id": 356,
+        "score": 0.94,
+        "algoScore": 0.3125,
+        "llmScore": 0.9
+      },
+      {
+        "id": 353,
+        "score": 0.876,
+        "algoScore": 0.2625,
+        "llmScore": 0.9
+      },
+      {
+        "id": 352,
+        "score": 0.8113,
+        "algoScore": 0.3057,
+        "llmScore": 0.7
+      },
+      {
+        "id": 349,
+        "score": 0.7473,
+        "algoScore": 0.2557,
+        "llmScore": 0.7
+      }
+    ],
+    "369": [
+      {
+        "id": 307,
+        "score": 0.9818,
+        "algoScore": 0.8113,
+        "llmScore": 1
+      },
+      {
+        "id": 308,
+        "score": 0.9818,
+        "algoScore": 0.8113,
+        "llmScore": 1
+      },
+      {
+        "id": 309,
+        "score": 0.9818,
+        "algoScore": 0.8113,
+        "llmScore": 1
+      },
+      {
+        "id": 340,
+        "score": 0.7957,
+        "algoScore": 0.5433,
+        "llmScore": 0.9
+      }
+    ],
+    "370": [
+      {
+        "id": 371,
+        "score": 1,
+        "algoScore": 0.85,
+        "llmScore": 1
+      },
+      {
+        "id": 307,
+        "score": 0.9818,
+        "algoScore": 0.8113,
+        "llmScore": 1
+      },
+      {
+        "id": 308,
+        "score": 0.9818,
+        "algoScore": 0.8113,
+        "llmScore": 1
+      },
+      {
+        "id": 309,
+        "score": 0.9818,
+        "algoScore": 0.8113,
+        "llmScore": 1
+      }
+    ],
+    "371": [
+      {
+        "id": 370,
+        "score": 0.94,
+        "algoScore": 0.85,
+        "llmScore": 0.9
+      },
+      {
+        "id": 307,
+        "score": 0.9218,
+        "algoScore": 0.8113,
+        "llmScore": 0.9
+      },
+      {
+        "id": 308,
+        "score": 0.9218,
+        "algoScore": 0.8113,
+        "llmScore": 0.9
+      },
+      {
+        "id": 309,
+        "score": 0.9218,
+        "algoScore": 0.8113,
+        "llmScore": 0.9
+      }
+    ],
+    "372": [
+      {
+        "id": 373,
+        "score": 1,
+        "algoScore": 0.8046,
+        "llmScore": 1
+      },
+      {
+        "id": 374,
+        "score": 0.8662,
+        "algoScore": 0.7768,
+        "llmScore": 0.8
+      },
+      {
+        "id": 348,
+        "score": 0.7573,
+        "algoScore": 0.5578,
+        "llmScore": 0.8
+      },
+      {
+        "id": 93,
+        "score": 0.6607,
+        "algoScore": 0.3634,
+        "llmScore": 0.8
+      }
+    ],
+    "373": [
+      {
+        "id": 372,
+        "score": 1,
+        "algoScore": 0.8046,
+        "llmScore": 1
+      },
+      {
+        "id": 374,
+        "score": 0.8072,
+        "algoScore": 0.7789,
+        "llmScore": 0.7
+      },
+      {
+        "id": 338,
+        "score": 0.709,
+        "algoScore": 0.4607,
+        "llmScore": 0.8
+      },
+      {
+        "id": 93,
+        "score": 0.6592,
+        "algoScore": 0.3604,
+        "llmScore": 0.8
+      }
+    ],
+    "374": [
+      {
+        "id": 375,
+        "score": 1,
+        "algoScore": 0.7923,
+        "llmScore": 1
+      },
+      {
+        "id": 373,
+        "score": 0.9932,
+        "algoScore": 0.7789,
+        "llmScore": 1
+      },
+      {
+        "id": 372,
+        "score": 0.9922,
+        "algoScore": 0.7768,
+        "llmScore": 1
+      },
+      {
+        "id": 348,
+        "score": 0.8236,
+        "algoScore": 0.5617,
+        "llmScore": 0.9
+      }
+    ],
+    "375": [
+      {
+        "id": 374,
+        "score": 0.94,
+        "algoScore": 0.7923,
+        "llmScore": 0.9
+      },
+      {
+        "id": 373,
+        "score": 0.9277,
+        "algoScore": 0.7679,
+        "llmScore": 0.9
+      },
+      {
+        "id": 372,
+        "score": 0.9267,
+        "algoScore": 0.7659,
+        "llmScore": 0.9
+      },
+      {
+        "id": 208,
+        "score": 0.7072,
+        "algoScore": 0.45,
+        "llmScore": 0.8
+      }
+    ],
+    "376": [
+      {
+        "id": 182,
+        "score": 0.72,
+        "algoScore": 0.45,
+        "llmScore": 0.7
+      },
+      {
+        "id": 223,
+        "score": 0.6666,
+        "algoScore": 0.3699,
+        "llmScore": 0.7
+      },
+      {
+        "id": 109,
+        "score": 0.6533,
+        "algoScore": 0.35,
+        "llmScore": 0.7
+      },
+      {
+        "id": 87,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
+      }
+    ],
+    "377": [
+      {
+        "id": 114,
+        "score": 0.9122,
+        "algoScore": 0.475,
+        "llmScore": 1
+      },
+      {
+        "id": 378,
+        "score": 0.82,
+        "algoScore": 0.6087,
+        "llmScore": 0.7
+      },
+      {
+        "id": 3,
+        "score": 0.698,
+        "algoScore": 0.2404,
+        "llmScore": 0.9
+      },
+      {
+        "id": 218,
+        "score": 0.689,
+        "algoScore": 0.2267,
+        "llmScore": 0.9
+      }
+    ],
+    "378": [
+      {
+        "id": 3,
+        "score": 0.7535,
+        "algoScore": 0.2336,
+        "llmScore": 1
+      },
+      {
+        "id": 257,
+        "score": 0.6941,
+        "algoScore": 0.2345,
+        "llmScore": 0.9
+      },
+      {
+        "id": 16,
+        "score": 0.6913,
+        "algoScore": 0.2302,
+        "llmScore": 0.9
+      },
+      {
+        "id": 4,
+        "score": 0.573,
+        "algoScore": 0.2328,
+        "llmScore": 0.7
+      }
+    ],
+    "380": [
+      {
+        "id": 381,
+        "score": 1,
+        "algoScore": 0.65,
+        "llmScore": 1
+      },
+      {
+        "id": 60,
+        "score": 0.6492,
+        "algoScore": 0.1774,
+        "llmScore": 0.9
+      },
+      {
+        "id": 80,
+        "score": 0.631,
+        "algoScore": 0.2454,
+        "llmScore": 0.8
+      },
+      {
+        "id": 71,
+        "score": 0.5234,
+        "algoScore": 0.168,
+        "llmScore": 0.7
+      }
+    ],
+    "381": [
+      {
+        "id": 380,
+        "score": 1,
+        "algoScore": 0.65,
+        "llmScore": 1
+      },
+      {
+        "id": 60,
+        "score": 0.7092,
+        "algoScore": 0.1774,
+        "llmScore": 1
+      },
+      {
+        "id": 71,
+        "score": 0.5834,
+        "algoScore": 0.168,
+        "llmScore": 0.8
+      },
+      {
+        "id": 54,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      }
+    ]
+  }
+}
