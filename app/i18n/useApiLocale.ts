@@ -3,15 +3,19 @@
 
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useLanguage, type Locale } from './LanguageContext';
+import { stripLocaleFromPathname } from './routing';
 
 /**
- * Hook to get the current locale for use in API calls
- * This ensures that API requests to Oscar backend use the correct language
+ * Locale for API calls — prefer the URL segment so language switches apply
+ * immediately on client navigation, before LanguageContext catches up.
  */
 export function useApiLocale(): Locale {
-  const { locale } = useLanguage();
-  return locale;
+  const pathname = usePathname();
+  const { locale: contextLocale } = useLanguage();
+  const { locale: pathLocale } = stripLocaleFromPathname(pathname);
+  return pathLocale ?? contextLocale;
 }
 
 /**

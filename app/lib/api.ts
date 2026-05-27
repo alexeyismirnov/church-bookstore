@@ -144,10 +144,10 @@ export async function getProductById(
   signal?: AbortSignal,
   locale?: string
 ): Promise<OscarProduct> {
-  // Include auth token when logged in so can_review is computed for the current user
+  const lang = locale ?? getLanguagePreference();
   const headers = getStoredToken()
-    ? getAuthHeaders()
-    : getApiHeaders(locale !== undefined ? { locale } : undefined);
+    ? getAuthHeaders({ locale: lang })
+    : getApiHeaders({ locale: lang });
 
   const response = await fetch(`${getApiBase()}/products/${id}/`, {
     method: 'GET',
@@ -418,9 +418,10 @@ export async function getProductReviews(
   productId: string,
   options?: { signal?: AbortSignal; locale?: string; auth?: boolean }
 ): Promise<Review[]> {
-  const headers = options?.auth ? getAuthHeaders() : getApiHeaders(
-    options?.locale !== undefined ? { locale: options.locale } : undefined
-  );
+  const lang = options?.locale ?? getLanguagePreference();
+  const headers = options?.auth
+    ? getAuthHeaders({ locale: lang })
+    : getApiHeaders({ locale: lang });
   const response = await fetch(`${getApiBase()}/products/${productId}/reviews/`, {
     method: 'GET',
     headers,
@@ -433,8 +434,7 @@ export async function getProductReviews(
   }
 
   const data: OscarProductReviewListResponse = await response.json();
-  const locale = options?.locale ?? getLanguagePreference();
-  return data.results.map((review) => oscarReviewToReview(review, locale));
+  return data.results.map((review) => oscarReviewToReview(review, lang));
 }
 
 export async function getProductReviewsForServer(
@@ -716,9 +716,12 @@ function getStoredUser(): { email: string } | null {
 /**
  * Get headers with authentication token
  */
-export function getAuthHeaders(): HeadersInit {
-  const lang = getLanguagePreference();
-  const currency = getCurrencyPreference();
+export function getAuthHeaders(options?: {
+  locale?: string;
+  currency?: string;
+}): HeadersInit {
+  const lang = options?.locale ?? getLanguagePreference();
+  const currency = options?.currency ?? getCurrencyPreference();
   const token = getStoredToken();
   
   const headers: HeadersInit = {

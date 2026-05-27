@@ -3,8 +3,10 @@
 
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 import { Locale, defaultLocale, locales, languageNames, languageFlags } from './settings';
+import { stripLocaleFromPathname } from './routing';
 
 // Import translations from JSON files
 import enTranslations from './locales/en.json';
@@ -55,25 +57,28 @@ interface LanguageProviderProps {
 }
 
 export function LanguageProvider({ children, initialLocale }: LanguageProviderProps) {
-  // Use the server-provided initialLocale (from cookie) if available,
-  // otherwise fall back to defaultLocale.
-  // Since the server reads the same cookie that the client writes, the first
-  // render already has the correct locale — no visible flash.
+  const pathname = usePathname();
+  const pathLocale = stripLocaleFromPathname(pathname).locale;
+
   const [locale, setLocaleState] = useState<Locale>(
     initialLocale && locales.includes(initialLocale) ? initialLocale : defaultLocale
   );
 
-  // Sync locale state when initialLocale prop changes (e.g., during client-side
-  // navigation from /en/cart to /ru/cart). Layouts persist across navigations
-  // in Next.js App Router, so this component does NOT remount — but the server
-  // re-runs the layout and provides a new initialLocale. Without this effect,
-  // the React state would stay stale and components watching `locale` (like the
-  // cart page's refreshPrices effect) would never fire.
+  // URL is the source of truth on locale-prefixed routes (instant on router.push).
   useEffect(() => {
-    if (initialLocale && locales.includes(initialLocale) && initialLocale !== locale) {
+    if (pathLocale) {
+      setLocaleState(pathLocale);
+      return;
+    }
+    if (initialLocale && locales.includes(initialLocale)) {
       setLocaleState(initialLocale);
     }
-  }, [initialLocale]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pathLocale, initialLocale]);
+
+  const activeLocale = useMemo(
+    () => pathLocale ?? locale,
+    [pathLocale, locale]
+  );
 
   // isLoading is always false because the locale is known from the first render
   // (provided via the initialLocale prop from the server-read cookie).
@@ -102,7 +107,7 @@ export function LanguageProvider({ children, initialLocale }: LanguageProviderPr
   }, []);
 
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
-    const translation = getNestedValue(translations[locale], key);
+    const translation = getNestedValue(translations[activeLocale], key);
     if (!translation) {
       // Fallback to English
       const fallback = getNestedValue(translations.en, key);
@@ -110,10 +115,10 @@ export function LanguageProvider({ children, initialLocale }: LanguageProviderPr
       return interpolate(fallback, params);
     }
     return interpolate(translation, params);
-  }, [locale]);
+  }, [activeLocale]);
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t, isLoading }}>
+    <LanguageContext.Provider value={{ locale: activeLocale, setLocale, t, isLoading }}>
       {children}
     </LanguageContext.Provider>
   );

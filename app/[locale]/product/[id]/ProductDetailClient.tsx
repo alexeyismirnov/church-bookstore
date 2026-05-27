@@ -193,22 +193,60 @@ export default function ProductDetailClient({
       return;
     }
 
-    // Reuse SSR payload only for anonymous users (SSR cannot know can_review)
-    if (initialBook && currentKey === serverFetchKey && !isAuthenticated) {
+    const abortController = new AbortController();
+    const ssrMatchesCurrent = Boolean(
+      initialBook && currentKey === serverFetchKey
+    );
+
+    if (ssrMatchesCurrent) {
       setBook(initialBook);
       setFetchedForKey(currentKey);
       setLoading(false);
       setError(null);
-      return;
-    }
 
-    const abortController = new AbortController();
+      if (!isAuthenticated) {
+        return () => abortController.abort();
+      }
+
+      // Refresh auth-only fields (can_review) without a full-page loading state
+      (async () => {
+        try {
+          const product = await getProductById(
+            productId,
+            abortController.signal,
+            locale
+          );
+          if (abortController.signal.aborted) return;
+          const converted = oscarProductToBook(product, locale);
+          setBook((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  canReview: converted.canReview,
+                  rating: converted.rating,
+                  reviewCount: converted.reviewCount,
+                }
+              : converted
+          );
+        } catch (err) {
+          if (!abortController.signal.aborted) {
+            console.error('Failed to refresh product auth fields:', err);
+          }
+        }
+      })();
+
+      return () => abortController.abort();
+    }
 
     async function fetchBook() {
       try {
         setLoading(true);
         setError(null);
-        const product = await getProductById(productId, abortController.signal);
+        const product = await getProductById(
+          productId,
+          abortController.signal,
+          locale
+        );
         if (abortController.signal.aborted) return;
         const convertedBook = oscarProductToBook(product, locale);
         setBook(convertedBook);
@@ -266,9 +304,17 @@ export default function ProductDetailClient({
     fetchPurchasedBooks();
   }, [authLoading, isAuthenticated]);
 
-  // Fetch reviews (re-fetch when auth changes so user_vote is populated)
+  // Reviews: use SSR when locale matches; refetch when locale/auth changes
   useEffect(() => {
     if (authLoading) return;
+
+    const reviewKey = `${locale}:${currency}`;
+    if (serverFetchKey === reviewKey) {
+      setReviews(initialReviews);
+      if (!isAuthenticated) {
+        return;
+      }
+    }
 
     const abortController = new AbortController();
 
@@ -301,7 +347,15 @@ export default function ProductDetailClient({
     fetchReviews();
 
     return () => abortController.abort();
-  }, [productId, locale, isAuthenticated, authLoading]);
+  }, [
+    productId,
+    locale,
+    currency,
+    isAuthenticated,
+    authLoading,
+    serverFetchKey,
+    initialReviews,
+  ]);
 
   // Determine if the current book (or its ebook variant) has been purchased
   const isPurchased = book ? (
