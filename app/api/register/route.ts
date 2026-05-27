@@ -40,9 +40,24 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Forward to Django backend WITHOUT the captcha token
+    // Build headers, forwarding language and currency preferences
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    const acceptLanguage = request.headers.get('Accept-Language');
+    if (acceptLanguage) {
+      headers['Accept-Language'] = acceptLanguage;
+    }
+
+    const currency = request.headers.get('X-Currency');
+    if (currency) {
+      headers['X-Currency'] = currency;
+    }
+
     const oscarResponse = await fetch(`${OSCAR_API_URL}/register/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(registrationData),
     });
 
