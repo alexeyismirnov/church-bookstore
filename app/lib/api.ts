@@ -1,7 +1,7 @@
 // app/lib/api.ts
 // API client for interacting with the Oscar backend through the proxy
 
-import { OscarProduct, OscarPaginationResponse, Variant, Book, Category, MyBook, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order, OscarOrder, OscarOrderListResponse, OrderLine, Episode } from '../types';
+import { OscarProduct, OscarPaginationResponse, OscarProductReview, OscarProductReviewListResponse, Variant, Book, Category, MyBook, Review, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order, OscarOrder, OscarOrderListResponse, OrderLine, Episode } from '../types';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -144,9 +144,14 @@ export async function getProductById(
   signal?: AbortSignal,
   locale?: string
 ): Promise<OscarProduct> {
+  // Include auth token when logged in so can_review is computed for the current user
+  const headers = getStoredToken()
+    ? getAuthHeaders()
+    : getApiHeaders(locale !== undefined ? { locale } : undefined);
+
   const response = await fetch(`${getApiBase()}/products/${id}/`, {
     method: 'GET',
-    headers: getApiHeaders(locale !== undefined ? { locale } : undefined),
+    headers,
     cache: 'no-store',
     signal,
   });
@@ -407,6 +412,113 @@ export function getLanguageFromScript(textScript: string | undefined): string {
 }
 
 /**
+ * Fetch approved reviews for a product.
+ */
+export async function getProductReviews(
+  productId: string,
+  options?: { signal?: AbortSignal; locale?: string; auth?: boolean }
+): Promise<Review[]> {
+  const headers = options?.auth ? getAuthHeaders() : getApiHeaders(
+    options?.locale !== undefined ? { locale: options.locale } : undefined
+  );
+  const response = await fetch(`${getApiBase()}/products/${productId}/reviews/`, {
+    method: 'GET',
+    headers,
+    cache: 'no-store',
+    signal: options?.signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch reviews: ${response.status} ${response.statusText}`);
+  }
+
+  const data: OscarProductReviewListResponse = await response.json();
+  const locale = options?.locale ?? getLanguagePreference();
+  return data.results.map((review) => oscarReviewToReview(review, locale));
+}
+
+export async function getProductReviewsForServer(
+  productId: string,
+  locale: string = 'en',
+  currency: string = 'USD'
+): Promise<Review[]> {
+  try {
+    const response = await fetch(`${getApiBase()}/products/${productId}/reviews/`, {
+      method: 'GET',
+      headers: getApiHeaders({ locale, currency }),
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) return [];
+    const data: OscarProductReviewListResponse = await response.json();
+    return data.results.map((review) => oscarReviewToReview(review, locale));
+  } catch {
+    return [];
+  }
+}
+
+export async function createProductReview(
+  productId: string,
+  payload: { title: string; score: number; body: string }
+): Promise<Review> {
+  const response = await fetch(`${getApiBase()}/products/${productId}/reviews/`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || `Failed to create review: ${response.status}`);
+  }
+
+  return oscarReviewToReview(data as OscarProductReview);
+}
+
+export async function voteOnReview(
+  productId: string,
+  reviewId: string,
+  delta: 1 | -1
+): Promise<Review> {
+  const response = await fetch(
+    `${getApiBase()}/products/${productId}/reviews/${reviewId}/vote/`,
+    {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ delta }),
+    }
+  );
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || `Failed to vote: ${response.status}`);
+  }
+
+  return oscarReviewToReview(data as OscarProductReview);
+}
+
+export function oscarReviewToReview(review: OscarProductReview, locale?: string): Review {
+  const dateLocale = locale ?? getLanguagePreference();
+  const formattedDate = new Date(review.date_created).toLocaleDateString(dateLocale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+  return {
+    id: String(review.id),
+    author: review.reviewer_name,
+    rating: review.score,
+    date: formattedDate,
+    title: review.title,
+    text: review.body,
+    upvotes: review.upvotes,
+    downvotes: review.downvotes,
+    userVote: review.user_vote,
+    isOwnReview: review.is_own_review,
+  };
+}
+
+/**
  * Convert variant price string to number
  */
 export function parseVariantPrice(variant: Variant): number {
@@ -444,8 +556,9 @@ export function oscarProductToBook(product: OscarProduct, locale: string = 'en')
     title: getProductTitle(product, locale),
     author: getProductAuthor(product, locale),
     price: parseFloat(product.price) || 0,
-    rating: 4.5, // Default rating - Oscar doesn't provide this
-    reviewCount: 0, // Default - Oscar doesn't provide this
+    rating: product.rating ?? 0,
+    reviewCount: product.review_count ?? 0,
+    canReview: product.can_review,
     coverImage: getFullImageUrl(product.image_url),
     category: product.category || 'Uncategorized',
     publisher: product.publisher || '',

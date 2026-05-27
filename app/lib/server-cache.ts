@@ -1,10 +1,11 @@
 import { cache } from 'react';
-import type { Book } from '../types';
+import type { Book, Review } from '../types';
 import {
   getCatalogListingBooksForServer,
   getCatalogListingForServer,
   getCategoriesForServer,
   getProductByIdForServer,
+  getProductReviewsForServer,
   oscarProductToBook,
 } from './api';
 import { getRecommendedProductIds } from './recommendations';
@@ -32,6 +33,11 @@ export const getCachedProductById = cache((id: string, locale: string, currency:
   getProductByIdForServer(id, locale, currency).then((product) =>
     product ? oscarProductToBook(product, locale) : null
   )
+);
+
+export const getCachedProductReviews = cache(
+  (productId: string, locale: string, currency: string): Promise<Review[]> =>
+    getProductReviewsForServer(productId, locale, currency)
 );
 
 export const getCachedCategories = cache(

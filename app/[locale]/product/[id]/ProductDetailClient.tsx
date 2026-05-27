@@ -9,18 +9,20 @@ import Breadcrumbs from '../../../components/Breadcrumbs';
 import ProductGrid from '../../../components/ProductGrid';
 import ProductImage from '../../../components/ProductImage';
 import { Download, FileText, BookOpen, Package, Monitor, ShoppingCart, Check } from 'lucide-react';
-import { getProductById, oscarProductToBook, parseVariantPrice, getMyBooks } from '../../../lib/api';
+import { getProductById, getProductReviews, oscarProductToBook, parseVariantPrice, getMyBooks } from '../../../lib/api';
+import ProductReviewsSection from '../../../components/ProductReviewsSection';
 import { useAuth } from '../../../lib/AuthContext';
 import { useApiLocale } from '../../../i18n/useApiLocale';
 import { useLanguage, useTranslations } from '../../../i18n/LanguageContext';
 import { useCurrency } from '../../../i18n/CurrencyContext';
 import { useLocalCart } from '../../../lib/localCart';
-import { Book, Variant } from '../../../types';
+import { Book, Review, Variant } from '../../../types';
 import { Loader2 } from 'lucide-react';
 
 interface ProductDetailClientProps {
   productId: string;
   initialBook: Book | null;
+  initialReviews?: Review[];
   serverFetchKey: string;
   relatedBooks?: Book[];
 }
@@ -148,6 +150,7 @@ function DownloadButtons({ book, isPurchased }: { book: Book; isPurchased?: bool
 export default function ProductDetailClient({
   productId,
   initialBook,
+  initialReviews = [],
   serverFetchKey,
   relatedBooks = [],
 }: ProductDetailClientProps) {
@@ -170,6 +173,7 @@ export default function ProductDetailClient({
   // Add to cart state - track per-variant ID for success feedback
   const [addedToCartVariantId, setAddedToCartVariantId] = useState<number | null>(null);
   const [addToCartError, setAddToCartError] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
 
   // Show loading spinner when:
   // 1. Initial load is in progress
@@ -185,12 +189,12 @@ export default function ProductDetailClient({
   };
 
   useEffect(() => {
-    if (contextLoading || currencyIsLoading) {
+    if (contextLoading || currencyIsLoading || authLoading) {
       return;
     }
 
-    // Reuse SSR payload when locale/currency still match the server render
-    if (initialBook && currentKey === serverFetchKey) {
+    // Reuse SSR payload only for anonymous users (SSR cannot know can_review)
+    if (initialBook && currentKey === serverFetchKey && !isAuthenticated) {
       setBook(initialBook);
       setFetchedForKey(currentKey);
       setLoading(false);
@@ -235,6 +239,8 @@ export default function ProductDetailClient({
     currentKey,
     serverFetchKey,
     initialBook,
+    isAuthenticated,
+    authLoading,
   ]);
 
   // Fetch purchased book IDs for the logged-in user
@@ -259,6 +265,43 @@ export default function ProductDetailClient({
 
     fetchPurchasedBooks();
   }, [authLoading, isAuthenticated]);
+
+  // Fetch reviews (re-fetch when auth changes so user_vote is populated)
+  useEffect(() => {
+    if (authLoading) return;
+
+    const abortController = new AbortController();
+
+    async function fetchReviews() {
+      try {
+        const data = await getProductReviews(productId, {
+          signal: abortController.signal,
+          locale,
+          auth: isAuthenticated,
+        });
+        if (!abortController.signal.aborted) {
+          setReviews(data);
+          if (data.length > 0) {
+            const avgRating =
+              data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+            setBook((prev) =>
+              prev
+                ? { ...prev, reviewCount: data.length, rating: avgRating }
+                : prev
+            );
+          }
+        }
+      } catch (err) {
+        if (!abortController.signal.aborted) {
+          console.error('Failed to fetch reviews:', err);
+        }
+      }
+    }
+
+    fetchReviews();
+
+    return () => abortController.abort();
+  }, [productId, locale, isAuthenticated, authLoading]);
 
   // Determine if the current book (or its ebook variant) has been purchased
   const isPurchased = book ? (
@@ -358,24 +401,22 @@ export default function ProductDetailClient({
           ]}
         />
 
-        {/* Product Details */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-16">
-          {/* Image */}
-          <div className="space-y-4">
-            <div className="aspect-[3/4] bg-white rounded-2xl overflow-hidden shadow-sm relative">
-              <ProductImage
-                src={book.coverImage}
-                alt={book.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
-                priority
-              />
-            </div>
+        {/* Product layout: row 1 = cover | info+details; row 2 = description | reviews */}
+        <div className="grid md:grid-cols-2 md:items-start gap-8 lg:gap-12 mb-16">
+          {/* Column 1, row 1: Cover */}
+          <div className="aspect-[3/4] bg-white rounded-2xl overflow-hidden shadow-sm relative">
+            <ProductImage
+              src={book.coverImage}
+              alt={book.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              priority
+            />
           </div>
 
-          {/* Info */}
-          <div className="space-y-6">
+          {/* Column 2, row 1: Title, purchase options, product details */}
+          <div className="flex flex-col gap-6">
             {/* Title */}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-dark mb-4">
@@ -537,8 +578,8 @@ export default function ProductDetailClient({
 
 
 
-            {/* Characteristics */}
-            <div className="bg-white rounded-xl p-6 shadow-sm !mt-8">
+            {/* Product details (metadata only) */}
+            <div className="bg-white rounded-xl p-6 shadow-sm mt-8">
               <h3 className="font-semibold text-dark mb-4">{tProduct('details')}</h3>
               <dl className="grid grid-cols-2 gap-4 text-sm">
                 {book.author && (
@@ -576,17 +617,30 @@ export default function ProductDetailClient({
                   </div>
                 )}
               </dl>
-              {book.description && (
-                <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-semibold text-dark mb-2">{tProduct('description')}</h4>
-                  <div
-                    className="text-gray-600 leading-relaxed prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: book.description }}
-                  />
-                </div>
-              )}
             </div>
           </div>
+
+          {/* Column 1, row 2: Description (under cover) */}
+          {book.description ? (
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <h3 className="font-semibold text-dark mb-4">{tProduct('description')}</h3>
+              <div
+                className="text-gray-600 leading-relaxed prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: book.description }}
+              />
+            </div>
+          ) : (
+            <div className="hidden md:block" aria-hidden="true" />
+          )}
+
+          {/* Column 2, row 2: Reviews (aligned with description) */}
+          <ProductReviewsSection
+            productId={productId}
+            book={book}
+            reviews={reviews}
+            onReviewsChange={setReviews}
+            onBookUpdate={(updates) => setBook((prev) => (prev ? { ...prev, ...updates } : prev))}
+          />
         </div>
 
         {relatedBooks.length > 0 && (

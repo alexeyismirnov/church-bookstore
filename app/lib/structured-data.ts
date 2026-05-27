@@ -163,6 +163,16 @@ export function buildProductBookSchema(
     schema.isAccessibleForFree = true;
   }
 
+  if (book.reviewCount > 0 && book.rating > 0) {
+    schema.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: book.rating.toFixed(1),
+      reviewCount: book.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
+
   return schema;
 }
 

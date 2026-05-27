@@ -17,6 +17,7 @@ export interface Book {
   originalPrice?: number;
   rating: number;
   reviewCount: number;
+  canReview?: boolean;
   coverImage: string;
   category: string;
   publisher: string;
@@ -50,8 +51,29 @@ export interface Review {
   rating: number;
   date: string;
   text: string;
+  title?: string;
   avatar?: string;
+  upvotes: number;
+  downvotes: number;
+  userVote: number | null;
+  isOwnReview: boolean;
 }
+
+export interface OscarProductReview {
+  id: number;
+  score: number;
+  title: string;
+  body: string;
+  reviewer_name: string;
+  date_created: string;
+  upvotes: number;
+  downvotes: number;
+  total_votes: number;
+  user_vote: number | null;
+  is_own_review: boolean;
+}
+
+export type OscarProductReviewListResponse = OscarPaginationResponse<OscarProductReview>;
 
 export interface Category {
   id: string;
@@ -153,6 +175,11 @@ export interface OscarProduct {
   // Stock information
   stock_count?: number;
   is_in_stock?: boolean;
+
+  // Reviews (product detail only)
+  rating?: number | null;
+  review_count?: number;
+  can_review?: boolean;
 }
 
 /**

@@ -11,7 +11,7 @@ import {
   stripHtml,
   truncate,
 } from '../../../lib/metadata';
-import { getCachedProductById, getCachedRelatedProducts } from '../../../lib/server-cache';
+import { getCachedProductById, getCachedProductReviews, getCachedRelatedProducts } from '../../../lib/server-cache';
 import { buildProductBookSchema, buildProductBreadcrumbSchema } from '../../../lib/structured-data';
 import type { Locale } from '../../../i18n/settings';
 
@@ -88,9 +88,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const { locale: localeParam, id } = await params;
   const locale = resolveLocaleFromParams(localeParam);
   const { currency, book, serverFetchKey } = await loadProduct(locale, id);
-  const relatedBooks = book
-    ? await getCachedRelatedProducts(id, locale, currency)
-    : [];
+  const [relatedBooks, initialReviews] = book
+    ? await Promise.all([
+        getCachedRelatedProducts(id, locale, currency),
+        getCachedProductReviews(id, locale, currency),
+      ])
+    : [[], []];
 
   const structuredData = book
     ? [
@@ -106,6 +109,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         key={`${id}-${serverFetchKey}`}
         productId={id}
         initialBook={book}
+        initialReviews={initialReviews}
         serverFetchKey={serverFetchKey}
         relatedBooks={relatedBooks}
       />
