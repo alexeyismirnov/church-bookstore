@@ -521,17 +521,24 @@ function CheckoutContent() {
   useEffect(() => {
     if (localCartItems.length === 0 || cartItems.length === 0) return;
 
-    setCartItems(prev => prev.map(ci => {
-      const localItem = localCartItems.find(li => li.productId === parseInt(ci.id, 10));
-      if (!localItem) return ci;
-      return {
-        ...ci,
-        title: localItem.title || ci.title,
-        author: localItem.author || ci.author,
-        coverImage: localItem.coverImage || ci.coverImage,
-      };
-    }));
-  }, [localCartItems]); // eslint-disable-line react-hooks/exhaustive-deps
+    setCartItems(prev => {
+      const updated = prev.map(ci => {
+        const localItem = localCartItems.find(li => li.productId === parseInt(ci.id, 10));
+        if (!localItem) return ci;
+        const newTitle = localItem.title || ci.title;
+        const newAuthor = localItem.author || ci.author;
+        const newCoverImage = localItem.coverImage || ci.coverImage;
+        // Return same reference if nothing changed
+        if (ci.title === newTitle && ci.author === newAuthor && ci.coverImage === newCoverImage) {
+          return ci;
+        }
+        return { ...ci, title: newTitle, author: newAuthor, coverImage: newCoverImage };
+      });
+      // Return same reference to prevent infinite re-renders
+      if (updated.every((item, i) => item === prev[i])) return prev;
+      return updated;
+    });
+  }, [localCartItems, cartItems]);
 
   // Note: Currency change handling is done in ShippingForm via prevCurrencyRef
   // No need to clear selectedShippingMethod here as ShippingForm handles re-selection
