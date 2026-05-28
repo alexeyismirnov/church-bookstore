@@ -23,6 +23,7 @@ import {
 import { getCachedCatalogListing, getCachedCategories } from '../../lib/server-cache';
 import {
   buildCatalogBreadcrumbSchema,
+  buildCatalogProductSchemas,
   buildItemListSchema,
 } from '../../lib/structured-data';
 import type { CatalogInitialData } from './types';
@@ -202,6 +203,7 @@ export default async function CatalogPage(props: PageProps) {
       path: catalogPath,
       locale,
     }),
+    ...buildCatalogProductSchemas(initialData.books, currency, locale),
   ].filter((schema): schema is Record<string, unknown> => schema !== null);
 
   return (

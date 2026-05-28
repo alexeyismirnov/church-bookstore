@@ -7,6 +7,7 @@ import LocalizedLink from '../../../components/LocalizedLink';
 import { useAuth } from '../../../lib/AuthContext';
 import { useTranslations } from '../../../i18n/LanguageContext';
 import { getOrderById, getOrderLines, fetchProductDetails } from '../../../lib/api';
+import { buildProductSlug } from '../../../lib/product-slug';
 import { OscarOrder, OrderLine } from '../../../types';
 import { currencySymbols, Currency } from '../../../i18n/settings';
 import { ArrowLeft, Package, MapPin, Loader2, AlertCircle } from 'lucide-react';
@@ -267,6 +268,11 @@ export default function OrderDetailPage() {
                           : 0;
 
                         const productLinkId = line.parentId || line.product?.match(/\/products\/(\d+)\/?$/)?.[1];
+                        const productTitle =
+                          line.product_title || `Product ${productLinkId ?? line.product?.split('/').filter(Boolean).pop() || ''}`;
+                        const productPath = productLinkId
+                          ? `/product/${buildProductSlug(productLinkId, productTitle)}`
+                          : '/catalog';
 
                         return (
                           <div
@@ -277,7 +283,7 @@ export default function OrderDetailPage() {
                             <div className="sm:col-span-6 flex items-center gap-3 min-w-0">
                               {/* Cover image */}
                               {line.coverImage ? (
-                                <LocalizedLink href={`/product/${productLinkId}`} className="block cursor-pointer flex-shrink-0">
+                                <LocalizedLink href={productPath} className="block cursor-pointer flex-shrink-0">
                                   <img
                                     src={line.coverImage}
                                     alt={line.product_title || ''}
@@ -290,7 +296,7 @@ export default function OrderDetailPage() {
                                 </div>
                               )}
                               <div className="min-w-0">
-                                <LocalizedLink href={`/product/${productLinkId}`} className="hover:underline cursor-pointer">
+                                <LocalizedLink href={productPath} className="hover:underline cursor-pointer">
                                   <p className="font-medium text-ink break-words hover:text-burgundy transition-colors">
                                     {line.product_title || `Product #${line.product?.split('/').filter(Boolean).pop() || '?'}`}
                                   </p>

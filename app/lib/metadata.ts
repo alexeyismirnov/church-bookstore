@@ -84,7 +84,7 @@ export function truncate(text: string, maxLength: number): string {
   return `${text.slice(0, maxLength - 1).trim()}…`;
 }
 
-export const DEFAULT_OG_IMAGE = '/images/church_logo.png';
+export const DEFAULT_OG_IMAGE = '/images/og-default.png';
 
 export function buildAbsoluteUrl(path: string, locale?: Locale): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
@@ -176,8 +176,8 @@ export function buildOpenGraph(
     images: options.images ?? [
       {
         url: DEFAULT_OG_IMAGE,
-        width: 512,
-        height: 512,
+        width: 1200,
+        height: 630,
         alt: SITE_NAME_SHORT,
       },
     ],

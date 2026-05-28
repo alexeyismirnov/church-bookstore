@@ -5,6 +5,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import { LocalCartItem } from '../lib/localCart';
 import { useTranslations } from '../i18n/LanguageContext';
 import { useCurrency } from '../i18n/CurrencyContext';
+import { buildProductSlug } from '../lib/product-slug';
 
 interface CartItemProps {
   item: LocalCartItem;
@@ -25,6 +26,7 @@ export default function CartItem({
 
   // Use parentProductId for navigation (link back to product page)
   const productLinkId = item.parentProductId;
+  const productPath = `/product/${buildProductSlug(productLinkId, item.title)}`;
 
   const handleDecrease = () => {
     if (onUpdateQuantityByDelta) {
@@ -52,7 +54,7 @@ export default function CartItem({
     <div className="flex gap-4 py-6 px-6 border-b border-gray-100">
       {/* Image */}
       <div className="w-24 h-32 flex-shrink-0 overflow-hidden">
-        <LocalizedLink href={`/product/${productLinkId}`} className="block cursor-pointer">
+        <LocalizedLink href={productPath} className="block cursor-pointer">
           <img
             src={item.coverImage}
             alt={item.title}
@@ -65,7 +67,7 @@ export default function CartItem({
       <div className="flex-grow flex flex-col">
         <div className="flex justify-between items-start">
           <div>
-            <LocalizedLink href={`/product/${productLinkId}`} className="hover:underline cursor-pointer">
+            <LocalizedLink href={productPath} className="hover:underline cursor-pointer">
               <h3 className="font-semibold text-dark text-lg hover:text-burgundy transition-colors">{item.title}</h3>
             </LocalizedLink>
             {item.variantTitle && <p className="text-sm text-gray-400 italic">({item.variantTitle})</p>}

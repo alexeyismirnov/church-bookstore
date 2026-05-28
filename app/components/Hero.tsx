@@ -9,6 +9,7 @@ import ProductImage from './ProductImage';
 import { ArrowRight } from 'lucide-react';
 import { useTranslations } from '../i18n/LanguageContext';
 import { Book } from '../types';
+import { buildProductPath } from '../lib/product-slug';
 
 interface HeroProps {
   book?: Book | null;
@@ -82,7 +83,7 @@ export default function Hero({ book }: HeroProps) {
                       </div>
                     </div>
                   )}
-                  <LocalizedLink href={`/product/${book.id}`} className="flex h-full relative">
+                  <LocalizedLink href={buildProductPath(book)} className="flex h-full relative">
                     <ProductImage
                       src={book.coverImage}
                       alt={book.title}

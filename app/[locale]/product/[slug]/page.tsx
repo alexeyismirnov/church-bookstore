@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import ProductDetailClient from './ProductDetailClient';
+import { notFound, permanentRedirect } from 'next/navigation';
+import ProductDetailClient from '../[id]/ProductDetailClient';
 import StructuredData from '../../../components/StructuredData';
 import { resolveCurrencyFromParams, resolveLocaleFromParams } from '../../../lib/locale-server';
 import {
@@ -14,11 +15,12 @@ import {
 import { getCachedProductById, getCachedProductReviews, getCachedRelatedProducts } from '../../../lib/server-cache';
 import { buildProductBookSchema, buildProductBreadcrumbSchema } from '../../../lib/structured-data';
 import type { Locale } from '../../../i18n/settings';
+import { buildProductPath, extractProductIdFromSlug } from '../../../lib/product-slug';
 
 export const revalidate = 3600;
 
 interface ProductPageProps {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 async function loadProduct(locale: Locale, id: string) {
@@ -28,10 +30,11 @@ async function loadProduct(locale: Locale, id: string) {
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const { locale: localeParam, id } = await params;
+  const { locale: localeParam, slug } = await params;
   const locale = resolveLocaleFromParams(localeParam);
-  const { book } = await loadProduct(locale, id);
-  const productPath = `/product/${id}`;
+  const productId = extractProductIdFromSlug(slug);
+  const { book } = productId ? await loadProduct(locale, productId) : { book: null };
+  const productPath = book ? buildProductPath(book) : `/product/${slug}`;
 
   if (!book) {
     const title = getMetaString(locale, 'meta.product.notFoundTitle');
@@ -85,29 +88,36 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { locale: localeParam, id } = await params;
+  const { locale: localeParam, slug } = await params;
   const locale = resolveLocaleFromParams(localeParam);
-  const { currency, book, serverFetchKey } = await loadProduct(locale, id);
-  const [relatedBooks, initialReviews] = book
-    ? await Promise.all([
-        getCachedRelatedProducts(id, locale, currency),
-        getCachedProductReviews(id, locale, currency),
-      ])
-    : [[], []];
+  const productId = extractProductIdFromSlug(slug);
+  if (!productId) notFound();
 
-  const structuredData = book
-    ? [
-        buildProductBookSchema(book, currency, locale),
-        buildProductBreadcrumbSchema(book.title, id, locale),
-      ]
-    : [];
+  const { currency, book, serverFetchKey } = await loadProduct(locale, productId);
+  if (!book) notFound();
+
+  const canonicalPath = buildProductPath(book);
+  const currentPath = `/product/${slug}`;
+  if (currentPath !== canonicalPath) {
+    permanentRedirect(canonicalPath);
+  }
+
+  const [relatedBooks, initialReviews] = await Promise.all([
+    getCachedRelatedProducts(productId, locale, currency),
+    getCachedProductReviews(productId, locale, currency),
+  ]);
+
+  const structuredData = [
+    buildProductBookSchema(book, currency, locale),
+    buildProductBreadcrumbSchema(book, locale),
+  ];
 
   return (
     <>
       {structuredData.length > 0 && <StructuredData data={structuredData} />}
       <ProductDetailClient
-        key={`${id}-${serverFetchKey}`}
-        productId={id}
+        key={`${productId}-${serverFetchKey}`}
+        productId={productId}
         initialBook={book}
         initialReviews={initialReviews}
         serverFetchKey={serverFetchKey}

@@ -8,6 +8,7 @@ import ProductGrid from './ProductGrid';
 import { getMyBooks, getFullImageUrl } from '../lib/api';
 import { useAuth } from '../lib/AuthContext';
 import { STATIC_CATEGORIES } from '../lib/data';
+import { buildProductSlug } from '../lib/product-slug';
 import { useApiLocale } from '../i18n/useApiLocale';
 import { useTranslations } from '../i18n/LanguageContext';
 import { Book, MyBook } from '../types';
@@ -83,7 +84,7 @@ export default function HomePageClient({ heroBook, newArrivals }: HomePageClient
               {miniBookshelf.map((book) => (
                 <LocalizedLink
                   key={book.book_id}
-                  href={`/product/${book.book_id}`}
+                  href={`/product/${buildProductSlug(book.book_id, book.title)}`}
                   className="group flex flex-row sm:flex-col rounded-xl overflow-hidden border border-parchment-dark/30 bg-white hover:shadow-md transition-shadow"
                 >
                   <div className="w-16 sm:w-full h-20 sm:h-auto sm:aspect-[3/4] overflow-hidden bg-parchment flex-shrink-0">

@@ -2,6 +2,7 @@
 // API client for interacting with the Oscar backend through the proxy
 
 import { OscarProduct, OscarPaginationResponse, OscarProductReview, OscarProductReviewListResponse, Variant, Book, Category, MyBook, Review, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order, OscarOrder, OscarOrderListResponse, OrderLine, Episode } from '../types';
+import { ensureSlugWithId } from './product-slug';
 
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
@@ -15,8 +16,10 @@ const getApiBase = () => {
     if (process.env.NEXT_PUBLIC_VERCEL_URL) {
       return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/oscar`;
     }
-    // Local development fallback
-    return 'http://localhost:3000/api/oscar';
+    // Local development fallback: respect the active Next.js port.
+    // This avoids SSR fetch failures when dev server runs on 3001+.
+    const port = process.env.PORT || '3000';
+    return `http://localhost:${port}/api/oscar`;
   }
   // Client-side: relative URL works fine
   return '/api/oscar';
@@ -553,6 +556,11 @@ export function oscarProductToBook(product: OscarProduct, locale: string = 'en')
 
   return {
     id: product.id.toString(),
+    slug: ensureSlugWithId(
+      product.id,
+      product.slug,
+      product.title_en || getProductTitle(product, locale) || product.title
+    ),
     title: getProductTitle(product, locale),
     author: getProductAuthor(product, locale),
     price: parseFloat(product.price) || 0,
@@ -634,6 +642,7 @@ export async function getNewArrivalsForServer(
 
 export interface SitemapProductEntry {
   id: string;
+  slug: string;
   pubDate?: string;
 }
 
@@ -660,6 +669,7 @@ export async function getAllProductsForSitemap(): Promise<SitemapProductEntry[]>
     for (const product of data.results) {
       entries.push({
         id: product.id.toString(),
+        slug: ensureSlugWithId(product.id, product.slug, product.title_en || product.title),
         pubDate: product.pub_date,
       });
     }

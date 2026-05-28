@@ -5,6 +5,7 @@ import LocalizedLink from '../../components/LocalizedLink';
 import { useLocalizedRouter } from '../../i18n/useLocalizedRouter';
 import { Loader2, FileText, BookOpen, Download, Trash2 } from 'lucide-react';
 import { getMyBooks, deleteMyBook, getFullImageUrl, transformToSpacesUrl } from '../../lib/api';
+import { buildProductSlug } from '../../lib/product-slug';
 import { useAuth } from '../../lib/AuthContext';
 import { useTranslations, useLanguage } from '../../i18n/LanguageContext';
 import { MyBook } from '../../types';
@@ -163,7 +164,7 @@ export default function BookshelfPage() {
                 </button>
                 {/* Cover Image - Clickable */}
                 <LocalizedLink
-                  href={`/product/${book.book_id}`}
+                  href={`/product/${buildProductSlug(book.book_id, book.title)}`}
                   className="relative w-20 sm:w-full h-28 sm:h-auto sm:aspect-[3/4] overflow-hidden rounded-lg sm:rounded-t-xl flex-shrink-0"
                 >
                   <img
@@ -182,7 +183,7 @@ export default function BookshelfPage() {
                 <div className="p-3 sm:p-4 flex flex-col flex-grow min-w-0">
                   {/* Title - Clickable */}
                   <LocalizedLink
-                    href={`/product/${book.book_id}`}
+                    href={`/product/${buildProductSlug(book.book_id, book.title)}`}
                     className="block"
                   >
                     <h3 className="font-semibold text-dark mb-1 line-clamp-2 transition-colors hover:text-burgundy">

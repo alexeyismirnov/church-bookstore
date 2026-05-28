@@ -11,6 +11,7 @@ export interface Variant {
 
 export interface Book {
   id: string;
+  slug: string;
   title: string;
   author: string;
   price: number;
@@ -100,6 +101,7 @@ export interface FilterState {
  */
 export interface OscarProduct {
   id: number;
+  slug?: string;
   upc: string;
   url?: string;
   title: string;

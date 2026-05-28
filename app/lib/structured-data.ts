@@ -2,6 +2,7 @@ import { localizedPath } from '../i18n/routing';
 import type { Currency, Locale } from '../i18n/settings';
 import type { Book } from '../types';
 import { buildAbsoluteUrl, stripHtml } from './metadata';
+import { buildProductPath } from './product-slug';
 import {
   DEFAULT_META_DESCRIPTION,
   SITE_NAME,
@@ -29,8 +30,8 @@ function bookFormat(book: Book): string {
     : `${SCHEMA_CONTEXT}/Paperback`;
 }
 
-function productUrl(bookId: string, locale: Locale = 'en'): string {
-  return buildAbsoluteUrl(`/product/${bookId}`, locale);
+function productUrlFromBook(book: Book, locale: Locale = 'en'): string {
+  return buildAbsoluteUrl(buildProductPath(book), locale);
 }
 
 function buildOffer(book: Book, currency: Currency, locale: Locale): Record<string, unknown> {
@@ -39,7 +40,7 @@ function buildOffer(book: Book, currency: Currency, locale: Locale): Record<stri
     price: book.price.toFixed(2),
     priceCurrency: currency,
     availability: productAvailability(book),
-    url: productUrl(book.id, locale),
+    url: productUrlFromBook(book, locale),
   };
 
   if (book.price === 0) {
@@ -59,6 +60,17 @@ export function buildOrganizationSchema(): Record<string, unknown> {
     logo: buildAbsoluteUrl('/images/church_logo.png'),
     foundingDate: '2014',
     description: DEFAULT_META_DESCRIPTION,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'HK',
+      addressLocality: 'Hong Kong',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      url: buildAbsoluteUrl('/contact'),
+      availableLanguage: ['en', 'ru', 'zh-Hans', 'zh-Hant'],
+    },
   };
 }
 
@@ -114,10 +126,33 @@ export function buildItemListSchema(
     itemListElement: books.map((book, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      url: productUrl(book.id, locale),
+      url: productUrlFromBook(book, locale),
       name: book.title,
     })),
   };
+}
+
+function normalizeImageUrl(imageUrl: string): string {
+  if (!imageUrl) return buildAbsoluteUrl('/images/church_logo.png');
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+  return buildAbsoluteUrl(imageUrl);
+}
+
+export function buildCatalogProductSchemas(
+  books: Book[],
+  currency: Currency,
+  locale: Locale
+): Record<string, unknown>[] {
+  return books.map((book) => ({
+    '@context': SCHEMA_CONTEXT,
+    '@type': 'Product',
+    name: book.title,
+    url: productUrlFromBook(book, locale),
+    image: normalizeImageUrl(book.coverImage),
+    offers: buildOffer(book, currency, locale),
+  }));
 }
 
 export function buildProductBookSchema(
@@ -137,7 +172,7 @@ export function buildProductBookSchema(
     name: book.title,
     image: book.coverImage,
     description: plainDescription,
-    url: productUrl(book.id, locale as Locale),
+    url: productUrlFromBook(book, locale as Locale),
     inLanguage: LOCALE_TO_LANGUAGE[locale] ?? locale,
     bookFormat: bookFormat(book),
     offers: buildOffer(book, currency, locale as Locale),
@@ -205,15 +240,14 @@ export function buildCatalogBreadcrumbSchema(
 }
 
 export function buildProductBreadcrumbSchema(
-  bookTitle: string,
-  productId: string,
+  book: Pick<Book, 'title' | 'id' | 'slug'>,
   locale: Locale = 'en'
 ): Record<string, unknown> {
   return buildBreadcrumbSchema(
     [
       { name: 'Home', path: '/' },
       { name: 'Catalog', path: '/catalog' },
-      { name: bookTitle, path: `/product/${productId}` },
+      { name: book.title, path: buildProductPath(book) },
     ],
     locale
   );

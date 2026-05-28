@@ -10,6 +10,7 @@ import {
   SITE_NAME_SHORT,
   SITE_URL,
 } from './lib/seo';
+import { DEFAULT_OG_IMAGE } from './lib/metadata';
 import { buildOrganizationSchema } from './lib/structured-data';
 
 async function getHtmlLang(): Promise<string> {
@@ -39,9 +40,9 @@ export const metadata: Metadata = {
     description: DEFAULT_META_DESCRIPTION,
     images: [
       {
-        url: '/images/church_logo.png',
-        width: 512,
-        height: 512,
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
         alt: SITE_NAME_SHORT,
       },
     ],
@@ -50,14 +51,17 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_NAME,
     description: DEFAULT_META_DESCRIPTION,
-    images: ['/images/church_logo.png'],
+    images: [DEFAULT_OG_IMAGE],
   },
   icons: {
     icon: [
+      { url: '/favicon.ico', type: 'image/x-icon', sizes: 'any' },
+      { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/icon-512.png', type: 'image/png', sizes: '512x512' },
       { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/images/church_logo.png', type: 'image/png' },
     ],
-    apple: '/images/church_logo.png',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
   manifest: '/manifest.json',
 };

@@ -7,6 +7,7 @@ import { BookOpen, Loader2 } from 'lucide-react';
 import { BsFilePdf } from 'react-icons/bs';
 import { Book } from '../types';
 import { useCurrency } from '../i18n/CurrencyContext';
+import { buildProductPath } from '../lib/product-slug';
 
 interface ProductCardProps {
   book: Book;
@@ -37,7 +38,7 @@ export default function ProductCard({ book }: ProductCardProps) {
   // Product link without page param - browser back button will naturally return to catalog page
   // Faith of Saints DVD (PK=95) redirects to the dedicated episode list page
   const isFaithOfSaints = book.id === '95';
-  const productLink = isFaithOfSaints ? '/faithofsaints' : `/product/${book.id}`;
+  const productLink = isFaithOfSaints ? '/faithofsaints' : buildProductPath(book);
 
   const handleClick = () => {
     setIsNavigating(true);
