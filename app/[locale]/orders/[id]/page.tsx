@@ -268,8 +268,10 @@ export default function OrderDetailPage() {
                           : 0;
 
                         const productLinkId = line.parentId || line.product?.match(/\/products\/(\d+)\/?$/)?.[1];
+                        const fallbackProductId =
+                          line.product?.split('/').filter(Boolean).pop() ?? '';
                         const productTitle =
-                          line.product_title || `Product ${productLinkId ?? line.product?.split('/').filter(Boolean).pop() || ''}`;
+                          line.product_title || `Product ${productLinkId || fallbackProductId}`;
                         const productPath = productLinkId
                           ? `/product/${buildProductSlug(productLinkId, productTitle)}`
                           : '/catalog';
