@@ -39,7 +39,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 ## Available Scripts
 
 - `npm run dev` - Start the development server with hot reload
-- `npm run build` - Build the project for production (creates static files in `dist/` folder)
+- `npm run build` - Build the project for production
 - `npm start` - Start the production server (after building)
 
 ## Project Structure
@@ -61,7 +61,6 @@ church-bookstore/
 │   ├── about/              # About us page
 │   ├── contact/            # Contact page
 ├── public/images/         # Static images (book covers, logo)
-├── dist/                   # Built static files (after npm run build)
 └── package.json            # Project dependencies
 ```
 
@@ -128,19 +127,60 @@ Changes to `countries.json` won't take effect until the app is redeployed. The f
 
 ## Deployment
 
-The project is configured for static export. To deploy:
+Production runs with `next start` behind nginx and managed by systemd.
 
-1. Build the project:
+### Initial setup (server)
+
+1. Install dependencies and build:
    ```bash
+   cd /home/bookshop/church-bookstore
+   npm install
    npm run build
    ```
 
-2. The static files will be in the `dist/` folder. You can deploy these to any static hosting service like:
-   - Netlify
-   - Vercel
-   - GitHub Pages
-   - AWS S3
-   - Any web server
+2. Create `/home/bookshop/church-bookstore/.env.production`:
+   ```env
+   NODE_ENV=production
+   PORT=3000
+   OSCAR_API_URL=https://django.orthodoxbookshop.asia/api
+   ```
+
+3. Create a systemd service (example name: `church-bookstore.service`) with:
+   - `WorkingDirectory=/home/bookshop/church-bookstore`
+   - `EnvironmentFile=/home/bookshop/church-bookstore/.env.production`
+   - `ExecStart=/usr/bin/npm run start`
+
+4. Enable and start:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now church-bookstore
+   ```
+
+### Updating production after a code change (`git pull`)
+
+Run these commands on the frontend VM:
+
+```bash
+cd /home/bookshop/church-bookstore
+git pull
+npm install
+rm -rf .next
+npm run build
+sudo systemctl restart church-bookstore
+```
+
+### Verification after deploy
+
+```bash
+sudo systemctl status church-bookstore
+curl -iL "http://127.0.0.1:3000/api/oscar/products?page=1"
+```
+
+If needed, inspect logs:
+
+```bash
+journalctl -u church-bookstore -n 100 --no-pager
+```
 
 ## Technologies Used
 
