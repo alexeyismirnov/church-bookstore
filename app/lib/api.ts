@@ -25,7 +25,10 @@ const getApiBase = () => {
   return '/api/oscar';
 };
 
-const OSCAR_MEDIA_BASE = 'https://orthodoxbookshop.asia';
+/** Backend host that serves /media/ (separate from frontend in production). */
+const OSCAR_MEDIA_BASE = (
+  process.env.NEXT_PUBLIC_MEDIA_BASE_URL || 'https://django.orthodoxbookshop.asia'
+).replace(/\/$/, '');
 const SPACES_ROOT = 'https://orthodoxy.sgp1.digitaloceanspaces.com';
 
 /**
@@ -359,16 +362,32 @@ function mapApiCategoriesToCategories(categories: ApiCategory[]): Category[] {
  */
 export function getFullImageUrl(imageUrl: string | null | undefined): string {
   if (!imageUrl) {
-    return '/images/placeholder-book.jpg'; // Fallback image
+    return '/images/placeholder-book.jpg';
   }
-  
-  // If it's already a full URL, return as-is
-  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-    return imageUrl;
+
+  const trimmed = imageUrl.trim();
+  if (!trimmed) {
+    return '/images/placeholder-book.jpg';
   }
-  
-  // Prepend the base URL for relative paths
-  return `${OSCAR_MEDIA_BASE}${imageUrl}`;
+
+  // Legacy absolute URLs (S3/pCloud/old site) → DigitalOcean Spaces CDN
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    const spacesUrl = transformToSpacesUrl(trimmed);
+    if (spacesUrl) {
+      return spacesUrl;
+    }
+    // /media on main site now lives on the Django VM
+    if (trimmed.includes('orthodoxbookshop.asia/media/')) {
+      return trimmed.replace(
+        /^https?:\/\/orthodoxbookshop\.asia/,
+        OSCAR_MEDIA_BASE
+      );
+    }
+    return trimmed;
+  }
+
+  const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return `${OSCAR_MEDIA_BASE}${path}`;
 }
 
 /**

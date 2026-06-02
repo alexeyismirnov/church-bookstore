@@ -143,6 +143,7 @@ Production runs with `next start` behind nginx and managed by systemd.
    NODE_ENV=production
    PORT=3000
    OSCAR_API_URL=https://django.orthodoxbookshop.asia/api
+   NEXT_PUBLIC_MEDIA_BASE_URL=https://django.orthodoxbookshop.asia
    ```
 
 3. Create a systemd service (example name: `church-bookstore.service`) with:

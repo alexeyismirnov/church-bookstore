@@ -12,6 +12,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'django.orthodoxbookshop.asia',
+      },
+      {
+        protocol: 'https',
         hostname: 'filedn.com',
       },
     ],

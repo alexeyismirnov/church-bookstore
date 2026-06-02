@@ -2,6 +2,7 @@
 export const PRODUCT_IMAGE_HOSTS = [
   'orthodoxy.sgp1.digitaloceanspaces.com',
   'orthodoxbookshop.asia',
+  'django.orthodoxbookshop.asia',
   'filedn.com',
 ] as const;
 

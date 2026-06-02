@@ -6,6 +6,7 @@ import { Loader2, BookOpen, Headphones, Cross, type LucideIcon } from 'lucide-re
 import Hero from './Hero';
 import ProductGrid from './ProductGrid';
 import { getMyBooks, getFullImageUrl } from '../lib/api';
+import ProductImage from './ProductImage';
 import { useAuth } from '../lib/AuthContext';
 import { STATIC_CATEGORIES } from '../lib/data';
 import { buildProductSlug } from '../lib/product-slug';
@@ -87,11 +88,13 @@ export default function HomePageClient({ heroBook, newArrivals }: HomePageClient
                   href={`/product/${buildProductSlug(book.book_id, book.title)}`}
                   className="group flex flex-row sm:flex-col rounded-xl overflow-hidden border border-parchment-dark/30 bg-white hover:shadow-md transition-shadow"
                 >
-                  <div className="w-16 sm:w-full h-20 sm:h-auto sm:aspect-[3/4] overflow-hidden bg-parchment flex-shrink-0">
-                    <img
+                  <div className="relative w-16 sm:w-full h-20 sm:h-auto sm:aspect-[3/4] overflow-hidden bg-parchment flex-shrink-0">
+                    <ProductImage
                       src={getFullImageUrl(book.cover_image)}
                       alt={book.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      sizes="(max-width: 640px) 64px, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-3 flex flex-col justify-center min-w-0">

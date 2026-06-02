@@ -5,6 +5,7 @@ import LocalizedLink from '../../components/LocalizedLink';
 import { useLocalizedRouter } from '../../i18n/useLocalizedRouter';
 import { Loader2, FileText, BookOpen, Download, Trash2 } from 'lucide-react';
 import { getMyBooks, deleteMyBook, getFullImageUrl, transformToSpacesUrl } from '../../lib/api';
+import ProductImage from '../../components/ProductImage';
 import { buildProductSlug } from '../../lib/product-slug';
 import { useAuth } from '../../lib/AuthContext';
 import { useTranslations, useLanguage } from '../../i18n/LanguageContext';
@@ -167,10 +168,12 @@ export default function BookshelfPage() {
                   href={`/product/${buildProductSlug(book.book_id, book.title)}`}
                   className="relative w-20 sm:w-full h-28 sm:h-auto sm:aspect-[3/4] overflow-hidden rounded-lg sm:rounded-t-xl flex-shrink-0"
                 >
-                  <img
+                  <ProductImage
                     src={getFullImageUrl(book.cover_image)}
                     alt={book.title}
-                    className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
+                    fill
+                    sizes="(max-width: 640px) 80px, 25vw"
+                    className="object-cover md:group-hover:scale-105 transition-transform duration-300"
                   />
                   {isFreeBook(book) && !book.purchased && (
                     <span className="absolute top-1 left-1 sm:top-3 sm:left-3 bg-accent-green text-white text-[10px] sm:text-xs font-semibold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
