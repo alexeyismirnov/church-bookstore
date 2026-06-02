@@ -666,15 +666,33 @@ export interface SitemapProductEntry {
 }
 
 /**
+ * Oscar catalog API root for server-side jobs (sitemap, etc.).
+ * Uses OSCAR_API_URL in production — avoids fetching /api/oscar via localhost
+ * while Next is handling another request (can hang or 500).
+ */
+function getOscarCatalogApiRoot(): string {
+  const direct = process.env.OSCAR_API_URL?.replace(/\/$/, '');
+  if (direct) {
+    return direct;
+  }
+  if (typeof window === 'undefined') {
+    const port = process.env.PORT || '3000';
+    return `http://127.0.0.1:${port}/api/oscar`;
+  }
+  return '/api/oscar';
+}
+
+/**
  * Fetch all product IDs for sitemap generation (paginates through API).
  */
 export async function getAllProductsForSitemap(): Promise<SitemapProductEntry[]> {
   const entries: SitemapProductEntry[] = [];
   let page = 1;
   let hasMore = true;
+  const apiRoot = getOscarCatalogApiRoot();
 
   while (hasMore) {
-    const response = await fetch(`${getApiBase()}/products/?page=${page}`, {
+    const response = await fetch(`${apiRoot}/products/?page=${page}`, {
       method: 'GET',
       headers: getApiHeaders({ locale: 'en', currency: 'USD' }),
       next: { revalidate: 3600 },
