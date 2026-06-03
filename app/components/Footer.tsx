@@ -73,7 +73,7 @@ export default function Footer() {
 
             {/* Direct APK Download */}
             <a
-              href="https://filedn.com/lUdNcEH0czFSe8uSnCeo29F/apks/bookshop-3.1.2.apk"
+              href="https://filedn.com/lUdNcEH0czFSe8uSnCeo29F/apks/bookshop-4.0.0.apk"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/30 border border-parchment/20 rounded-md hover:border-gold/60 hover:bg-black/40 transition-colors whitespace-nowrap"
