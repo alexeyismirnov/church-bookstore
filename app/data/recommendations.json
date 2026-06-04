@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-22T14:21:19.751Z",
+  "generatedAt": "2026-06-04T14:47:06.960Z",
   "productCount": 194,
   "llmEnhanced": true,
   "blendWeights": {
@@ -16,25 +16,31 @@
         "llmScore": 1
       },
       {
-        "id": 75,
-        "score": 0.8137,
-        "algoScore": 0.2301,
+        "id": 349,
+        "score": 0.8251,
+        "algoScore": 0.2396,
         "llmScore": 0.9
       },
       {
-        "id": 349,
-        "score": 0.7651,
-        "algoScore": 0.2396,
-        "llmScore": 0.8
+        "id": 325,
+        "score": 0.8209,
+        "algoScore": 0.2362,
+        "llmScore": 0.9
       },
       {
-        "id": 325,
-        "score": 0.7609,
-        "algoScore": 0.2362,
+        "id": 75,
+        "score": 0.7537,
+        "algoScore": 0.2301,
         "llmScore": 0.8
       }
     ],
     "2": [
+      {
+        "id": 39,
+        "score": 0.8391,
+        "algoScore": 0.3025,
+        "llmScore": 1
+      },
       {
         "id": 366,
         "score": 0.7188,
@@ -52,12 +58,6 @@
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
-      },
-      {
-        "id": 48,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
       }
     ],
     "3": [
@@ -88,19 +88,19 @@
     ],
     "4": [
       {
+        "id": 116,
+        "score": 0.729,
+        "algoScore": 0.375,
+        "llmScore": 0.8
+      },
+      {
         "id": 362,
         "score": 0.7185,
         "algoScore": 0.3593,
         "llmScore": 0.8
       },
       {
-        "id": 116,
-        "score": 0.669,
-        "algoScore": 0.375,
-        "llmScore": 0.7
-      },
-      {
-        "id": 3,
+        "id": 87,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
@@ -167,27 +167,27 @@
     "7": [
       {
         "id": 75,
-        "score": 0.8732,
+        "score": 0.9332,
         "algoScore": 0.5044,
-        "llmScore": 0.8
+        "llmScore": 0.9
       },
       {
         "id": 86,
-        "score": 0.8727,
+        "score": 0.9327,
         "algoScore": 0.5038,
+        "llmScore": 0.9
+      },
+      {
+        "id": 5,
+        "score": 0.7207,
+        "algoScore": 0.3088,
         "llmScore": 0.8
       },
       {
-        "id": 34,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
-      },
-      {
-        "id": 85,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
+        "id": 19,
+        "score": 0.7165,
+        "algoScore": 0.3033,
+        "llmScore": 0.8
       }
     ],
     "9": [
@@ -204,29 +204,23 @@
         "llmScore": 0.8
       },
       {
+        "id": 11,
+        "score": 0.639,
+        "algoScore": 0.4271,
+        "llmScore": 0.6
+      },
+      {
         "id": 368,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
-      },
-      {
-        "id": 31,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
       }
     ],
     "10": [
       {
         "id": 16,
-        "score": 0.6869,
+        "score": 0.7469,
         "algoScore": 0.3019,
-        "llmScore": 0.7
-      },
-      {
-        "id": 85,
-        "score": 0.6586,
-        "algoScore": 0.2021,
         "llmScore": 0.8
       },
       {
@@ -236,19 +230,19 @@
         "llmScore": 1
       },
       {
-        "id": 9,
-        "score": 0.54,
+        "id": 75,
+        "score": 0.6,
         "algoScore": 0,
-        "llmScore": 0.9
+        "llmScore": 1
+      },
+      {
+        "id": 85,
+        "score": 0.5986,
+        "algoScore": 0.2021,
+        "llmScore": 0.7
       }
     ],
     "11": [
-      {
-        "id": 13,
-        "score": 0.9787,
-        "algoScore": 0.6,
-        "llmScore": 0.9
-      },
       {
         "id": 6,
         "score": 0.7322,
@@ -266,15 +260,15 @@
         "score": 0.6798,
         "algoScore": 0.3376,
         "llmScore": 0.7
+      },
+      {
+        "id": 7,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "12": [
-      {
-        "id": 341,
-        "score": 0.6,
-        "algoScore": 0.2751,
-        "llmScore": 0.7
-      },
       {
         "id": 51,
         "score": 0.6,
@@ -288,10 +282,16 @@
         "llmScore": 1
       },
       {
-        "id": 67,
+        "id": 92,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
+      },
+      {
+        "id": 366,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
       }
     ],
     "13": [
@@ -308,16 +308,16 @@
         "llmScore": 0.9
       },
       {
-        "id": 218,
-        "score": 0.7385,
-        "algoScore": 0.3879,
-        "llmScore": 0.8
-      },
-      {
         "id": 378,
         "score": 0.7052,
         "algoScore": 0.3379,
         "llmScore": 0.8
+      },
+      {
+        "id": 218,
+        "score": 0.6785,
+        "algoScore": 0.3879,
+        "llmScore": 0.7
       }
     ],
     "14": [
@@ -329,9 +329,9 @@
       },
       {
         "id": 32,
-        "score": 0.7033,
+        "score": 0.6433,
         "algoScore": 0.1678,
-        "llmScore": 1
+        "llmScore": 0.9
       },
       {
         "id": 34,
@@ -340,10 +340,10 @@
         "llmScore": 1
       },
       {
-        "id": 86,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
+        "id": 38,
+        "score": 0.5239,
+        "algoScore": 0.1688,
+        "llmScore": 0.7
       }
     ],
     "15": [
@@ -380,6 +380,12 @@
         "llmScore": 1
       },
       {
+        "id": 218,
+        "score": 0.7286,
+        "algoScore": 0.5015,
+        "llmScore": 0.7
+      },
+      {
         "id": 257,
         "score": 0.7155,
         "algoScore": 0.2852,
@@ -390,12 +396,6 @@
         "score": 0.6585,
         "algoScore": 0.2901,
         "llmScore": 0.8
-      },
-      {
-        "id": 217,
-        "score": 0.5963,
-        "algoScore": 0.2865,
-        "llmScore": 0.7
       }
     ],
     "17": [
@@ -412,13 +412,13 @@
         "llmScore": 0.9
       },
       {
-        "id": 197,
+        "id": 194,
         "score": 0.48,
         "algoScore": 0,
         "llmScore": 0.8
       },
       {
-        "id": 194,
+        "id": 197,
         "score": 0.48,
         "algoScore": 0,
         "llmScore": 0.8
@@ -426,21 +426,21 @@
     ],
     "18": [
       {
-        "id": 17,
-        "score": 1,
-        "algoScore": 0.7533,
-        "llmScore": 1
-      },
-      {
         "id": 16,
         "score": 0.9441,
         "algoScore": 0.648,
         "llmScore": 1
       },
       {
-        "id": 169,
-        "score": 0.7654,
-        "algoScore": 0.5375,
+        "id": 17,
+        "score": 0.94,
+        "algoScore": 0.7533,
+        "llmScore": 0.9
+      },
+      {
+        "id": 201,
+        "score": 0.607,
+        "algoScore": 0.2392,
         "llmScore": 0.8
       },
       {
@@ -465,14 +465,14 @@
       },
       {
         "id": 82,
-        "score": 0.7338,
+        "score": 0.8538,
         "algoScore": 0.6095,
-        "llmScore": 0.7
+        "llmScore": 0.9
       },
       {
-        "id": 177,
-        "score": 0.6377,
-        "algoScore": 0.3064,
+        "id": 86,
+        "score": 0.6964,
+        "algoScore": 0.4204,
         "llmScore": 0.8
       }
     ],
@@ -484,9 +484,9 @@
         "llmScore": 1
       },
       {
-        "id": 178,
-        "score": 0.8394,
-        "algoScore": 0.4887,
+        "id": 103,
+        "score": 0.8407,
+        "algoScore": 0.4908,
         "llmScore": 0.9
       },
       {
@@ -496,9 +496,9 @@
         "llmScore": 0.9
       },
       {
-        "id": 103,
-        "score": 0.7807,
-        "algoScore": 0.4908,
+        "id": 178,
+        "score": 0.7794,
+        "algoScore": 0.4887,
         "llmScore": 0.8
       }
     ],
@@ -531,12 +531,18 @@
     "23": [
       {
         "id": 42,
-        "score": 0.9194,
+        "score": 0.8594,
         "algoScore": 0.5,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
         "id": 27,
+        "score": 0.7994,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
+        "id": 41,
         "score": 0.7994,
         "algoScore": 0.5,
         "llmScore": 0.7
@@ -546,12 +552,6 @@
         "score": 0.6318,
         "algoScore": 0.2,
         "llmScore": 0.8
-      },
-      {
-        "id": 61,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
       }
     ],
     "25": [
@@ -568,16 +568,16 @@
         "llmScore": 1
       },
       {
-        "id": 191,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
-      },
-      {
         "id": 42,
         "score": 0.5729,
         "algoScore": 0.2,
         "llmScore": 0.7
+      },
+      {
+        "id": 191,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "26": [
@@ -601,9 +601,9 @@
       },
       {
         "id": 39,
-        "score": 0.6345,
+        "score": 0.5745,
         "algoScore": 0.2036,
-        "llmScore": 0.8
+        "llmScore": 0.7
       }
     ],
     "27": [
@@ -673,9 +673,9 @@
       },
       {
         "id": 53,
-        "score": 0.8045,
+        "score": 0.7445,
         "algoScore": 0.5027,
-        "llmScore": 0.7
+        "llmScore": 0.6
       },
       {
         "id": 27,
@@ -699,15 +699,15 @@
       },
       {
         "id": 38,
-        "score": 0.8733,
-        "algoScore": 0.5,
-        "llmScore": 0.9
-      },
-      {
-        "id": 52,
         "score": 0.8133,
         "algoScore": 0.5,
         "llmScore": 0.8
+      },
+      {
+        "id": 52,
+        "score": 0.7533,
+        "algoScore": 0.5,
+        "llmScore": 0.7
       }
     ],
     "32": [
@@ -718,22 +718,22 @@
         "llmScore": 1
       },
       {
-        "id": 39,
-        "score": 0.8733,
-        "algoScore": 0.5,
-        "llmScore": 0.9
+        "id": 31,
+        "score": 0.88,
+        "algoScore": 0.6,
+        "llmScore": 0.8
       },
       {
-        "id": 31,
-        "score": 0.82,
-        "algoScore": 0.6,
-        "llmScore": 0.7
+        "id": 48,
+        "score": 0.8139,
+        "algoScore": 0.5008,
+        "llmScore": 0.8
       },
       {
         "id": 52,
-        "score": 0.8154,
+        "score": 0.7554,
         "algoScore": 0.5032,
-        "llmScore": 0.8
+        "llmScore": 0.7
       }
     ],
     "34": [
@@ -745,9 +745,9 @@
       },
       {
         "id": 31,
-        "score": 0.88,
+        "score": 0.82,
         "algoScore": 0.6,
-        "llmScore": 0.8
+        "llmScore": 0.7
       },
       {
         "id": 52,
@@ -757,9 +757,9 @@
       },
       {
         "id": 48,
-        "score": 0.7533,
+        "score": 0.6933,
         "algoScore": 0.5,
-        "llmScore": 0.7
+        "llmScore": 0.6
       }
     ],
     "36": [
@@ -797,29 +797,29 @@
       },
       {
         "id": 42,
-        "score": 0.9266,
+        "score": 0.8666,
         "algoScore": 0.5,
-        "llmScore": 0.9
-      },
-      {
-        "id": 39,
-        "score": 0.7198,
-        "algoScore": 0.3102,
         "llmScore": 0.8
       },
       {
-        "id": 53,
-        "score": 0.6386,
-        "algoScore": 0.2051,
+        "id": 39,
+        "score": 0.7798,
+        "algoScore": 0.3102,
+        "llmScore": 0.9
+      },
+      {
+        "id": 46,
+        "score": 0.6416,
+        "algoScore": 0.209,
         "llmScore": 0.8
       }
     ],
     "38": [
       {
         "id": 52,
-        "score": 0.87,
+        "score": 0.93,
         "algoScore": 0.5101,
-        "llmScore": 0.9
+        "llmScore": 1
       },
       {
         "id": 34,
@@ -828,16 +828,16 @@
         "llmScore": 0.8
       },
       {
+        "id": 31,
+        "score": 0.7435,
+        "algoScore": 0.5,
+        "llmScore": 0.7
+      },
+      {
         "id": 27,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
-      },
-      {
-        "id": 86,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
       }
     ],
     "39": [
@@ -887,9 +887,9 @@
       },
       {
         "id": 28,
-        "score": 0.7,
+        "score": 0.6,
         "algoScore": 0.2,
-        "llmScore": 0.9
+        "llmScore": 1
       }
     ],
     "42": [
@@ -932,13 +932,13 @@
         "llmScore": 1
       },
       {
-        "id": 38,
+        "id": 46,
         "score": 0.7,
         "algoScore": 0.2,
         "llmScore": 0.9
       },
       {
-        "id": 46,
+        "id": 39,
         "score": 0.64,
         "algoScore": 0.2,
         "llmScore": 0.8
@@ -979,21 +979,21 @@
       },
       {
         "id": 49,
-        "score": 0.7533,
+        "score": 0.8133,
         "algoScore": 0.5,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
         "id": 32,
-        "score": 0.5533,
+        "score": 0.6133,
         "algoScore": 0.2,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
-        "id": 160,
-        "score": 0.54,
+        "id": 302,
+        "score": 0.6,
         "algoScore": 0,
-        "llmScore": 0.9
+        "llmScore": 1
       }
     ],
     "48": [
@@ -1016,10 +1016,10 @@
         "llmScore": 0.8
       },
       {
-        "id": 38,
-        "score": 0.7567,
-        "algoScore": 0.5051,
-        "llmScore": 0.7
+        "id": 87,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
       }
     ],
     "49": [
@@ -1037,9 +1037,9 @@
       },
       {
         "id": 47,
-        "score": 0.82,
+        "score": 0.88,
         "algoScore": 0.5,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
         "id": 230,
@@ -1051,9 +1051,9 @@
     "50": [
       {
         "id": 48,
-        "score": 0.8133,
+        "score": 0.7533,
         "algoScore": 0.5,
-        "llmScore": 0.8
+        "llmScore": 0.7
       },
       {
         "id": 108,
@@ -1083,47 +1083,47 @@
       },
       {
         "id": 36,
-        "score": 0.9333,
-        "algoScore": 0.5,
-        "llmScore": 1
-      },
-      {
-        "id": 67,
-        "score": 0.9333,
-        "algoScore": 0.5,
-        "llmScore": 1
-      },
-      {
-        "id": 39,
         "score": 0.8733,
         "algoScore": 0.5,
         "llmScore": 0.9
+      },
+      {
+        "id": 67,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
+      },
+      {
+        "id": 62,
+        "score": 0.82,
+        "algoScore": 0.6,
+        "llmScore": 0.7
       }
     ],
     "52": [
       {
-        "id": 38,
-        "score": 0.9364,
-        "algoScore": 0.5101,
-        "llmScore": 1
-      },
-      {
-        "id": 34,
-        "score": 0.8698,
-        "algoScore": 0.5,
+        "id": 48,
+        "score": 0.8816,
+        "algoScore": 0.5179,
         "llmScore": 0.9
       },
       {
-        "id": 48,
-        "score": 0.8216,
-        "algoScore": 0.5179,
+        "id": 38,
+        "score": 0.8764,
+        "algoScore": 0.5101,
+        "llmScore": 0.9
+      },
+      {
+        "id": 34,
+        "score": 0.8098,
+        "algoScore": 0.5,
         "llmScore": 0.8
       },
       {
-        "id": 39,
-        "score": 0.8119,
-        "algoScore": 0.5032,
-        "llmScore": 0.8
+        "id": 27,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
       }
     ],
     "53": [
@@ -1146,10 +1146,10 @@
         "llmScore": 1
       },
       {
-        "id": 37,
-        "score": 0.5832,
-        "algoScore": 0.2051,
-        "llmScore": 0.7
+        "id": 36,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "54": [
@@ -1181,20 +1181,14 @@
     "55": [
       {
         "id": 49,
-        "score": 0.82,
+        "score": 0.88,
         "algoScore": 0.5,
-        "llmScore": 0.7
-      },
-      {
-        "id": 63,
-        "score": 0.72,
-        "algoScore": 0.3,
         "llmScore": 0.8
       },
       {
-        "id": 27,
-        "score": 0.7,
-        "algoScore": 0.2,
+        "id": 63,
+        "score": 0.78,
+        "algoScore": 0.3,
         "llmScore": 0.9
       },
       {
@@ -1202,6 +1196,12 @@
         "score": 0.66,
         "algoScore": 0.3,
         "llmScore": 0.7
+      },
+      {
+        "id": 27,
+        "score": 0.64,
+        "algoScore": 0.2,
+        "llmScore": 0.8
       }
     ],
     "57": [
@@ -1238,6 +1238,12 @@
         "llmScore": 1
       },
       {
+        "id": 61,
+        "score": 0.82,
+        "algoScore": 0.6,
+        "llmScore": 0.7
+      },
+      {
         "id": 46,
         "score": 0.6,
         "algoScore": 0,
@@ -1245,12 +1251,6 @@
       },
       {
         "id": 87,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
-      },
-      {
-        "id": 112,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -1270,16 +1270,16 @@
         "llmScore": 0.9
       },
       {
-        "id": 67,
-        "score": 0.8819,
-        "algoScore": 0.5184,
-        "llmScore": 0.9
-      },
-      {
         "id": 39,
         "score": 0.8098,
         "algoScore": 0.5,
         "llmScore": 0.8
+      },
+      {
+        "id": 67,
+        "score": 0.7619,
+        "algoScore": 0.5184,
+        "llmScore": 0.7
       }
     ],
     "60": [
@@ -1322,15 +1322,15 @@
         "llmScore": 0.9
       },
       {
-        "id": 52,
-        "score": 0.8776,
-        "algoScore": 0.6,
-        "llmScore": 0.8
-      },
-      {
         "id": 48,
         "score": 0.8228,
         "algoScore": 0.5172,
+        "llmScore": 0.8
+      },
+      {
+        "id": 36,
+        "score": 0.8134,
+        "algoScore": 0.5031,
         "llmScore": 0.8
       }
     ],
@@ -1348,13 +1348,13 @@
         "llmScore": 0.9
       },
       {
-        "id": 50,
-        "score": 0.88,
-        "algoScore": 0.6,
-        "llmScore": 0.8
+        "id": 39,
+        "score": 0.8733,
+        "algoScore": 0.5,
+        "llmScore": 0.9
       },
       {
-        "id": 39,
+        "id": 48,
         "score": 0.8733,
         "algoScore": 0.5,
         "llmScore": 0.9
@@ -1389,9 +1389,9 @@
     "64": [
       {
         "id": 65,
-        "score": 0.88,
+        "score": 0.94,
         "algoScore": 0.6002,
-        "llmScore": 0.8
+        "llmScore": 0.9
       },
       {
         "id": 49,
@@ -1432,19 +1432,13 @@
         "llmScore": 1
       },
       {
-        "id": 48,
-        "score": 0.6271,
-        "algoScore": 0.3108,
+        "id": 47,
+        "score": 0.8199,
+        "algoScore": 0.6,
         "llmScore": 0.7
       }
     ],
     "66": [
-      {
-        "id": 48,
-        "score": 0.94,
-        "algoScore": 0.6,
-        "llmScore": 0.9
-      },
       {
         "id": 39,
         "score": 0.9333,
@@ -1452,16 +1446,22 @@
         "llmScore": 1
       },
       {
-        "id": 67,
+        "id": 48,
+        "score": 0.88,
+        "algoScore": 0.6,
+        "llmScore": 0.8
+      },
+      {
+        "id": 36,
         "score": 0.8733,
         "algoScore": 0.5,
         "llmScore": 0.9
       },
       {
-        "id": 52,
-        "score": 0.8133,
+        "id": 67,
+        "score": 0.8733,
         "algoScore": 0.5,
-        "llmScore": 0.8
+        "llmScore": 0.9
       }
     ],
     "67": [
@@ -1614,9 +1614,9 @@
         "llmScore": 0.9
       },
       {
-        "id": 75,
-        "score": 0.6855,
-        "algoScore": 0.3154,
+        "id": 325,
+        "score": 0.6848,
+        "algoScore": 0.3144,
         "llmScore": 0.8
       }
     ],
@@ -1629,20 +1629,20 @@
       },
       {
         "id": 103,
-        "score": 0.8662,
+        "score": 0.991,
         "algoScore": 0.6382,
-        "llmScore": 0.8
+        "llmScore": 1
       },
       {
         "id": 161,
-        "score": 0.8342,
+        "score": 0.8711,
         "algoScore": 0.5403,
         "llmScore": 0.9
       },
       {
-        "id": 306,
-        "score": 0.7648,
-        "algoScore": 0.5303,
+        "id": 178,
+        "score": 0.7037,
+        "algoScore": 0.3651,
         "llmScore": 0.8
       }
     ],
@@ -1681,20 +1681,20 @@
       },
       {
         "id": 349,
-        "score": 0.9929,
+        "score": 0.9329,
         "algoScore": 0.5031,
-        "llmScore": 1
-      },
-      {
-        "id": 166,
-        "score": 0.933,
-        "algoScore": 0.5032,
         "llmScore": 0.9
       },
       {
-        "id": 72,
-        "score": 0.7263,
-        "algoScore": 0.3154,
+        "id": 86,
+        "score": 0.88,
+        "algoScore": 0.5122,
+        "llmScore": 0.8
+      },
+      {
+        "id": 166,
+        "score": 0.873,
+        "algoScore": 0.5032,
         "llmScore": 0.8
       }
     ],
@@ -1706,12 +1706,6 @@
         "llmScore": 0.9
       },
       {
-        "id": 6,
-        "score": 0.6854,
-        "algoScore": 0.4011,
-        "llmScore": 0.7
-      },
-      {
         "id": 72,
         "score": 0.6,
         "algoScore": 0,
@@ -1719,6 +1713,12 @@
       },
       {
         "id": 86,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 349,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -1738,15 +1738,15 @@
         "llmScore": 0.8
       },
       {
-        "id": 167,
-        "score": 0.6376,
-        "algoScore": 0.256,
+        "id": 109,
+        "score": 0.6646,
+        "algoScore": 0.3,
         "llmScore": 0.8
       },
       {
-        "id": 168,
-        "score": 0.6375,
-        "algoScore": 0.2559,
+        "id": 167,
+        "score": 0.6376,
+        "algoScore": 0.256,
         "llmScore": 0.8
       }
     ],
@@ -1770,10 +1770,10 @@
         "llmScore": 0.9
       },
       {
-        "id": 376,
-        "score": 0.5379,
-        "algoScore": 0.1916,
-        "llmScore": 0.7
+        "id": 167,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
       }
     ],
     "79": [
@@ -1842,15 +1842,15 @@
         "llmScore": 0.8
       },
       {
+        "id": 72,
+        "score": 0.82,
+        "algoScore": 0.6139,
+        "llmScore": 0.7
+      },
+      {
         "id": 86,
         "score": 0.819,
         "algoScore": 0.4281,
-        "llmScore": 0.9
-      },
-      {
-        "id": 177,
-        "score": 0.7384,
-        "algoScore": 0.3045,
         "llmScore": 0.9
       }
     ],
@@ -1874,7 +1874,7 @@
         "llmScore": 0.9
       },
       {
-        "id": 166,
+        "id": 38,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -1908,6 +1908,12 @@
     ],
     "85": [
       {
+        "id": 83,
+        "score": 0.7567,
+        "algoScore": 0.5066,
+        "llmScore": 0.7
+      },
+      {
         "id": 34,
         "score": 0.6,
         "algoScore": 0,
@@ -1924,12 +1930,6 @@
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
-      },
-      {
-        "id": 27,
-        "score": 0.48,
-        "algoScore": 0,
-        "llmScore": 0.8
       }
     ],
     "86": [
@@ -1946,13 +1946,13 @@
         "llmScore": 0.8
       },
       {
-        "id": 52,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
+        "id": 72,
+        "score": 0.7975,
+        "algoScore": 0.4122,
+        "llmScore": 0.8
       },
       {
-        "id": 34,
+        "id": 52,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
@@ -1972,13 +1972,13 @@
         "llmScore": 0.9
       },
       {
-        "id": 46,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
+        "id": 376,
+        "score": 0.6346,
+        "algoScore": 0.1862,
+        "llmScore": 0.8
       },
       {
-        "id": 48,
+        "id": 46,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
@@ -2004,19 +2004,13 @@
         "llmScore": 1
       },
       {
-        "id": 86,
+        "id": 19,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
       }
     ],
     "89": [
-      {
-        "id": 90,
-        "score": 0.7566,
-        "algoScore": 0.5064,
-        "llmScore": 0.7
-      },
       {
         "id": 212,
         "score": 0.6895,
@@ -2030,7 +2024,13 @@
         "llmScore": 1
       },
       {
-        "id": 86,
+        "id": 108,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 197,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -2039,9 +2039,9 @@
     "90": [
       {
         "id": 85,
-        "score": 0.8116,
+        "score": 0.8716,
         "algoScore": 0.5096,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
         "id": 212,
@@ -2064,28 +2064,28 @@
     ],
     "91": [
       {
-        "id": 230,
-        "score": 0.875,
-        "algoScore": 0.6031,
-        "llmScore": 0.8
-      },
-      {
         "id": 257,
-        "score": 0.8422,
+        "score": 0.9022,
         "algoScore": 0.553,
-        "llmScore": 0.8
+        "llmScore": 0.9
       },
       {
         "id": 325,
-        "score": 0.6666,
+        "score": 0.7266,
         "algoScore": 0.3764,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
         "id": 111,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
+      },
+      {
+        "id": 341,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "92": [
@@ -2128,9 +2128,9 @@
         "llmScore": 0.9
       },
       {
-        "id": 222,
-        "score": 0.82,
-        "algoScore": 0.6123,
+        "id": 249,
+        "score": 0.8167,
+        "algoScore": 0.6072,
         "llmScore": 0.7
       },
       {
@@ -2154,13 +2154,13 @@
         "llmScore": 0.9
       },
       {
-        "id": 217,
-        "score": 0.6524,
-        "algoScore": 0.2033,
-        "llmScore": 0.7
+        "id": 349,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       },
       {
-        "id": 349,
+        "id": 166,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -2174,31 +2174,25 @@
         "llmScore": 1
       },
       {
+        "id": 306,
+        "score": 0.8763,
+        "algoScore": 0.5366,
+        "llmScore": 0.9
+      },
+      {
         "id": 20,
         "score": 0.8476,
         "algoScore": 0.4908,
         "llmScore": 0.9
       },
       {
-        "id": 336,
-        "score": 0.8369,
-        "algoScore": 0.4736,
-        "llmScore": 0.9
-      },
-      {
-        "id": 306,
-        "score": 0.8163,
-        "algoScore": 0.5366,
+        "id": 161,
+        "score": 0.8128,
+        "algoScore": 0.531,
         "llmScore": 0.8
       }
     ],
     "104": [
-      {
-        "id": 251,
-        "score": 0.8795,
-        "algoScore": 0.5134,
-        "llmScore": 0.8
-      },
       {
         "id": 73,
         "score": 0.8564,
@@ -2210,6 +2204,12 @@
         "score": 0.8295,
         "algoScore": 0.4493,
         "llmScore": 0.8
+      },
+      {
+        "id": 251,
+        "score": 0.8195,
+        "algoScore": 0.5134,
+        "llmScore": 0.7
       },
       {
         "id": 161,
@@ -2232,16 +2232,16 @@
         "llmScore": 0.9
       },
       {
+        "id": 74,
+        "score": 0.845,
+        "algoScore": 0.1885,
+        "llmScore": 1
+      },
+      {
         "id": 73,
         "score": 0.7956,
         "algoScore": 0.1505,
         "llmScore": 1
-      },
-      {
-        "id": 74,
-        "score": 0.785,
-        "algoScore": 0.1885,
-        "llmScore": 0.9
       }
     ],
     "106": [
@@ -2310,9 +2310,9 @@
         "llmScore": 0.8
       },
       {
-        "id": 157,
-        "score": 0.7387,
-        "algoScore": 0.5003,
+        "id": 166,
+        "score": 0.7441,
+        "algoScore": 0.5074,
         "llmScore": 0.6
       },
       {
@@ -2336,19 +2336,25 @@
         "llmScore": 0.8
       },
       {
-        "id": 182,
-        "score": 0.8077,
-        "algoScore": 0.5094,
-        "llmScore": 0.7
-      },
-      {
         "id": 116,
         "score": 0.8005,
         "algoScore": 0.5,
         "llmScore": 0.7
+      },
+      {
+        "id": 167,
+        "score": 0.7001,
+        "algoScore": 0.3681,
+        "llmScore": 0.7
       }
     ],
     "110": [
+      {
+        "id": 237,
+        "score": 0.922,
+        "algoScore": 0.4192,
+        "llmScore": 0.9
+      },
       {
         "id": 93,
         "score": 0.9075,
@@ -2356,21 +2362,15 @@
         "llmScore": 1
       },
       {
-        "id": 237,
-        "score": 0.862,
-        "algoScore": 0.4192,
-        "llmScore": 0.8
-      },
-      {
         "id": 240,
-        "score": 0.8384,
+        "score": 0.8984,
         "algoScore": 0.3933,
-        "llmScore": 0.8
+        "llmScore": 0.9
       },
       {
-        "id": 109,
-        "score": 0.8012,
-        "algoScore": 0.2867,
+        "id": 241,
+        "score": 0.8164,
+        "algoScore": 0.3033,
         "llmScore": 0.9
       }
     ],
@@ -2389,9 +2389,9 @@
       },
       {
         "id": 257,
-        "score": 0.7069,
+        "score": 0.6469,
         "algoScore": 0.3416,
-        "llmScore": 0.8
+        "llmScore": 0.7
       },
       {
         "id": 3,
@@ -2408,12 +2408,6 @@
         "llmScore": 1
       },
       {
-        "id": 91,
-        "score": 0.6624,
-        "algoScore": 0.3649,
-        "llmScore": 0.7
-      },
-      {
         "id": 87,
         "score": 0.54,
         "algoScore": 0,
@@ -2424,6 +2418,12 @@
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
+      },
+      {
+        "id": 46,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
       }
     ],
     "113": [
@@ -2466,16 +2466,16 @@
         "llmScore": 0.9
       },
       {
-        "id": 349,
-        "score": 0.6748,
-        "algoScore": 0.2934,
-        "llmScore": 0.8
-      },
-      {
         "id": 325,
         "score": 0.6677,
         "algoScore": 0.2827,
         "llmScore": 0.8
+      },
+      {
+        "id": 349,
+        "score": 0.6148,
+        "algoScore": 0.2934,
+        "llmScore": 0.7
       }
     ],
     "116": [
@@ -2506,6 +2506,12 @@
     ],
     "154": [
       {
+        "id": 157,
+        "score": 0.8284,
+        "algoScore": 0.3465,
+        "llmScore": 0.8
+      },
+      {
         "id": 362,
         "score": 0.8256,
         "algoScore": 0.284,
@@ -2522,12 +2528,6 @@
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
-      },
-      {
-        "id": 116,
-        "score": 0.48,
-        "algoScore": 0,
-        "llmScore": 0.8
       }
     ],
     "155": [
@@ -2564,22 +2564,22 @@
         "llmScore": 0.9
       },
       {
-        "id": 238,
+        "id": 322,
+        "score": 0.82,
+        "algoScore": 0.3,
+        "llmScore": 0.7
+      },
+      {
+        "id": 160,
         "score": 0.72,
         "algoScore": 0.225,
         "llmScore": 0.7
       },
       {
-        "id": 155,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
-      },
-      {
-        "id": 341,
-        "score": 0.48,
-        "algoScore": 0,
-        "llmScore": 0.8
+        "id": 238,
+        "score": 0.72,
+        "algoScore": 0.225,
+        "llmScore": 0.7
       }
     ],
     "157": [
@@ -2643,9 +2643,9 @@
       },
       {
         "id": 306,
-        "score": 0.9206,
+        "score": 0.8606,
         "algoScore": 0.5141,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
         "id": 178,
@@ -2668,6 +2668,12 @@
         "llmScore": 0.9
       },
       {
+        "id": 336,
+        "score": 0.7721,
+        "algoScore": 0.467,
+        "llmScore": 0.7
+      },
+      {
         "id": 73,
         "score": 0.6,
         "algoScore": 0,
@@ -2675,12 +2681,6 @@
       },
       {
         "id": 161,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
-      },
-      {
-        "id": 172,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -2726,16 +2726,16 @@
         "llmScore": 0.9
       },
       {
-        "id": 223,
-        "score": 0.7249,
-        "algoScore": 0.4823,
-        "llmScore": 0.7
-      },
-      {
         "id": 109,
         "score": 0.6527,
         "algoScore": 0.3681,
         "llmScore": 0.7
+      },
+      {
+        "id": 22,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "168": [
@@ -2747,15 +2747,15 @@
       },
       {
         "id": 214,
-        "score": 0.7417,
+        "score": 0.8017,
         "algoScore": 0.5089,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
         "id": 109,
-        "score": 0.5927,
+        "score": 0.6527,
         "algoScore": 0.368,
-        "llmScore": 0.6
+        "llmScore": 0.7
       },
       {
         "id": 22,
@@ -2773,9 +2773,9 @@
       },
       {
         "id": 218,
-        "score": 0.8477,
+        "score": 0.7877,
         "algoScore": 0.5,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
         "id": 341,
@@ -2785,9 +2785,9 @@
       },
       {
         "id": 111,
-        "score": 0.48,
+        "score": 0.54,
         "algoScore": 0,
-        "llmScore": 0.8
+        "llmScore": 0.9
       }
     ],
     "172": [
@@ -2830,16 +2830,16 @@
         "llmScore": 1
       },
       {
+        "id": 349,
+        "score": 0.8647,
+        "algoScore": 0.5041,
+        "llmScore": 0.9
+      },
+      {
         "id": 325,
         "score": 0.862,
         "algoScore": 0.5,
         "llmScore": 0.9
-      },
-      {
-        "id": 349,
-        "score": 0.7447,
-        "algoScore": 0.5041,
-        "llmScore": 0.7
       }
     ],
     "178": [
@@ -2850,20 +2850,20 @@
         "llmScore": 1
       },
       {
+        "id": 20,
+        "score": 0.8637,
+        "algoScore": 0.4887,
+        "llmScore": 0.9
+      },
+      {
         "id": 73,
-        "score": 0.8546,
+        "score": 0.8127,
         "algoScore": 0.3651,
         "llmScore": 1
       },
       {
-        "id": 20,
-        "score": 0.8207,
-        "algoScore": 0.4887,
-        "llmScore": 0.8
-      },
-      {
         "id": 161,
-        "score": 0.7815,
+        "score": 0.7359,
         "algoScore": 0.3463,
         "llmScore": 0.9
       }
@@ -2877,21 +2877,21 @@
       },
       {
         "id": 109,
-        "score": 0.8657,
+        "score": 0.8057,
         "algoScore": 0.5094,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
         "id": 116,
-        "score": 0.8597,
+        "score": 0.7997,
         "algoScore": 0.5,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
-        "id": 61,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
+        "id": 240,
+        "score": 0.7224,
+        "algoScore": 0.4728,
+        "llmScore": 0.7
       }
     ],
     "185": [
@@ -2960,31 +2960,19 @@
         "llmScore": 0.8
       },
       {
-        "id": 172,
-        "score": 0.6858,
-        "algoScore": 0.325,
-        "llmScore": 0.7
-      },
-      {
         "id": 242,
         "score": 0.618,
         "algoScore": 0.2422,
         "llmScore": 0.7
+      },
+      {
+        "id": 185,
+        "score": 0.607,
+        "algoScore": 0.302,
+        "llmScore": 0.6
       }
     ],
     "194": [
-      {
-        "id": 238,
-        "score": 0.82,
-        "algoScore": 0.6109,
-        "llmScore": 0.7
-      },
-      {
-        "id": 160,
-        "score": 0.7474,
-        "algoScore": 0.5,
-        "llmScore": 0.7
-      },
       {
         "id": 308,
         "score": 0.6,
@@ -2996,6 +2984,18 @@
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
+      },
+      {
+        "id": 106,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
+      },
+      {
+        "id": 107,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
       }
     ],
     "197": [
@@ -3012,16 +3012,16 @@
         "llmScore": 0.8
       },
       {
-        "id": 200,
-        "score": 0.8672,
-        "algoScore": 0.6012,
+        "id": 166,
+        "score": 0.8707,
+        "algoScore": 0.6066,
         "llmScore": 0.8
       },
       {
         "id": 208,
-        "score": 0.6625,
+        "score": 0.7225,
         "algoScore": 0.3765,
-        "llmScore": 0.7
+        "llmScore": 0.8
       }
     ],
     "200": [
@@ -3044,10 +3044,10 @@
         "llmScore": 0.9
       },
       {
-        "id": 50,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
+        "id": 166,
+        "score": 0.82,
+        "algoScore": 0.6115,
+        "llmScore": 0.7
       }
     ],
     "201": [
@@ -3058,6 +3058,12 @@
         "llmScore": 1
       },
       {
+        "id": 358,
+        "score": 0.76,
+        "algoScore": 0.6115,
+        "llmScore": 0.6
+      },
+      {
         "id": 197,
         "score": 0.6934,
         "algoScore": 0.3262,
@@ -3065,12 +3071,6 @@
       },
       {
         "id": 50,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
-      },
-      {
-        "id": 108,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -3110,13 +3110,13 @@
         "llmScore": 0.8
       },
       {
-        "id": 39,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
+        "id": 177,
+        "score": 0.6372,
+        "algoScore": 0.3286,
+        "llmScore": 0.7
       },
       {
-        "id": 36,
+        "id": 39,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
@@ -3136,12 +3136,6 @@
         "llmScore": 1
       },
       {
-        "id": 167,
-        "score": 0.8085,
-        "algoScore": 0.5147,
-        "llmScore": 0.8
-      },
-      {
         "id": 185,
         "score": 0.7462,
         "algoScore": 0.3232,
@@ -3152,6 +3146,12 @@
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
+      },
+      {
+        "id": 73,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "214": [
@@ -3200,10 +3200,10 @@
         "llmScore": 0.9
       },
       {
-        "id": 241,
-        "score": 0.7972,
-        "algoScore": 0.3007,
-        "llmScore": 0.9
+        "id": 93,
+        "score": 0.7444,
+        "algoScore": 0.3092,
+        "llmScore": 0.8
       }
     ],
     "217": [
@@ -3212,6 +3212,12 @@
         "score": 0.9519,
         "algoScore": 0.5319,
         "llmScore": 1
+      },
+      {
+        "id": 358,
+        "score": 0.878,
+        "algoScore": 0.5109,
+        "llmScore": 0.9
       },
       {
         "id": 325,
@@ -3224,12 +3230,6 @@
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
-      },
-      {
-        "id": 75,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
       }
     ],
     "218": [
@@ -3260,10 +3260,10 @@
     ],
     "222": [
       {
-        "id": 303,
-        "score": 0.8795,
-        "algoScore": 0.6394,
-        "llmScore": 0.8
+        "id": 93,
+        "score": 0.9226,
+        "algoScore": 0.6123,
+        "llmScore": 0.9
       },
       {
         "id": 237,
@@ -3272,15 +3272,15 @@
         "llmScore": 1
       },
       {
-        "id": 109,
-        "score": 0.8611,
-        "algoScore": 0.5138,
-        "llmScore": 0.9
-      },
-      {
         "id": 223,
         "score": 0.82,
         "algoScore": 0.6402,
+        "llmScore": 0.7
+      },
+      {
+        "id": 303,
+        "score": 0.8195,
+        "algoScore": 0.6394,
         "llmScore": 0.7
       }
     ],
@@ -3304,10 +3304,10 @@
         "llmScore": 1
       },
       {
-        "id": 93,
-        "score": 0.7926,
-        "algoScore": 0.6083,
-        "llmScore": 0.8
+        "id": 214,
+        "score": 0.7347,
+        "algoScore": 0.3788,
+        "llmScore": 0.9
       }
     ],
     "224": [
@@ -3344,15 +3344,15 @@
         "llmScore": 0.9
       },
       {
-        "id": 357,
-        "score": 0.8082,
-        "algoScore": 0.6016,
-        "llmScore": 0.7
+        "id": 114,
+        "score": 0.6839,
+        "algoScore": 0.5019,
+        "llmScore": 0.6
       },
       {
-        "id": 114,
-        "score": 0.7439,
-        "algoScore": 0.5019,
+        "id": 325,
+        "score": 0.6687,
+        "algoScore": 0.3855,
         "llmScore": 0.7
       },
       {
@@ -3370,22 +3370,22 @@
         "llmScore": 1
       },
       {
-        "id": 225,
-        "score": 0.82,
-        "algoScore": 0.6151,
-        "llmScore": 0.7
-      },
-      {
         "id": 257,
-        "score": 0.7784,
+        "score": 0.7184,
         "algoScore": 0.551,
-        "llmScore": 0.7
+        "llmScore": 0.6
       },
       {
         "id": 49,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
+      },
+      {
+        "id": 366,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
       }
     ],
     "236": [
@@ -3442,12 +3442,6 @@
     ],
     "238": [
       {
-        "id": 160,
-        "score": 0.7474,
-        "algoScore": 0.5,
-        "llmScore": 0.7
-      },
-      {
         "id": 322,
         "score": 0.6821,
         "algoScore": 0.3086,
@@ -3460,7 +3454,13 @@
         "llmScore": 1
       },
       {
-        "id": 302,
+        "id": 366,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 367,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -3468,15 +3468,15 @@
     ],
     "239": [
       {
-        "id": 185,
-        "score": 0.7571,
-        "algoScore": 0.19,
-        "llmScore": 0.9
-      },
-      {
         "id": 172,
         "score": 0.7229,
         "algoScore": 0.2125,
+        "llmScore": 0.8
+      },
+      {
+        "id": 185,
+        "score": 0.6971,
+        "algoScore": 0.19,
         "llmScore": 0.8
       },
       {
@@ -3526,22 +3526,22 @@
         "llmScore": 1
       },
       {
+        "id": 93,
+        "score": 0.9167,
+        "algoScore": 0.5771,
+        "llmScore": 0.9
+      },
+      {
         "id": 240,
         "score": 0.8338,
         "algoScore": 0.4501,
         "llmScore": 0.9
       },
       {
-        "id": 222,
-        "score": 0.8149,
-        "algoScore": 0.605,
-        "llmScore": 0.7
-      },
-      {
-        "id": 93,
-        "score": 0.7967,
-        "algoScore": 0.5771,
-        "llmScore": 0.7
+        "id": 109,
+        "score": 0.7901,
+        "algoScore": 0.475,
+        "llmScore": 0.8
       }
     ],
     "242": [
@@ -3558,13 +3558,13 @@
         "llmScore": 1
       },
       {
-        "id": 72,
+        "id": 27,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
       },
       {
-        "id": 27,
+        "id": 72,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -3572,28 +3572,28 @@
     ],
     "245": [
       {
-        "id": 208,
-        "score": 0.889,
-        "algoScore": 0.5262,
+        "id": 182,
+        "score": 0.8807,
+        "algoScore": 0.5136,
         "llmScore": 0.9
       },
       {
-        "id": 182,
-        "score": 0.8207,
-        "algoScore": 0.5136,
+        "id": 208,
+        "score": 0.829,
+        "algoScore": 0.5262,
         "llmScore": 0.8
       },
       {
-        "id": 116,
-        "score": 0.7517,
-        "algoScore": 0.5,
+        "id": 223,
+        "score": 0.82,
+        "algoScore": 0.6029,
         "llmScore": 0.7
       },
       {
-        "id": 154,
-        "score": 0.6,
-        "algoScore": 0,
-        "llmScore": 1
+        "id": 109,
+        "score": 0.7517,
+        "algoScore": 0.5,
+        "llmScore": 0.7
       }
     ],
     "247": [
@@ -3605,9 +3605,9 @@
       },
       {
         "id": 345,
-        "score": 0.7995,
+        "score": 0.7395,
         "algoScore": 0.373,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
         "id": 22,
@@ -3616,10 +3616,10 @@
         "llmScore": 1
       },
       {
-        "id": 352,
-        "score": 0.48,
+        "id": 168,
+        "score": 0.54,
         "algoScore": 0,
-        "llmScore": 0.8
+        "llmScore": 0.9
       }
     ],
     "249": [
@@ -3630,9 +3630,9 @@
         "llmScore": 1
       },
       {
-        "id": 109,
-        "score": 0.8363,
-        "algoScore": 0.509,
+        "id": 338,
+        "score": 0.835,
+        "algoScore": 0.5069,
         "llmScore": 0.9
       },
       {
@@ -3651,27 +3651,27 @@
     "250": [
       {
         "id": 182,
-        "score": 0.773,
+        "score": 0.833,
         "algoScore": 0.5034,
+        "llmScore": 0.9
+      },
+      {
+        "id": 223,
+        "score": 0.8327,
+        "algoScore": 0.606,
         "llmScore": 0.8
       },
       {
         "id": 109,
-        "score": 0.771,
+        "score": 0.831,
         "algoScore": 0.5,
-        "llmScore": 0.8
+        "llmScore": 0.9
       },
       {
         "id": 222,
-        "score": 0.7692,
+        "score": 0.8292,
         "algoScore": 0.6,
-        "llmScore": 0.7
-      },
-      {
-        "id": 237,
-        "score": 0.649,
-        "algoScore": 0.3934,
-        "llmScore": 0.7
+        "llmScore": 0.8
       }
     ],
     "251": [
@@ -3766,16 +3766,16 @@
         "llmScore": 0.7
       },
       {
+        "id": 3,
+        "score": 0.5932,
+        "algoScore": 0.3572,
+        "llmScore": 0.6
+      },
+      {
         "id": 341,
         "score": 0.5765,
         "algoScore": 0.2396,
         "llmScore": 0.7
-      },
-      {
-        "id": 49,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
       }
     ],
     "264": [
@@ -3859,9 +3859,9 @@
     "278": [
       {
         "id": 106,
-        "score": 0.82,
+        "score": 0.88,
         "algoScore": 0.4624,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
         "id": 217,
@@ -3876,10 +3876,10 @@
         "llmScore": 0.9
       },
       {
-        "id": 358,
-        "score": 0.6257,
-        "algoScore": 0.1684,
-        "llmScore": 0.8
+        "id": 341,
+        "score": 0.6252,
+        "algoScore": 0.2372,
+        "llmScore": 0.7
       }
     ],
     "281": [
@@ -4027,15 +4027,15 @@
       },
       {
         "id": 369,
-        "score": 0.7992,
+        "score": 0.9218,
         "algoScore": 0.8113,
-        "llmScore": 0.7
+        "llmScore": 0.9
       },
       {
         "id": 370,
-        "score": 0.7992,
+        "score": 0.8618,
         "algoScore": 0.8113,
-        "llmScore": 0.7
+        "llmScore": 0.8
       }
     ],
     "308": [
@@ -4059,9 +4059,9 @@
       },
       {
         "id": 370,
-        "score": 0.9218,
+        "score": 0.9818,
         "algoScore": 0.8113,
-        "llmScore": 0.9
+        "llmScore": 1
       }
     ],
     "309": [
@@ -4079,9 +4079,9 @@
       },
       {
         "id": 369,
-        "score": 0.9218,
+        "score": 0.9818,
         "algoScore": 0.8113,
-        "llmScore": 0.9
+        "llmScore": 1
       },
       {
         "id": 340,
@@ -4098,22 +4098,22 @@
         "llmScore": 0.9
       },
       {
+        "id": 264,
+        "score": 0.939,
+        "algoScore": 0.9711,
+        "llmScore": 0.9
+      },
+      {
+        "id": 251,
+        "score": 0.9304,
+        "algoScore": 0.9501,
+        "llmScore": 0.9
+      },
+      {
         "id": 316,
         "score": 0.8979,
         "algoScore": 0.725,
         "llmScore": 1
-      },
-      {
-        "id": 264,
-        "score": 0.879,
-        "algoScore": 0.9711,
-        "llmScore": 0.8
-      },
-      {
-        "id": 251,
-        "score": 0.8704,
-        "algoScore": 0.9501,
-        "llmScore": 0.8
       }
     ],
     "316": [
@@ -4145,27 +4145,27 @@
     "319": [
       {
         "id": 254,
-        "score": 0.9064,
+        "score": 0.8249,
         "algoScore": 0.4701,
         "llmScore": 1
       },
       {
-        "id": 251,
-        "score": 0.8026,
-        "algoScore": 0.3108,
+        "id": 281,
+        "score": 0.8246,
+        "algoScore": 0.4699,
         "llmScore": 1
       },
       {
-        "id": 185,
-        "score": 0.7571,
-        "algoScore": 0.3332,
-        "llmScore": 0.9
+        "id": 316,
+        "score": 0.8246,
+        "algoScore": 0.4699,
+        "llmScore": 1
       },
       {
-        "id": 213,
-        "score": 0.6176,
-        "algoScore": 0.3033,
-        "llmScore": 0.7
+        "id": 268,
+        "score": 0.8242,
+        "algoScore": 0.4695,
+        "llmScore": 1
       }
     ],
     "322": [
@@ -4177,18 +4177,18 @@
       },
       {
         "id": 106,
-        "score": 0.6758,
+        "score": 0.6158,
         "algoScore": 0.1523,
-        "llmScore": 0.8
+        "llmScore": 0.7
       },
       {
-        "id": 36,
+        "id": 2,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
       },
       {
-        "id": 2,
+        "id": 39,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
@@ -4234,16 +4234,16 @@
         "llmScore": 0.9
       },
       {
+        "id": 306,
+        "score": 0.7608,
+        "algoScore": 0.2614,
+        "llmScore": 0.9
+      },
+      {
         "id": 185,
         "score": 0.7421,
         "algoScore": 0.3814,
         "llmScore": 0.7
-      },
-      {
-        "id": 161,
-        "score": 0.696,
-        "algoScore": 0.2558,
-        "llmScore": 0.8
       }
     ],
     "338": [
@@ -4260,16 +4260,16 @@
         "llmScore": 0.9
       },
       {
-        "id": 241,
-        "score": 0.7593,
-        "algoScore": 0.5693,
+        "id": 109,
+        "score": 0.7199,
+        "algoScore": 0.5031,
         "llmScore": 0.7
       },
       {
-        "id": 240,
-        "score": 0.7182,
-        "algoScore": 0.5003,
-        "llmScore": 0.7
+        "id": 22,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "339": [
@@ -4281,30 +4281,24 @@
       },
       {
         "id": 247,
-        "score": 0.8351,
+        "score": 0.8951,
         "algoScore": 0.5105,
-        "llmScore": 0.8
+        "llmScore": 0.9
       },
       {
         "id": 345,
-        "score": 0.8256,
+        "score": 0.7656,
         "algoScore": 0.4967,
-        "llmScore": 0.8
+        "llmScore": 0.7
       },
       {
-        "id": 22,
-        "score": 0.54,
-        "algoScore": 0,
-        "llmScore": 0.9
+        "id": 241,
+        "score": 0.7021,
+        "algoScore": 0.3193,
+        "llmScore": 0.8
       }
     ],
     "340": [
-      {
-        "id": 307,
-        "score": 1,
-        "algoScore": 0.5526,
-        "llmScore": 1
-      },
       {
         "id": 308,
         "score": 1,
@@ -4318,10 +4312,16 @@
         "llmScore": 1
       },
       {
+        "id": 273,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
         "id": 185,
-        "score": 0.5708,
+        "score": 0.5108,
         "algoScore": 0.1255,
-        "llmScore": 0.8
+        "llmScore": 0.7
       }
     ],
     "341": [
@@ -4364,9 +4364,9 @@
         "llmScore": 0.9
       },
       {
-        "id": 222,
-        "score": 0.8438,
-        "algoScore": 0.4663,
+        "id": 93,
+        "score": 0.849,
+        "algoScore": 0.473,
         "llmScore": 0.8
       },
       {
@@ -4378,37 +4378,31 @@
     ],
     "345": [
       {
+        "id": 339,
+        "score": 0.94,
+        "algoScore": 0.4967,
+        "llmScore": 0.9
+      },
+      {
         "id": 342,
         "score": 0.9221,
         "algoScore": 0.4,
         "llmScore": 1
       },
       {
-        "id": 339,
-        "score": 0.88,
-        "algoScore": 0.4967,
-        "llmScore": 0.8
-      },
-      {
-        "id": 78,
-        "score": 0.7828,
-        "algoScore": 0.4505,
-        "llmScore": 0.7
-      },
-      {
         "id": 247,
-        "score": 0.7204,
+        "score": 0.8404,
         "algoScore": 0.373,
-        "llmScore": 0.7
+        "llmScore": 0.9
+      },
+      {
+        "id": 303,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
       }
     ],
     "348": [
-      {
-        "id": 338,
-        "score": 0.94,
-        "algoScore": 0.6711,
-        "llmScore": 0.9
-      },
       {
         "id": 93,
         "score": 0.9103,
@@ -4416,16 +4410,22 @@
         "llmScore": 1
       },
       {
-        "id": 372,
-        "score": 0.8125,
-        "algoScore": 0.5578,
+        "id": 338,
+        "score": 0.88,
+        "algoScore": 0.6711,
         "llmScore": 0.8
       },
       {
-        "id": 109,
-        "score": 0.7933,
-        "algoScore": 0.5256,
-        "llmScore": 0.8
+        "id": 372,
+        "score": 0.7525,
+        "algoScore": 0.5578,
+        "llmScore": 0.7
+      },
+      {
+        "id": 240,
+        "score": 0.708,
+        "algoScore": 0.4831,
+        "llmScore": 0.7
       }
     ],
     "349": [
@@ -4469,9 +4469,9 @@
       },
       {
         "id": 217,
-        "score": 0.7135,
+        "score": 0.7735,
         "algoScore": 0.5319,
-        "llmScore": 0.7
+        "llmScore": 0.8
       },
       {
         "id": 257,
@@ -4488,21 +4488,21 @@
         "llmScore": 1
       },
       {
+        "id": 349,
+        "score": 0.8742,
+        "algoScore": 0.6057,
+        "llmScore": 0.9
+      },
+      {
         "id": 166,
         "score": 0.8205,
         "algoScore": 0.5084,
         "llmScore": 0.9
       },
       {
-        "id": 349,
-        "score": 0.8142,
-        "algoScore": 0.6057,
-        "llmScore": 0.8
-      },
-      {
-        "id": 325,
-        "score": 0.7586,
-        "algoScore": 0.505,
+        "id": 7,
+        "score": 0.763,
+        "algoScore": 0.513,
         "llmScore": 0.8
       }
     ],
@@ -4546,13 +4546,13 @@
         "llmScore": 0.9
       },
       {
-        "id": 75,
+        "id": 349,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
       },
       {
-        "id": 86,
+        "id": 16,
         "score": 0.48,
         "algoScore": 0,
         "llmScore": 0.8
@@ -4572,13 +4572,13 @@
         "llmScore": 0.9
       },
       {
-        "id": 177,
-        "score": 0.6424,
-        "algoScore": 0.34,
-        "llmScore": 0.7
+        "id": 349,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       },
       {
-        "id": 349,
+        "id": 257,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -4587,27 +4587,27 @@
     "361": [
       {
         "id": 338,
-        "score": 0.94,
+        "score": 0.88,
         "algoScore": 0.5417,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
-        "id": 342,
-        "score": 0.9187,
-        "algoScore": 0.5128,
+        "id": 77,
+        "score": 0.8723,
+        "algoScore": 0.45,
         "llmScore": 0.9
-      },
-      {
-        "id": 237,
-        "score": 0.8676,
-        "algoScore": 0.3624,
-        "llmScore": 1
       },
       {
         "id": 109,
         "score": 0.8585,
         "algoScore": 0.35,
         "llmScore": 1
+      },
+      {
+        "id": 222,
+        "score": 0.7985,
+        "algoScore": 0.35,
+        "llmScore": 0.9
       }
     ],
     "362": [
@@ -4671,14 +4671,8 @@
       },
       {
         "id": 2,
-        "score": 0.6467,
+        "score": 0.7067,
         "algoScore": 0.3022,
-        "llmScore": 0.8
-      },
-      {
-        "id": 36,
-        "score": 0.54,
-        "algoScore": 0,
         "llmScore": 0.9
       },
       {
@@ -4686,6 +4680,12 @@
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
+      },
+      {
+        "id": 53,
+        "score": 0.48,
+        "algoScore": 0,
+        "llmScore": 0.8
       }
     ],
     "367": [
@@ -4697,18 +4697,18 @@
       },
       {
         "id": 212,
-        "score": 0.7582,
+        "score": 0.6982,
         "algoScore": 0.5043,
-        "llmScore": 0.8
+        "llmScore": 0.7
       },
       {
-        "id": 39,
+        "id": 36,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
       },
       {
-        "id": 51,
+        "id": 67,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
@@ -4728,16 +4728,16 @@
         "llmScore": 0.9
       },
       {
-        "id": 352,
-        "score": 0.8113,
-        "algoScore": 0.3057,
+        "id": 16,
+        "score": 0.7075,
+        "algoScore": 0.2246,
         "llmScore": 0.7
       },
       {
-        "id": 349,
-        "score": 0.7473,
-        "algoScore": 0.2557,
-        "llmScore": 0.7
+        "id": 9,
+        "score": 0.6,
+        "algoScore": 0,
+        "llmScore": 1
       }
     ],
     "369": [
@@ -4761,12 +4761,18 @@
       },
       {
         "id": 340,
-        "score": 0.7957,
+        "score": 0.8557,
         "algoScore": 0.5433,
-        "llmScore": 0.9
+        "llmScore": 1
       }
     ],
     "370": [
+      {
+        "id": 369,
+        "score": 1,
+        "algoScore": 0.85,
+        "llmScore": 1
+      },
       {
         "id": 371,
         "score": 1,
@@ -4781,12 +4787,6 @@
       },
       {
         "id": 308,
-        "score": 0.9818,
-        "algoScore": 0.8113,
-        "llmScore": 1
-      },
-      {
-        "id": 309,
         "score": 0.9818,
         "algoScore": 0.8113,
         "llmScore": 1
@@ -4827,9 +4827,9 @@
       },
       {
         "id": 374,
-        "score": 0.8662,
+        "score": 0.8062,
         "algoScore": 0.7768,
-        "llmScore": 0.8
+        "llmScore": 0.7
       },
       {
         "id": 348,
@@ -4853,20 +4853,20 @@
       },
       {
         "id": 374,
-        "score": 0.8072,
+        "score": 0.9272,
         "algoScore": 0.7789,
-        "llmScore": 0.7
+        "llmScore": 0.9
+      },
+      {
+        "id": 375,
+        "score": 0.9217,
+        "algoScore": 0.7679,
+        "llmScore": 0.9
       },
       {
         "id": 338,
         "score": 0.709,
         "algoScore": 0.4607,
-        "llmScore": 0.8
-      },
-      {
-        "id": 93,
-        "score": 0.6592,
-        "algoScore": 0.3604,
         "llmScore": 0.8
       }
     ],
@@ -4891,35 +4891,35 @@
       },
       {
         "id": 348,
-        "score": 0.8236,
+        "score": 0.8836,
         "algoScore": 0.5617,
-        "llmScore": 0.9
+        "llmScore": 1
       }
     ],
     "375": [
       {
         "id": 374,
-        "score": 0.94,
+        "score": 0.88,
         "algoScore": 0.7923,
-        "llmScore": 0.9
+        "llmScore": 0.8
       },
       {
         "id": 373,
-        "score": 0.9277,
+        "score": 0.8077,
         "algoScore": 0.7679,
-        "llmScore": 0.9
+        "llmScore": 0.7
       },
       {
-        "id": 372,
-        "score": 0.9267,
-        "algoScore": 0.7659,
+        "id": 182,
+        "score": 0.7694,
+        "algoScore": 0.4544,
         "llmScore": 0.9
       },
       {
         "id": 208,
-        "score": 0.7072,
+        "score": 0.7672,
         "algoScore": 0.45,
-        "llmScore": 0.8
+        "llmScore": 0.9
       }
     ],
     "376": [
@@ -4936,16 +4936,16 @@
         "llmScore": 0.7
       },
       {
-        "id": 109,
-        "score": 0.6533,
-        "algoScore": 0.35,
-        "llmScore": 0.7
-      },
-      {
         "id": 87,
         "score": 0.6,
         "algoScore": 0,
         "llmScore": 1
+      },
+      {
+        "id": 167,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
       }
     ],
     "377": [
@@ -4957,9 +4957,9 @@
       },
       {
         "id": 378,
-        "score": 0.82,
+        "score": 0.76,
         "algoScore": 0.6087,
-        "llmScore": 0.7
+        "llmScore": 0.6
       },
       {
         "id": 3,
@@ -4968,10 +4968,10 @@
         "llmScore": 0.9
       },
       {
-        "id": 218,
-        "score": 0.689,
-        "algoScore": 0.2267,
-        "llmScore": 0.9
+        "id": 257,
+        "score": 0.6294,
+        "algoScore": 0.2273,
+        "llmScore": 0.8
       }
     ],
     "378": [
@@ -5028,12 +5028,6 @@
     ],
     "381": [
       {
-        "id": 380,
-        "score": 1,
-        "algoScore": 0.65,
-        "llmScore": 1
-      },
-      {
         "id": 60,
         "score": 0.7092,
         "algoScore": 0.1774,
@@ -5047,6 +5041,12 @@
       },
       {
         "id": 54,
+        "score": 0.54,
+        "algoScore": 0,
+        "llmScore": 0.9
+      },
+      {
+        "id": 80,
         "score": 0.54,
         "algoScore": 0,
         "llmScore": 0.9
