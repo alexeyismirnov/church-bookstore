@@ -74,6 +74,14 @@ The pipeline consists of:
 npm run recommendations:generate
 ```
 
+This runs **fixture extraction first** (reads `oscar-3.1/fixtures` → `extracted-products.json`), then similarity, LLM, and blend. Updating fixtures alone is not enough unless you re-extract.
+
+To refresh extracted data only:
+
+```bash
+npm run recommendations:extract
+```
+
 ### Algorithmic Only (no LLM, faster)
 
 ```bash
@@ -107,6 +115,7 @@ Full pipeline: extract → algo → LLM → blend → write.
 | `--top-n` | number | `4` | How many recommendations per product |
 | `--verbose` | boolean | `false` | Enable detailed logging throughout the pipeline |
 | `--dry-run` | boolean | `false` | Compute everything but do NOT write the output file |
+| `--skip-extract` | boolean | `false` | Reuse existing `extracted-products.json` (skip fixture read) |
 
 #### Examples
 

@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "recommendations:extract": "npx tsx scripts/recommendations/extract.ts",
     "recommendations:generate": "npx tsx scripts/recommendations/generate.ts",
     "recommendations:validate": "npx tsx scripts/recommendations/validate.ts",
     "recommendations:enhance": "npx tsx scripts/recommendations/llm/enhance.ts",

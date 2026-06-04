@@ -6,6 +6,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import type { ExtractedProduct, RecommendationEntry, RecommendationsData } from './types';
+import { runExtraction, DEFAULT_EXTRACTED_OUTPUT } from './extract';
 import { loadProductsAndCompute } from './similarity/index';
 import { enhanceWithLLM } from './llm/enhance';
 import { blendRecommendations } from './llm/blend';
@@ -13,7 +14,7 @@ import { blendRecommendations } from './llm/blend';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const DEFAULT_EXTRACTED_DATA_PATH = resolve(__dirname, 'data/extracted-products.json');
+const DEFAULT_EXTRACTED_DATA_PATH = DEFAULT_EXTRACTED_OUTPUT;
 const DEFAULT_OUTPUT_PATH = resolve(__dirname, '../../app/data/recommendations.json');
 const DEFAULT_FIXTURES_PATH = '/home/alexey/workspace/oscar-3.1/fixtures';
 
@@ -28,6 +29,7 @@ interface CliFlags {
   topN: number;
   verbose: boolean;
   dryRun: boolean;
+  skipExtract: boolean;
 }
 
 function parseCliArgs(args: string[]): CliFlags {
@@ -40,6 +42,7 @@ function parseCliArgs(args: string[]): CliFlags {
     topN: 4,
     verbose: false,
     dryRun: false,
+    skipExtract: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -87,6 +90,10 @@ function parseCliArgs(args: string[]): CliFlags {
     if (arg === '--dry-run') {
       flags.dryRun = true;
     }
+
+    if (arg === '--skip-extract') {
+      flags.skipExtract = true;
+    }
   }
 
   return flags;
@@ -110,6 +117,7 @@ async function main(): Promise<void> {
     console.log(`    topN:          ${flags.topN}`);
     console.log(`    verbose:       ${flags.verbose}`);
     console.log(`    dryRun:        ${flags.dryRun}`);
+    console.log(`    skipExtract:   ${flags.skipExtract}`);
     console.log();
   }
 
@@ -117,29 +125,46 @@ async function main(): Promise<void> {
     console.log(`  Blend weights: algo=${flags.algoWeight}, llm=${flags.llmWeight}\n`);
   }
 
-  // Step 1: Load extracted products
+  // Step 1: Extract from fixtures (unless skipped), then load extracted products
+  if (!flags.skipExtract) {
+    if (flags.verbose) {
+      console.log('[1/6] Extracting products from Oscar fixtures...');
+      console.log(`      Fixtures path: ${flags.fixturesPath}`);
+      console.log(`      Fixtures exist: ${existsSync(flags.fixturesPath)}`);
+    } else {
+      console.log('[1/6] Extracting products from Oscar fixtures...');
+    }
+
+    if (!existsSync(flags.fixturesPath)) {
+      throw new Error(`Fixtures directory not found: ${flags.fixturesPath}`);
+    }
+
+    const extracted = runExtraction({
+      fixturesDir: flags.fixturesPath,
+      outputPath: DEFAULT_EXTRACTED_DATA_PATH,
+      verbose: flags.verbose,
+    });
+    console.log(`      Extracted ${extracted.length} products → extracted-products.json\n`);
+  } else {
+    console.log('[1/6] Skipping fixture extraction (--skip-extract)\n');
+  }
+
   if (flags.verbose) {
-    console.log('[1/5] Loading extracted products...');
+    console.log('[2/6] Loading extracted products...');
     console.log(`      Data path: ${DEFAULT_EXTRACTED_DATA_PATH}`);
   } else {
-    console.log('[1/5] Loading extracted products...');
+    console.log('[2/6] Loading extracted products...');
   }
 
   const raw = readFileSync(DEFAULT_EXTRACTED_DATA_PATH, 'utf-8');
   const products: ExtractedProduct[] = JSON.parse(raw);
   console.log(`      Loaded ${products.length} products from extracted-products.json\n`);
 
+  // Step 3: Run similarity engine
   if (flags.verbose) {
-    console.log(`      Fixtures path: ${flags.fixturesPath}`);
-    console.log(`      Fixtures exist: ${existsSync(flags.fixturesPath)}`);
-    console.log();
-  }
-
-  // Step 2: Run similarity engine
-  if (flags.verbose) {
-    console.log('[2/5] Computing all-pairs similarity (this may take a moment)...');
+    console.log('[3/6] Computing all-pairs similarity (this may take a moment)...');
   } else {
-    console.log('[2/5] Computing all-pairs similarity (this may take a moment)...');
+    console.log('[3/6] Computing all-pairs similarity (this may take a moment)...');
   }
 
   const similarityMap = loadProductsAndCompute(DEFAULT_EXTRACTED_DATA_PATH);
@@ -166,13 +191,13 @@ async function main(): Promise<void> {
 
   let llmResults: Map<number, { productId: number; recommendations: { id: number; score: number; reason: string }[]; error?: string }> | null = null;
 
-  // Step 3: LLM enhancement (skip if --algo-only)
+  // Step 4: LLM enhancement (skip if --algo-only)
   if (!flags.algoOnly) {
     if (flags.verbose) {
-      console.log('[3/5] Running LLM enhancement...');
+      console.log('[4/6] Running LLM enhancement...');
       console.log(`      Products to enhance: ${products.length}`);
     } else {
-      console.log('[3/5] Running LLM enhancement...');
+      console.log('[4/6] Running LLM enhancement...');
     }
 
     const startTime = Date.now();
@@ -202,16 +227,16 @@ async function main(): Promise<void> {
       console.log();
     }
   } else {
-    console.log('[3/5] Skipping LLM enhancement (--algo-only flag)\n');
+    console.log('[4/6] Skipping LLM enhancement (--algo-only flag)\n');
   }
 
-  // Step 4: Blend algo + LLM results (or use algo-only)
+  // Step 5: Blend algo + LLM results (or use algo-only)
   if (flags.verbose) {
-    console.log('[4/5] Building final recommendations...');
+    console.log('[5/6] Building final recommendations...');
     console.log(`      topN: ${flags.topN}`);
     console.log(`      Mode: ${flags.algoOnly ? 'algo-only' : 'blended'}`);
   } else {
-    console.log('[4/5] Building final recommendations...');
+    console.log('[5/6] Building final recommendations...');
   }
 
   const recommendations: RecommendationsData['recommendations'] = {};
@@ -294,11 +319,11 @@ async function main(): Promise<void> {
   };
 
   if (flags.dryRun) {
-    console.log('[5/5] DRY RUN: output not written');
+    console.log('[6/6] DRY RUN: output not written');
     console.log(`      Would write to: ${flags.outputPath}`);
     console.log(`      Payload size: ${JSON.stringify(data).length} bytes\n`);
   } else {
-    console.log('[5/5] Writing output...');
+    console.log('[6/6] Writing output...');
     const outputDir = dirname(flags.outputPath);
     mkdirSync(outputDir, { recursive: true });
     writeFileSync(flags.outputPath, JSON.stringify(data, null, 2), 'utf-8');
