@@ -7,7 +7,7 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { ShippingAddress } from './ShippingForm';
-import countries from '@/app/lib/countries.json';
+import { getShippingAddressDisplay } from '@/app/lib/format-shipping-address';
 import { useCurrency } from '@/app/i18n/CurrencyContext';
 import { useTranslations } from '../../i18n/LanguageContext';
 
@@ -57,12 +57,13 @@ export function CheckoutForm({
           name: `${shippingAddress.first_name} ${shippingAddress.last_name}`,
           address: {
             line1: shippingAddress.line1,
-            line2: shippingAddress.line2 || '',
+            line2: [shippingAddress.line2, shippingAddress.line3].filter(Boolean).join(', ') || '',
             city: shippingAddress.line4 || '',
             state: shippingAddress.state,
             postal_code: shippingAddress.postcode,
             country: shippingAddress.country,
           },
+          phone: shippingAddress.phone_number,
         },
       };
     }
@@ -86,35 +87,46 @@ export function CheckoutForm({
     }
   };
 
+  const shippingDisplay =
+    isShippingRequired && shippingAddress
+      ? getShippingAddressDisplay(shippingAddress)
+      : null;
+
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-xl font-semibold mb-6 text-dark">{tCheckout('payment.details')}</h2>
 
       {/* Shipping Summary - Only show if shipping is required and address exists */}
-      {isShippingRequired && shippingAddress && (
+      {shippingDisplay && (
         <div className="mb-6 p-4 bg-background rounded-lg">
           <div className="flex justify-between items-start">
-            <div>
+            <div className="space-y-1">
               <p className="text-sm text-gray-500">{tCheckout('payment.shippingTo')}</p>
-              <p className="font-medium text-dark">
-                {shippingAddress.first_name} {shippingAddress.last_name}
-              </p>
-              <p className="text-sm text-gray-600">
-                {shippingAddress.line1}
-                {shippingAddress.line2 && `, ${shippingAddress.line2}`}
-              </p>
-              <p className="text-sm text-gray-600">
-                {shippingAddress.line4}, {shippingAddress.state} {shippingAddress.postcode}
-              </p>
-              <p className="text-sm text-gray-600">
-                {countries.find(c => c.code === shippingAddress.country)?.name || shippingAddress.country}
-              </p>
+              {shippingDisplay.name && (
+                <p className="font-medium text-dark">{shippingDisplay.name}</p>
+              )}
+              {shippingDisplay.addressLines.map((line) => (
+                <p key={line} className="text-sm text-gray-600">{line}</p>
+              ))}
+              {shippingDisplay.country && (
+                <p className="text-sm text-gray-600">{shippingDisplay.country}</p>
+              )}
+              {shippingDisplay.phone && (
+                <p className="text-sm text-gray-600">
+                  {tCheckout('shippingSection.phone')}: {shippingDisplay.phone}
+                </p>
+              )}
+              {shippingDisplay.notes && (
+                <p className="text-sm text-gray-600">
+                  {tCheckout('shippingSection.deliveryInstructions')}: {shippingDisplay.notes}
+                </p>
+              )}
             </div>
             {onBack && (
               <button
                 type="button"
                 onClick={onBack}
-                className="text-sm text-burgundy hover:text-burgundy-dark hover:underline"
+                className="text-sm text-burgundy hover:text-burgundy-dark hover:underline shrink-0 ml-4"
               >
                 {t('common.edit')}
               </button>

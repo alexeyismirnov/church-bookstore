@@ -272,6 +272,7 @@ export interface BasketLinesResponse {
  */
 export interface Basket {
   id: string;
+  url?: string;
   lines: BasketLine[] | BasketLinesResponse; // Can be direct array or paginated response
   owner: number | null; // User ID or null for anonymous
   status: string; // e.g., "Open", "Frozen", "Submitted"
@@ -313,7 +314,7 @@ export interface ShippingAddress {
   state?: string;           // State/province/region (optional)
   postcode?: string;        // ZIP/postal code (optional)
   country: string;          // 2-letter ISO country code (required)
-  phone_number?: string;    // Phone number (optional)
+  phone_number: string;     // Phone number (required for shipping)
   notes?: string;           // Delivery instructions (optional)
 }
 
@@ -362,7 +363,7 @@ export interface OscarAddress {
  */
 export interface OrderPlacementRequest {
   basket: string;           // Full URL to basket, e.g. "https://orthodoxbookshop.asia/api/baskets/{id}/"
-  total: string;            // Must match basket.total_incl_tax
+  total?: string;           // Optional — Oscar recalculates if omitted
   shipping_method_code: string;
   shipping_charge?: {
     currency: string;

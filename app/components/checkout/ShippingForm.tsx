@@ -16,6 +16,8 @@ interface ShippingFormProps {
   onSelectedMethodChange?: (method: ShippingMethod | null) => void;
   selectedShippingMethod?: ShippingMethod | null;
   currency?: string;
+  /** When true, keep existing shipping method if re-fetch fails (e.g. Edit from payment). */
+  isReturningFromPayment?: boolean;
 }
 
 export function ShippingForm({ 
@@ -25,6 +27,7 @@ export function ShippingForm({
   onSelectedMethodChange,
   selectedShippingMethod,
   currency,
+  isReturningFromPayment = false,
 }: ShippingFormProps) {
   const t = useTranslations();
   const tCheckout = useTranslations('checkout');
@@ -105,7 +108,6 @@ export function ShippingForm({
       }
       
       try {
-        // Pass the full shipping address to the backend API
         const methods = await getShippingMethods(address);
         
         // Skip state updates if this effect has been superseded by a newer run
@@ -136,15 +138,21 @@ export function ShippingForm({
       } catch (err) {
         // Skip state updates if this effect has been superseded by a newer run
         if (didCancel) return;
-        
+
         console.error('Failed to fetch shipping methods:', err);
-        setShippingError(tCheckout('shippingSection.unableToLoad'));
-        setShippingMethods([]);
-        if (onShippingMethodsChange) {
-          onShippingMethodsChange([]);
-        }
-        if (onSelectedMethodChange) {
-          onSelectedMethodChange(null);
+
+        const canKeepExistingSelection =
+          isReturningFromPayment && !!selectedShippingMethod;
+
+        if (!canKeepExistingSelection) {
+          setShippingError(tCheckout('shippingSection.unableToLoad'));
+          setShippingMethods([]);
+          if (onShippingMethodsChange) {
+            onShippingMethodsChange([]);
+          }
+          if (onSelectedMethodChange) {
+            onSelectedMethodChange(null);
+          }
         }
       } finally {
         if (!didCancel) {
@@ -158,7 +166,7 @@ export function ShippingForm({
     return () => {
       didCancel = true;
     };
-  }, [address.country, address.first_name, address.last_name, address.line1, currency]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [address.country, address.first_name, address.last_name, address.line1, currency, isReturningFromPayment]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle shipping method selection
   const handleShippingMethodChange = (methodCode: string) => {
@@ -175,6 +183,9 @@ export function ShippingForm({
     if (!address.last_name.trim()) newErrors.last_name = tCheckout('validation.lastNameRequired');
     if (!address.line1.trim()) newErrors.line1 = tCheckout('validation.streetRequired');
     if (!address.country.trim()) newErrors.country = tCheckout('validation.countryRequired');
+    if (!address.phone_number?.trim()) {
+      newErrors.phone_number = tCheckout('validation.phoneRequired');
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -183,7 +194,10 @@ export function ShippingForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      onComplete(address);
+      onComplete({
+        ...address,
+        phone_number: address.phone_number.trim(),
+      });
     }
   };
 
@@ -352,16 +366,23 @@ export function ShippingForm({
       {/* Phone Number */}
       <div>
         <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-1">
-          {tCheckout('shippingSection.phone')}
+          {tCheckout('shippingSection.phone')} <span className="text-red-500">*</span>
         </label>
         <input
           id="phone_number"
           type="tel"
           value={address.phone_number}
           onChange={(e) => handleChange('phone_number', e.target.value)}
+          required
           placeholder={tCheckout('placeholders.phone')}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors"
+          autoComplete="tel"
+          className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-burgundy focus:border-burgundy transition-colors ${
+            errors.phone_number ? 'border-red-500' : 'border-gray-300'
+          }`}
         />
+        {errors.phone_number && (
+          <p className="mt-1 text-sm text-red-500">{errors.phone_number}</p>
+        )}
       </div>
 
       {/* Delivery Instructions */}
@@ -391,7 +412,11 @@ export function ShippingForm({
           {shippingError}
         </div>
       )}
-      {!isLoadingShippingMethods && !shippingError && !isAddressIncomplete && shippingMethods.length === 0 && (
+      {!isLoadingShippingMethods &&
+        !shippingError &&
+        !isAddressIncomplete &&
+        shippingMethods.length === 0 &&
+        !(isReturningFromPayment && selectedShippingMethod) && (
         <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
           {tCheckout('shippingSection.noMethods')}
         </div>
@@ -400,9 +425,13 @@ export function ShippingForm({
       {/* Submit Button */}
       <button
         type="submit"
-        disabled={shippingMethods.length === 0 || isLoadingShippingMethods}
+        disabled={
+          (shippingMethods.length === 0 && !(isReturningFromPayment && selectedShippingMethod)) ||
+          isLoadingShippingMethods
+        }
         className={`w-full py-3 text-base font-medium rounded-lg transition-colors ${
-          shippingMethods.length === 0 || isLoadingShippingMethods
+          (shippingMethods.length === 0 && !(isReturningFromPayment && selectedShippingMethod)) ||
+          isLoadingShippingMethods
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-burgundy text-white hover:bg-burgundy-dark'
         }`}

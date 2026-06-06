@@ -219,7 +219,8 @@
       "firstNameRequired": "名字为必填项",
       "lastNameRequired": "姓氏为必填项",
       "streetRequired": "街道地址为必填项",
-      "countryRequired": "国家为必填项"
+      "countryRequired": "国家为必填项",
+      "phoneRequired": "电话号码为必填项"
     },
     "placeholders": {
       "firstName": "张",
@@ -280,7 +281,9 @@
     },
     "orderPlacementFailed": {
       "title": "支付成功但订单提交失败",
+      "message": "支付已成功，但我们无法提交您的订单。",
       "contactSupport": "请凭支付凭证联系客服。",
+      "tryAgainOrContact": "请重试或凭支付凭证联系客服。",
       "retrying": "正在重试...",
       "retry": "重试提交订单"
     }

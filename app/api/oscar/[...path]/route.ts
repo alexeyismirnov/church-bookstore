@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-const OSCAR_API_BASE = process.env.OSCAR_API_URL || 'https://orthodoxbookshop.asia/api';
+const OSCAR_API_BASE = process.env.OSCAR_API_URL || 'https://django.orthodoxbookshop.asia/api';
 
 function setSessionCookie(response: NextResponse, sessionId: string) {
   response.cookies.set('oscar-session-id', sessionId, {

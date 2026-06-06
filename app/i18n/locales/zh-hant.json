@@ -219,7 +219,8 @@
       "firstNameRequired": "名字為必填項",
       "lastNameRequired": "姓氏為必填項",
       "streetRequired": "街道地址為必填項",
-      "countryRequired": "國家為必填項"
+      "countryRequired": "國家為必填項",
+      "phoneRequired": "電話號碼為必填項"
     },
     "placeholders": {
       "firstName": "張",
@@ -280,7 +281,9 @@
     },
     "orderPlacementFailed": {
       "title": "付款成功但訂單提交失敗",
+      "message": "付款已成功，但我們無法提交您的訂單。",
       "contactSupport": "請憑付款憑證聯繫客服。",
+      "tryAgainOrContact": "請重試或憑付款憑證聯繫客服。",
       "retrying": "正在重試...",
       "retry": "重試提交訂單"
     }

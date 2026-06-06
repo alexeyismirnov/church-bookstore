@@ -219,7 +219,8 @@
       "firstNameRequired": "First name is required",
       "lastNameRequired": "Last name is required",
       "streetRequired": "Street address is required",
-      "countryRequired": "Country is required"
+      "countryRequired": "Country is required",
+      "phoneRequired": "Phone number is required"
     },
     "placeholders": {
       "firstName": "John",
@@ -280,7 +281,9 @@
     },
     "orderPlacementFailed": {
       "title": "Payment succeeded but order placement failed",
+      "message": "Your payment was successful but we could not place your order.",
       "contactSupport": "Please contact support with your payment reference.",
+      "tryAgainOrContact": "Please try again or contact support with your payment reference.",
       "retrying": "Retrying...",
       "retry": "Retry order placement"
     }

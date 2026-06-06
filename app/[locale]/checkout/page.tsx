@@ -43,6 +43,7 @@ interface CheckoutPaymentState {
   paymentIntentId: string;
   selectedShippingMethod: ShippingMethod | null;
   basketId: string;
+  basketUrl?: string;
   currency: string;
   total: string;
 }
@@ -119,6 +120,7 @@ function CheckoutContent() {
   
   // Redirect payment order placement state
   const [redirectOrderPlacementNeeded, setRedirectOrderPlacementNeeded] = useState(false);
+  const [returnedFromPayment, setReturnedFromPayment] = useState(false);
   const redirectOrderPlacedRef = useRef(false);
   
   // Track currency refresh to prevent transient isShippingRequired changes.
@@ -230,6 +232,7 @@ function CheckoutContent() {
       try {
         const order = await placeOrder({
           basketId: checkoutState.basketId,
+          basketUrl: checkoutState.basketUrl || basket?.url,
           total: checkoutState.total,
           currency: checkoutState.currency,
           shippingMethodCode: checkoutState.selectedShippingMethod?.code || 'free-shipping',
@@ -279,7 +282,7 @@ function CheckoutContent() {
         if (didCancel) return;
         const items = syncResultToDisplayItems(result);
         setCartItems(items);
-        setBasket({ ...result.basketData, id: String(result.basketData.id) });
+        setBasket({ ...result.basketData, id: String(result.basketData.id), url: result.basketData.url });
         setSyncSkippedItems(result.skippedItems);
         setIsBasketLoaded(true);
       } catch (err) {
@@ -372,6 +375,7 @@ function CheckoutContent() {
               paymentIntentId: data.paymentIntentId,
               selectedShippingMethod: null,
               basketId: basket?.id || '',
+              basketUrl: basket?.url,
               currency: basket?.currency || currency,
               total: orderTotal.toFixed(2),
             };
@@ -413,7 +417,7 @@ function CheckoutContent() {
           const result = await syncToBackend(currency);
           const items = syncResultToDisplayItems(result);
           setCartItems(items);
-          setBasket({ ...result.basketData, id: String(result.basketData.id) });
+          setBasket({ ...result.basketData, id: String(result.basketData.id), url: result.basketData.url });
           setSyncSkippedItems(result.skippedItems);
           return items;
         } catch (err) {
@@ -481,6 +485,7 @@ function CheckoutContent() {
                 paymentIntentId: data.paymentIntentId,
                 selectedShippingMethod: updatedShippingMethod,
                 basketId: basket?.id || '',
+                basketUrl: basket?.url,
                 currency: basket?.currency || currency,
                 total: newTotal.toFixed(2),
               };
@@ -560,6 +565,7 @@ function CheckoutContent() {
   // Handle shipping form completion - transition to payment step
   const handleShippingComplete = async (address: ShippingAddress) => {
     setShippingAddress(address);
+    setReturnedFromPayment(false);
     setError(null);
 
     // Save shipping address to localStorage for persistence
@@ -599,6 +605,7 @@ function CheckoutContent() {
           paymentIntentId: data.paymentIntentId,
           selectedShippingMethod: selectedShippingMethod,
           basketId: basket?.id || '',
+          basketUrl: basket?.url,
           currency: basket?.currency || currency,
           total: total.toFixed(2),
         };
@@ -614,6 +621,7 @@ function CheckoutContent() {
 
   // Handle going back to shipping step
   const handleBackToShipping = () => {
+    setReturnedFromPayment(true);
     setCheckoutStep('shipping');
     setClientSecret(null);
     // Clear the saved checkout state since user is going back
@@ -629,6 +637,7 @@ function CheckoutContent() {
     try {
       const order = await placeOrder({
         basketId: basket?.id || '',
+        basketUrl: basket?.url,
         total: total.toFixed(2),
         currency: basket?.currency || 'USD',
         shippingMethodCode: selectedShippingMethod?.code || 'free-shipping',
@@ -686,6 +695,7 @@ function CheckoutContent() {
     try {
       const order = await placeOrder({
         basketId: checkoutState.basketId,
+        basketUrl: checkoutState.basketUrl || basket?.url,
         total: checkoutState.total,
         currency: checkoutState.currency,
         shippingMethodCode: checkoutState.selectedShippingMethod?.code || 'free-shipping',
@@ -738,20 +748,20 @@ function CheckoutContent() {
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="max-w-md w-full mx-4">
             <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Order Placement Failed</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">{tCheckout('orderPlacementFailed.title')}</h2>
               <p className="text-gray-600 mb-4">
-                Your payment was successful but we could not place your order.
+                {tCheckout('orderPlacementFailed.message')}
               </p>
               <p className="text-sm text-red-600 mb-4">{orderPlacementError}</p>
               <p className="text-sm text-gray-500 mb-6">
-                Please try again or contact support with your payment reference.
+                {tCheckout('orderPlacementFailed.tryAgainOrContact')}
               </p>
               <button
                 onClick={handleRedirectOrderRetry}
                 disabled={isPlacingOrder}
                 className="w-full btn-burgundy py-3 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isPlacingOrder ? 'Placing order...' : 'Retry Order Placement'}
+                {isPlacingOrder ? tCheckout('orderPlacementFailed.retrying') : tCheckout('orderPlacementFailed.retry')}
               </button>
             </div>
           </div>
@@ -763,7 +773,7 @@ function CheckoutContent() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-burgundy mx-auto" />
-          <p className="mt-4 text-gray-500">Payment confirmed. Placing your order...</p>
+          <p className="mt-4 text-gray-500">{tCheckout('placingOrder')}</p>
         </div>
       </div>
     );
@@ -863,6 +873,7 @@ function CheckoutContent() {
                 <ShippingForm
                   onComplete={handleShippingComplete}
                   initialData={shippingAddress || undefined}
+                  isReturningFromPayment={returnedFromPayment}
                   onShippingMethodsChange={(methods) => {
                     setShippingMethods(methods);
                     setShippingMethodsAvailable(methods.length > 0);

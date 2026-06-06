@@ -4,6 +4,14 @@
 import { OscarProduct, OscarPaginationResponse, OscarProductReview, OscarProductReviewListResponse, Variant, Book, Category, MyBook, Review, ShippingMethod, ShippingAddress, OrderPlacementRequest, OscarAddress, Order, OscarOrder, OscarOrderListResponse, OrderLine, Episode } from '../types';
 import { ensureSlugWithId } from './product-slug';
 
+/** Extract ISO country code from a code or Oscar countries URL. */
+function normalizeCountryCode(country: string): string {
+  const trimmed = country.trim();
+  const urlMatch = trimmed.match(/\/countries\/([A-Z]{2})\/?$/i);
+  if (urlMatch) return urlMatch[1].toUpperCase();
+  return trimmed.toUpperCase();
+}
+
 // Use environment variable or default to relative path for client-side
 // For server-side rendering, we need an absolute URL
 const getApiBase = () => {
@@ -30,6 +38,95 @@ const OSCAR_MEDIA_BASE = (
   process.env.NEXT_PUBLIC_MEDIA_BASE_URL || 'https://django.orthodoxbookshop.asia'
 ).replace(/\/$/, '');
 const SPACES_ROOT = 'https://orthodoxy.sgp1.digitaloceanspaces.com';
+
+/** Django Oscar API root for hyperlinked fields in request bodies (country, basket URLs). */
+export function getOscarDirectApiBase(): string {
+  const fromPublic = process.env.NEXT_PUBLIC_OSCAR_API_URL?.replace(/\/$/, '');
+  if (fromPublic) return fromPublic;
+  const fromServer = process.env.OSCAR_API_URL?.replace(/\/$/, '');
+  if (fromServer) return fromServer;
+  return 'https://django.orthodoxbookshop.asia/api';
+}
+
+/** Build Oscar shipping-address JSON for checkout order placement. */
+export function buildOscarShippingAddressPayload(shippingAddr: ShippingAddress): OscarAddress {
+  const payload = buildOscarShippingQuotePayload(shippingAddr);
+
+  // Oscar's PhoneNumberField rejects many numbers our form accepts (e.g. 555 lines).
+  // Store the phone in notes so it appears on the order without field validation.
+  const phone = shippingAddr.phone_number?.trim();
+  if (phone) {
+    const phoneLine = `Phone: ${phone}`;
+    payload.notes = payload.notes?.trim()
+      ? `${payload.notes.trim()}\n${phoneLine}`
+      : phoneLine;
+  }
+
+  return payload;
+}
+
+/** Extract a human-readable message from Oscar/DRF error payloads. */
+function formatOscarApiError(errorData: unknown, status: number): string {
+  if (typeof errorData === 'string' && errorData.trim()) {
+    return errorData.trim();
+  }
+  if (!errorData || typeof errorData !== 'object') {
+    return `Order placement failed with status ${status}`;
+  }
+
+  const data = errorData as Record<string, unknown>;
+
+  if (typeof data.detail === 'string' && data.detail) {
+    return data.detail;
+  }
+  if (Array.isArray(data.detail) && data.detail.length > 0) {
+    return data.detail.map(String).join(', ');
+  }
+  if (Array.isArray(data.non_field_errors) && data.non_field_errors.length > 0) {
+    return data.non_field_errors.map(String).join(', ');
+  }
+
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(data)) {
+    if (Array.isArray(value)) {
+      parts.push(`${key}: ${value.map(String).join(', ')}`);
+    } else if (value && typeof value === 'object') {
+      for (const [subKey, subVal] of Object.entries(value as Record<string, unknown>)) {
+        if (Array.isArray(subVal)) {
+          parts.push(`${key}.${subKey}: ${subVal.map(String).join(', ')}`);
+        }
+      }
+    }
+  }
+
+  return parts.length > 0
+    ? parts.join('; ')
+    : `Order placement failed with status ${status}`;
+}
+
+/**
+ * Address payload for POST /basket/shipping-methods/ (shipping rate quotes).
+ * Phone is omitted — Oscar validates it strictly but rates only need location fields.
+ */
+export function buildOscarShippingQuotePayload(
+  shippingAddr: ShippingAddress
+): Omit<OscarAddress, 'phone_number'> {
+  const apiBase = getOscarDirectApiBase();
+  const countryCode = normalizeCountryCode(shippingAddr.country);
+
+  return {
+    country: `${apiBase}/countries/${countryCode}/`,
+    first_name: shippingAddr.first_name,
+    last_name: shippingAddr.last_name,
+    line1: shippingAddr.line1,
+    line2: shippingAddr.line2 || '',
+    line3: shippingAddr.line3 || '',
+    line4: shippingAddr.line4 || '',
+    notes: shippingAddr.notes || '',
+    postcode: shippingAddr.postcode || '',
+    state: shippingAddr.state || '',
+  };
+}
 
 /**
  * Transform a legacy S3/pCloud URL to a DigitalOcean Spaces CDN URL.
@@ -907,25 +1004,25 @@ export async function getShippingMethods(shippingAddr?: ShippingAddress): Promis
     return data;
   }
   
-  // Convert country code to URL format expected by Django REST Framework's HyperlinkedRelatedField
-  // The backend expects: "country": "https://orthodoxbookshop.asia/api/countries/US/"
-  // The frontend sends: "country": "US"
-  const OSCAR_API_BASE = 'https://orthodoxbookshop.asia/api';
-  const addressWithCountryUrl = {
-    ...shippingAddr,
-    country: `${OSCAR_API_BASE}/countries/${shippingAddr.country}/`,
-  };
-  
-  // POST with full shipping address for accurate shipping calculation (checkout page)
+  // Build Oscar-compatible address (country URL + validated fields only)
   const response = await fetch(url, {
     method: 'POST',
     headers,
     cache: 'no-store',
-    body: JSON.stringify(addressWithCountryUrl),
+    body: JSON.stringify(buildOscarShippingQuotePayload(shippingAddr)),
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch shipping methods: ${response.status} ${response.statusText}`);
+    let detail = '';
+    try {
+      const errBody = await response.json();
+      detail = typeof errBody === 'object' ? JSON.stringify(errBody) : String(errBody);
+    } catch {
+      // ignore parse errors
+    }
+    throw new Error(
+      `Failed to fetch shipping methods: ${response.status} ${response.statusText}${detail ? ` — ${detail}` : ''}`
+    );
   }
 
   const data = await response.json();
@@ -943,6 +1040,8 @@ export async function getShippingMethods(shippingAddr?: ShippingAddress): Promis
  */
 export async function placeOrder(params: {
   basketId: string;
+  /** Full basket URL from Oscar API (preferred over constructing from basketId). */
+  basketUrl?: string;
   total: string;
   currency: string;
   shippingMethodCode: string;
@@ -956,41 +1055,21 @@ export async function placeOrder(params: {
 }): Promise<Order> {
   const headers = getAuthHeaders();
 
-  // Build the basket URL - Oscar requires a full URL (HyperlinkedRelatedField)
-  // Same pattern as getShippingMethods() which constructs country URLs
-  const OSCAR_API_BASE = 'https://orthodoxbookshop.asia/api';
-  const basketUrl = `${OSCAR_API_BASE}/baskets/${params.basketId}/`;
+  // Oscar requires a full URL (HyperlinkedRelatedField). Prefer the URL returned by the API.
+  const apiBase = getOscarDirectApiBase();
+  const basketUrl = params.basketUrl || `${apiBase}/baskets/${params.basketId}/`;
 
-  // Build the request payload
+  // Omit total and shipping_charge — Oscar recalculates them server-side.
+  // Sending client-computed values often fails validation (basket strategy vs UI subtotal).
   const payload: OrderPlacementRequest = {
     basket: basketUrl,
-    total: params.total,
     shipping_method_code: params.shippingMethodCode,
   };
 
-  // Add shipping charge if provided
-  if (params.shippingCharge) {
-    payload.shipping_charge = params.shippingCharge;
-  }
-
-  // Convert ShippingAddress to OscarAddress format (country code → URL)
   if (params.shippingAddress) {
-    payload.shipping_address = {
-      country: `${OSCAR_API_BASE}/countries/${params.shippingAddress.country}/`,
-      first_name: params.shippingAddress.first_name,
-      last_name: params.shippingAddress.last_name,
-      line1: params.shippingAddress.line1,
-      line2: params.shippingAddress.line2 || '',
-      line3: params.shippingAddress.line3 || '',
-      line4: params.shippingAddress.line4 || '',
-      notes: params.shippingAddress.notes || '',
-      phone_number: params.shippingAddress.phone_number || '',
-      postcode: params.shippingAddress.postcode || '',
-      state: params.shippingAddress.state || '',
-    };
+    payload.shipping_address = buildOscarShippingAddressPayload(params.shippingAddress);
   }
 
-  // Add guest email for anonymous checkout
   if (params.guestEmail) {
     payload.guest_email = params.guestEmail;
   }
@@ -1002,13 +1081,15 @@ export async function placeOrder(params: {
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    console.error('Order placement failed:', response.status, errorData);
-    throw new Error(
-      errorData.detail ||
-      errorData.basket?.[0] ||
-      `Order placement failed with status ${response.status}`
-    );
+    const rawBody = await response.text();
+    let errorData: unknown = {};
+    try {
+      errorData = rawBody ? JSON.parse(rawBody) : {};
+    } catch {
+      errorData = rawBody;
+    }
+    console.error('Order placement failed:', response.status, errorData, { payload });
+    throw new Error(formatOscarApiError(errorData, response.status));
   }
 
   return response.json();
