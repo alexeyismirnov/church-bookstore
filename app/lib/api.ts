@@ -268,12 +268,13 @@ export async function searchProducts(
 export async function getProductById(
   id: string,
   signal?: AbortSignal,
-  locale?: string
+  locale?: string,
+  currency?: string
 ): Promise<OscarProduct> {
   const lang = locale ?? getLanguagePreference();
   const headers = getStoredToken()
-    ? getAuthHeaders({ locale: lang })
-    : getApiHeaders({ locale: lang });
+    ? getAuthHeaders({ locale: lang, currency })
+    : getApiHeaders({ locale: lang, currency });
 
   const response = await fetch(`${getApiBase()}/products/${id}/`, {
     method: 'GET',
@@ -1016,9 +1017,12 @@ export async function fetchProductDetails(productId: string): Promise<{
  * @param shippingAddr - Optional full shipping address object
  * @returns Array of available shipping methods
  */
-export async function getShippingMethods(shippingAddr?: ShippingAddress): Promise<ShippingMethod[]> {
+export async function getShippingMethods(
+  shippingAddr?: ShippingAddress,
+  options?: { currency?: string; signal?: AbortSignal }
+): Promise<ShippingMethod[]> {
   const url = `${getApiBase()}/basket/shipping-methods/`;
-  const headers = getAuthHeaders();
+  const headers = getAuthHeaders({ currency: options?.currency });
   
   // Use GET when no address is provided (cart page), POST with address body otherwise
   if (!shippingAddr) {
@@ -1026,6 +1030,7 @@ export async function getShippingMethods(shippingAddr?: ShippingAddress): Promis
       method: 'GET',
       headers,
       cache: 'no-store',
+      signal: options?.signal,
     });
 
     if (!response.ok) {
@@ -1042,6 +1047,7 @@ export async function getShippingMethods(shippingAddr?: ShippingAddress): Promis
     headers,
     cache: 'no-store',
     body: JSON.stringify(buildOscarShippingQuotePayload(shippingAddr)),
+    signal: options?.signal,
   });
 
   if (!response.ok) {

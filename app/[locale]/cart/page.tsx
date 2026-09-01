@@ -25,7 +25,7 @@ function getCurrencySymbol(currency: string): string {
 
 export default function CartPage() {
   const { items, totalPrice, updateQuantity, removeItem, refreshPrices } = useLocalCart();
-  const { currency, symbol } = useCurrency();
+  const { currency } = useCurrency();
   const t = useTranslations();
   const tCart = useTranslations('cart');
   const { locale } = useLanguage();
@@ -38,6 +38,7 @@ export default function CartPage() {
 
   // Detect mixed currencies in cart items
   const hasMixedCurrencies = items.length > 0 && new Set(items.map(i => i.currency)).size > 1;
+  const subtotalSymbol = getCurrencySymbol(items[0]?.currency || currency);
 
   const lastRefreshKeyRef = useRef<string>('');
 
@@ -151,7 +152,7 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>{t('common.subtotal')}</span>
-                  <span>{symbol}{subtotal.toFixed(2)}</span>
+                  <span>{subtotalSymbol}{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>{t('common.shipping')}</span>

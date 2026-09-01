@@ -8,13 +8,13 @@ import {
 } from '@stripe/react-stripe-js';
 import { ShippingAddress } from './ShippingForm';
 import { getShippingAddressDisplay } from '@/app/lib/format-shipping-address';
-import { useCurrency } from '@/app/i18n/CurrencyContext';
 import { useTranslations } from '../../i18n/LanguageContext';
 
 interface CheckoutFormProps {
   orderTotal: number;
   shippingAddress: ShippingAddress | null;
   isShippingRequired: boolean;
+  currencySymbol: string;
   onSuccess: (paymentIntentId: string) => void;
   onBack?: () => void;
 }
@@ -23,12 +23,12 @@ export function CheckoutForm({
   orderTotal,
   shippingAddress,
   isShippingRequired,
+  currencySymbol,
   onSuccess,
   onBack,
 }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
-  const { symbol } = useCurrency();
   const t = useTranslations();
   const tCheckout = useTranslations('checkout');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -184,7 +184,7 @@ export function CheckoutForm({
             {tCheckout('payment.processing')}
           </>
         ) : (
-          tCheckout('payment.pay', { amount: `${symbol}${orderTotal.toFixed(2)}` })
+          tCheckout('payment.pay', { amount: `${currencySymbol}${orderTotal.toFixed(2)}` })
         )}
       </button>
 

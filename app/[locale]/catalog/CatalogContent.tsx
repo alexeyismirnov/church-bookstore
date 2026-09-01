@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import ProductGrid from '../../components/ProductGrid';
 import FilterSidebar from '../../components/FilterSidebar';
@@ -57,6 +57,7 @@ export default function CatalogContent({
   const [hasNextPage, setHasNextPage] = useState(initialData.hasNextPage);
   const [hasPrevPage, setHasPrevPage] = useState(initialData.hasPrevPage);
   const serverRequestKey = initialData.requestKey;
+  const loadedRequestKey = useRef(serverRequestKey);
   
   // Category ID for API-based filtering (passed from FilterSidebar)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(categoryId || null);
@@ -106,7 +107,7 @@ export default function CatalogContent({
       currency,
     });
 
-    if (refreshKey === 0 && currentKey === serverRequestKey) {
+    if (refreshKey === 0 && currentKey === loadedRequestKey.current) {
       return;
     }
 
@@ -146,6 +147,7 @@ export default function CatalogContent({
         
         // Convert Oscar products to Book format with current locale
         const convertedBooks = response.results.map((product) => oscarProductToBook(product, locale));
+        loadedRequestKey.current = currentKey;
         setBooks(convertedBooks);
         
         // Update pagination state
@@ -177,7 +179,6 @@ export default function CatalogContent({
     isSearchActive,
     committedSearchQuery,
     inStock,
-    serverRequestKey,
   ]);
 
   const handleCategoryChange = (category: string) => {

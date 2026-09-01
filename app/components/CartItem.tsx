@@ -4,7 +4,6 @@ import LocalizedLink from './LocalizedLink';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { LocalCartItem } from '../lib/localCart';
 import { useTranslations } from '../i18n/LanguageContext';
-import { useCurrency } from '../i18n/CurrencyContext';
 import { buildProductSlug } from '../lib/product-slug';
 
 interface CartItemProps {
@@ -14,6 +13,18 @@ interface CartItemProps {
   onRemove?: (productId: number) => void;
 }
 
+function getCurrencySymbol(currency: string): string {
+  try {
+    return new Intl.NumberFormat('en', {
+      style: 'currency',
+      currency,
+      currencyDisplay: 'narrowSymbol',
+    }).formatToParts(0).find((part) => part.type === 'currency')?.value ?? currency;
+  } catch {
+    return currency;
+  }
+}
+
 export default function CartItem({
   item,
   onUpdateQuantity,
@@ -21,7 +32,7 @@ export default function CartItem({
   onRemove,
 }: CartItemProps) {
   const t = useTranslations();
-  const { symbol } = useCurrency();
+  const symbol = getCurrencySymbol(item.currency);
   const linePrice = item.price * item.quantity;
 
   // Use parentProductId for navigation (link back to product page)

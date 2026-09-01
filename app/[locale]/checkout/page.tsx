@@ -12,6 +12,7 @@ import { ShippingAddress, ShippingMethod, Basket } from '../../types';
 import { getShippingMethods, placeOrder, getStoredToken } from '../../lib/api';
 import { useLocalCart, type SyncResult } from '../../lib/localCart';
 import { useCurrency } from '../../i18n/CurrencyContext';
+import { currencySymbols, type Currency } from '../../i18n/settings';
 import { useTranslations } from '../../i18n/LanguageContext';
 import { useApiLocale } from '../../i18n/useApiLocale';
 import { Elements } from '@stripe/react-stripe-js';
@@ -30,6 +31,7 @@ interface CartItemForDisplay {
   quantity: number;
   coverImage: string;
   linePrice: number;
+  currency: string;
   variantTitle?: string;
   is_shipping_required: boolean;
 }
@@ -74,6 +76,7 @@ function syncResultToDisplayItems(result: SyncResult): CartItemForDisplay[] {
       quantity: line.quantity,
       coverImage: localItem?.coverImage || '/images/placeholder-book.jpg',
       linePrice,
+      currency: line.price_currency,
       variantTitle: localItem?.variantTitle,
       is_shipping_required: line.is_shipping_required ?? true,
     };
@@ -95,7 +98,7 @@ function CheckoutContent() {
     }
   }, [router]);
 
-  const { currency, symbol } = useCurrency();
+  const { currency } = useCurrency();
   const t = useTranslations();
   const tCheckout = useTranslations('checkout');
   const locale = useApiLocale();
@@ -117,6 +120,8 @@ function CheckoutContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderPlacementError, setOrderPlacementError] = useState<string | null>(null);
   const [syncSkippedItems, setSyncSkippedItems] = useState<SyncResult['skippedItems']>([]);
+  const [committedCurrency, setCommittedCurrency] = useState(currency);
+  const [isCurrencyRefreshing, setIsCurrencyRefreshing] = useState(false);
   
   // Redirect payment order placement state
   const [redirectOrderPlacementNeeded, setRedirectOrderPlacementNeeded] = useState(false);
@@ -128,6 +133,8 @@ function CheckoutContent() {
   // hold it steady until the basket refresh completes and the new data is stable.
   const currencyRefreshInProgressRef = useRef(false);
   const shippingRequiredSnapshotRef = useRef<boolean>(true);
+  const currencyRefreshGenerationRef = useRef(0);
+  const paymentRequestGenerationRef = useRef(0);
   
   // Local cart context for syncToBackend, clearCart, refreshPrices, and items
   const { syncToBackend, clearCart, refreshPrices, items: localCartItems, isHydrated } = useLocalCart();
@@ -140,6 +147,8 @@ function CheckoutContent() {
   const isShippingRequired = currencyRefreshInProgressRef.current
     ? shippingRequiredSnapshotRef.current
     : isShippingRequiredRaw;
+  const committedSymbol =
+    currencySymbols[committedCurrency as Currency] || committedCurrency;
 
   // Clear the currency-refresh guard after the render with updated cartItems.
   // This useEffect runs post-render, so the snapshot value was used during that render.
@@ -281,9 +290,12 @@ function CheckoutContent() {
         const result = await syncToBackend(currency);
         if (didCancel) return;
         const items = syncResultToDisplayItems(result);
+        const basketCurrency =
+          items[0]?.currency || result.basketData.currency || currency;
         setCartItems(items);
         setBasket({ ...result.basketData, id: String(result.basketData.id), url: result.basketData.url });
         setSyncSkippedItems(result.skippedItems);
+        setCommittedCurrency(basketCurrency);
         setIsBasketLoaded(true);
       } catch (err) {
         if (didCancel) return;
@@ -327,7 +339,8 @@ function CheckoutContent() {
       const createPaymentIntent = async () => {
         // Calculate subtotal from cartItems (no shipping cost for digital-only orders)
         const orderTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        console.log('[checkout] Creating payment intent: orderTotal=', orderTotal, 'currency=', currency);
+        const paymentCurrency = cartItems[0]?.currency || currency;
+        console.log('[checkout] Creating payment intent: orderTotal=', orderTotal, 'currency=', paymentCurrency);
 
         // Guard: Stripe has minimum charge amounts per currency (e.g. $0.50 USD).
         // If the total is below the minimum, show an error instead of failing at Stripe.
@@ -335,14 +348,15 @@ function CheckoutContent() {
           usd: 0.50, eur: 0.50, gbp: 0.30, cad: 0.50, aud: 0.50,
           jpy: 50, hkd: 4.00, sgd: 0.50, chf: 0.50,
         };
-        const minAmount = stripeMinimums[currency.toLowerCase()] ?? 0.50;
+        const minAmount = stripeMinimums[paymentCurrency.toLowerCase()] ?? 0.50;
         if (orderTotal < minAmount) {
-          console.error(`[checkout] Order total ${orderTotal} ${currency} is below Stripe minimum ${minAmount}`);
-          setError(tCheckout('errors.belowMinimumAmount', { min: minAmount, currency }));
+          console.error(`[checkout] Order total ${orderTotal} ${paymentCurrency} is below Stripe minimum ${minAmount}`);
+          setError(tCheckout('errors.belowMinimumAmount', { min: minAmount, currency: paymentCurrency }));
           setIsStepDetermined(true);
           return;
         }
-        
+
+        const paymentGeneration = ++paymentRequestGenerationRef.current;
         try {
           const response = await fetch('/api/stripe/create-payment-intent', {
             method: 'POST',
@@ -351,7 +365,7 @@ function CheckoutContent() {
             },
             body: JSON.stringify({
               amount: orderTotal, // No shipping cost for digital-only orders
-              currency: currency.toLowerCase(),
+              currency: paymentCurrency.toLowerCase(),
             }),
           });
 
@@ -360,6 +374,7 @@ function CheckoutContent() {
           }
 
           const data = await response.json();
+          if (paymentGeneration !== paymentRequestGenerationRef.current) return;
           setClientSecret(data.clientSecret);
           setPaymentIntentId(data.paymentIntentId);
           setShippingAddress(null); // No shipping address needed
@@ -376,7 +391,7 @@ function CheckoutContent() {
               selectedShippingMethod: null,
               basketId: basket?.id || '',
               basketUrl: basket?.url,
-              currency: basket?.currency || currency,
+              currency: paymentCurrency,
               total: orderTotal.toFixed(2),
             };
             sessionStorage.setItem(CHECKOUT_STATE_KEY, JSON.stringify(checkoutState));
@@ -397,127 +412,157 @@ function CheckoutContent() {
     }
   }, [isBasketLoaded, isStepDetermined, isShippingRequired, checkoutStep, cartItems]);
 
+  const checkoutCurrencyStateRef = useRef({
+    checkoutStep,
+    shippingAddress,
+    selectedShippingMethod,
+    isShippingRequired,
+  });
+  useEffect(() => {
+    checkoutCurrencyStateRef.current = {
+      checkoutStep,
+      shippingAddress,
+      selectedShippingMethod,
+      isShippingRequired,
+    };
+  }, [checkoutStep, shippingAddress, selectedShippingMethod, isShippingRequired]);
+
   // Handle currency change - re-fetch basket and refresh payment intent if needed
   const prevCurrencyRef = useRef(currency);
   useEffect(() => {
-    // Only act if currency actually changed (not on initial mount)
-    if (prevCurrencyRef.current !== currency) {
-      const oldCurrency = prevCurrencyRef.current;
-      prevCurrencyRef.current = currency;
-      
-      // Snapshot current shipping-required state before async refresh to prevent
-      // transient backend inconsistencies from flipping isShippingRequired to false
-      currencyRefreshInProgressRef.current = true;
-      shippingRequiredSnapshotRef.current = isShippingRequired;
-      
-      // Re-sync cart to get updated prices in the new currency
-      const refreshBasket = async () => {
-        setIsLoading(true);
-        try {
-          const result = await syncToBackend(currency);
-          const items = syncResultToDisplayItems(result);
-          setCartItems(items);
-          setBasket({ ...result.basketData, id: String(result.basketData.id), url: result.basketData.url });
-          setSyncSkippedItems(result.skippedItems);
-          return items;
-        } catch (err) {
-          console.error('Error refreshing cart after currency change:', err);
-          return [];
-        } finally {
-          setIsLoading(false);
-        }
-      };
+    if (prevCurrencyRef.current === currency) return;
+    prevCurrencyRef.current = currency;
+    paymentRequestGenerationRef.current += 1;
 
-      // If we're on the payment step, create a new payment intent with the new currency
-      // Note: For digital-only orders (no shipping required), shippingAddress is null but we still need to refresh
-      if (checkoutStep === 'payment' && (shippingAddress || !isShippingRequired)) {
-        const refreshPaymentIntent = async () => {
-          const items = await refreshBasket();
-          
-          // Re-fetch shipping methods and update selected method with new price (only if shipping is required)
-          let updatedShippingMethod = selectedShippingMethod;
-          if (isShippingRequired && shippingAddress) {
-            try {
-              const methods = await getShippingMethods(shippingAddress);
-              const matchingMethod = methods.find(m => m.code === selectedShippingMethod?.code);
-              if (matchingMethod) {
-                setSelectedShippingMethod(matchingMethod);
-                updatedShippingMethod = matchingMethod;
-              }
-            } catch (err) {
-              console.error('Error refreshing shipping methods after currency change:', err);
-            }
+    // Initial basket synchronization already re-runs with the latest currency.
+    if (isInitialLoad) return;
+
+    const generation = ++currencyRefreshGenerationRef.current;
+    let cancelled = false;
+    const currentState = checkoutCurrencyStateRef.current;
+
+    currencyRefreshInProgressRef.current = true;
+    shippingRequiredSnapshotRef.current = currentState.isShippingRequired;
+    setIsLoading(true);
+    setIsCurrencyRefreshing(true);
+    setError(null);
+
+    async function refreshCurrency() {
+      try {
+        const result = await syncToBackend(currency);
+        if (cancelled || generation !== currencyRefreshGenerationRef.current) return;
+
+        const items = syncResultToDisplayItems(result);
+        if (items.some((item) => item.currency !== currency)) {
+          throw new Error('Backend returned prices in a different currency');
+        }
+        const refreshedBasket = {
+          ...result.basketData,
+          id: String(result.basketData.id),
+          url: result.basketData.url,
+        };
+        let updatedShippingMethod = currentState.selectedShippingMethod;
+        let paymentData: { clientSecret: string; paymentIntentId: string } | null = null;
+
+        if (
+          currentState.checkoutStep === 'payment' &&
+          currentState.isShippingRequired &&
+          currentState.shippingAddress
+        ) {
+          const methods = await getShippingMethods(currentState.shippingAddress, { currency });
+          if (cancelled || generation !== currencyRefreshGenerationRef.current) return;
+          updatedShippingMethod =
+            methods.find((method) => method.code === currentState.selectedShippingMethod?.code) ??
+            null;
+          if (!updatedShippingMethod) {
+            throw new Error('Selected shipping method is unavailable in the new currency');
           }
-          
-          // Calculate new total with updated prices
-          const newSubtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        }
+
+        if (currentState.checkoutStep === 'payment') {
+          const newSubtotal = items.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          );
           const newShipping = updatedShippingMethod
             ? parseFloat(updatedShippingMethod.price.incl_tax)
             : 0;
           const newTotal = newSubtotal + newShipping;
-
-          // Create new payment intent with the new currency
-          try {
-            const response = await fetch('/api/stripe/create-payment-intent', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                amount: newTotal,
-                currency: currency.toLowerCase(),
-              }),
-            });
-
-            if (!response.ok) {
-              throw new Error('Failed to initialize payment');
-            }
-
-            const data = await response.json();
-            setClientSecret(data.clientSecret);
-            setPaymentIntentId(data.paymentIntentId);
-            
-            // Update sessionStorage with new checkout state
-            try {
-              const checkoutState: CheckoutPaymentState = {
-                shippingAddress: shippingAddress,
-                clientSecret: data.clientSecret,
-                paymentIntentId: data.paymentIntentId,
-                selectedShippingMethod: updatedShippingMethod,
-                basketId: basket?.id || '',
-                basketUrl: basket?.url,
-                currency: basket?.currency || currency,
-                total: newTotal.toFixed(2),
-              };
-              sessionStorage.setItem(CHECKOUT_STATE_KEY, JSON.stringify(checkoutState));
-            } catch (err) {
-              console.error('Error saving checkout state to sessionStorage:', err);
-            }
-          } catch (err) {
-            console.error('Error creating payment intent after currency change:', err);
-            setError('Failed to update payment. Please try again.');
+          const paymentGeneration = ++paymentRequestGenerationRef.current;
+          const response = await fetch('/api/stripe/create-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: newTotal,
+              currency: currency.toLowerCase(),
+            }),
+          });
+          if (!response.ok) throw new Error('Failed to initialize payment');
+          paymentData = await response.json();
+          if (
+            cancelled ||
+            generation !== currencyRefreshGenerationRef.current ||
+            paymentGeneration !== paymentRequestGenerationRef.current
+          ) {
+            return;
           }
-        };
-        
-        refreshPaymentIntent();
-      } else {
-        // Not on payment step, just refresh the basket.
-        // Do NOT clear selectedShippingMethod here — the ShippingForm component's
-        // effect watches currency changes and will re-fetch shipping methods,
-        // then re-select the first method with updated prices. Clearing it here
-        // creates a race condition where the null update can overwrite the valid
-        // method update from ShippingForm's async effect.
-        refreshBasket();
+
+          try {
+            const checkoutState: CheckoutPaymentState = {
+              shippingAddress: currentState.shippingAddress,
+              clientSecret: paymentData!.clientSecret,
+              paymentIntentId: paymentData!.paymentIntentId,
+              selectedShippingMethod: updatedShippingMethod,
+              basketId: refreshedBasket.id,
+              basketUrl: refreshedBasket.url,
+              currency,
+              total: newTotal.toFixed(2),
+            };
+            sessionStorage.setItem(CHECKOUT_STATE_KEY, JSON.stringify(checkoutState));
+          } catch (err) {
+            console.error('Error saving checkout state to sessionStorage:', err);
+          }
+        }
+
+        setCartItems(items);
+        setBasket(refreshedBasket);
+        setSyncSkippedItems(result.skippedItems);
+        if (currentState.checkoutStep === 'payment') {
+          setSelectedShippingMethod(updatedShippingMethod);
+          setClientSecret(paymentData!.clientSecret);
+          setPaymentIntentId(paymentData!.paymentIntentId);
+        }
+        setCommittedCurrency(currency);
+      } catch (err) {
+        if (!cancelled && generation === currencyRefreshGenerationRef.current) {
+          console.error('Error refreshing checkout currency:', err);
+          setError('Failed to update prices. Please try again.');
+        }
+      } finally {
+        if (!cancelled && generation === currencyRefreshGenerationRef.current) {
+          currencyRefreshInProgressRef.current = false;
+          setIsLoading(false);
+          setIsCurrencyRefreshing(false);
+          setShippingGuardForceUpdate((value) => value + 1);
+        }
       }
     }
-  }, [currency, checkoutStep, shippingAddress, selectedShippingMethod]);
+
+    refreshCurrency();
+    return () => {
+      cancelled = true;
+    };
+  }, [currency, isInitialLoad, syncToBackend]);
 
   // When locale changes, re-fetch all cart item data (title, author, coverImage)
   // in the new language.
   // Pass locale explicitly to avoid stale Accept-Language reads from localStorage
   // during navbar locale switch timing.
+  const refreshedMetadataLocaleRef = useRef('');
   useEffect(() => {
     if (!isHydrated || localCartItems.length === 0) return;
+    if (refreshedMetadataLocaleRef.current === locale) return;
+    refreshedMetadataLocaleRef.current = locale;
     refreshPrices(currency, locale);
   }, [locale, currency, isHydrated, localCartItems.length, refreshPrices]);
 
@@ -548,17 +593,18 @@ function CheckoutContent() {
   // Note: Currency change handling is done in ShippingForm via prevCurrencyRef
   // No need to clear selectedShippingMethod here as ShippingForm handles re-selection
 
-  // Calculate total quantity for useEffect dependency
-  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
   // Shipping methods are now fetched by ShippingForm when country changes
   // This effect is no longer needed but we keep the state for the OrderSummary
   const [shippingMethodsAvailable, setShippingMethodsAvailable] = useState(true);
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const selectedShippingMethodForDisplay =
+    selectedShippingMethod?.price.currency === committedCurrency
+      ? selectedShippingMethod
+      : null;
   // Use shipping cost from selected shipping method (price is a string, parse to float)
-  const shipping = selectedShippingMethod 
-    ? parseFloat(selectedShippingMethod.price.incl_tax) 
+  const shipping = selectedShippingMethodForDisplay
+    ? parseFloat(selectedShippingMethodForDisplay.price.incl_tax)
     : 0;
   const total = subtotal + shipping;
 
@@ -576,6 +622,7 @@ function CheckoutContent() {
     }
 
     // Fetch payment intent from Stripe API
+    const paymentGeneration = ++paymentRequestGenerationRef.current;
     try {
       const response = await fetch('/api/stripe/create-payment-intent', {
         method: 'POST',
@@ -584,7 +631,7 @@ function CheckoutContent() {
         },
         body: JSON.stringify({
           amount: total,
-          currency: currency.toLowerCase(),
+          currency: committedCurrency.toLowerCase(),
         }),
       });
 
@@ -593,6 +640,7 @@ function CheckoutContent() {
       }
 
       const data = await response.json();
+      if (paymentGeneration !== paymentRequestGenerationRef.current) return;
       setClientSecret(data.clientSecret);
       setPaymentIntentId(data.paymentIntentId);
       setCheckoutStep('payment');
@@ -606,7 +654,7 @@ function CheckoutContent() {
           selectedShippingMethod: selectedShippingMethod,
           basketId: basket?.id || '',
           basketUrl: basket?.url,
-          currency: basket?.currency || currency,
+          currency: committedCurrency,
           total: total.toFixed(2),
         };
         sessionStorage.setItem(CHECKOUT_STATE_KEY, JSON.stringify(checkoutState));
@@ -621,6 +669,7 @@ function CheckoutContent() {
 
   // Handle going back to shipping step
   const handleBackToShipping = () => {
+    paymentRequestGenerationRef.current += 1;
     setReturnedFromPayment(true);
     setCheckoutStep('shipping');
     setClientSecret(null);
@@ -849,7 +898,12 @@ function CheckoutContent() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form Area */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="relative bg-white rounded-xl shadow-sm p-6">
+              {isCurrencyRefreshing && (
+                <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-white/85">
+                  <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
+                </div>
+              )}
               {checkoutStep === 'payment' && clientSecret && (isShippingRequired ? shippingAddress : true) ? (
                 // Payment step with Stripe Elements
                 // key={clientSecret} forces re-mount when currency changes, ensuring fresh Payment Element
@@ -864,6 +918,7 @@ function CheckoutContent() {
                     orderTotal={total}
                     shippingAddress={shippingAddress}
                     isShippingRequired={isShippingRequired}
+                    currencySymbol={committedSymbol}
                     onSuccess={handlePaymentSuccess}
                     onBack={isShippingRequired ? handleBackToShipping : undefined}
                   />
@@ -903,8 +958,8 @@ function CheckoutContent() {
             <OrderSummary 
               cartItems={cartItems} 
               shipping={shipping} 
-              currencySymbol={symbol}
-              selectedShippingMethod={selectedShippingMethod}
+              currencySymbol={committedSymbol}
+              selectedShippingMethod={selectedShippingMethodForDisplay}
               isShippingRequired={isShippingRequired}
             />
           </div>

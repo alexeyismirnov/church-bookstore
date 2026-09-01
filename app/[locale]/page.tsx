@@ -76,7 +76,11 @@ export default async function HomePage({ params }: HomePageProps) {
   return (
     <>
       <StructuredData data={structuredData} />
-      <HomePageClient heroBook={heroBook} newArrivals={newArrivals} />
+      <HomePageClient
+        heroBook={heroBook}
+        newArrivals={newArrivals}
+        serverFetchKey={`${locale}:${currency}`}
+      />
     </>
   );
 }

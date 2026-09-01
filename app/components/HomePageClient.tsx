@@ -30,38 +30,50 @@ const CATEGORY_DESC_KEYS: Record<string, string> = {
 interface HomePageClientProps {
   heroBook: Book | null;
   newArrivals: Book[];
+  serverFetchKey: string;
 }
 
-export default function HomePageClient({ heroBook, newArrivals }: HomePageClientProps) {
+export default function HomePageClient({
+  heroBook,
+  newArrivals,
+  serverFetchKey,
+}: HomePageClientProps) {
   const locale = useApiLocale();
   const { currency } = useCurrency();
   const t = useTranslations('homepage');
   const tGlobal = useTranslations();
   const [miniBookshelf, setMiniBookshelf] = useState<MyBook[]>([]);
   const [displayNewArrivals, setDisplayNewArrivals] = useState(newArrivals);
-  const lastArrivalsRequest = useRef(`${locale}:${currency}`);
+  const [arrivalsLoading, setArrivalsLoading] = useState(false);
+  const loadedArrivalsRequest = useRef(serverFetchKey);
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     const requestKey = `${locale}:${currency}`;
-    if (lastArrivalsRequest.current === requestKey) {
+    if (loadedArrivalsRequest.current === requestKey) {
       return;
     }
-    lastArrivalsRequest.current = requestKey;
 
     const controller = new AbortController();
 
     async function refreshNewArrivals() {
       try {
+        setArrivalsLoading(true);
         const arrivals = await getNewArrivals(5, {
           locale,
           currency,
           signal: controller.signal,
         });
+        if (controller.signal.aborted) return;
         setDisplayNewArrivals(arrivals.slice(1));
+        loadedArrivalsRequest.current = requestKey;
       } catch (err) {
         if (!controller.signal.aborted) {
           console.error('Failed to refresh new arrivals:', err);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setArrivalsLoading(false);
         }
       }
     }
@@ -149,7 +161,11 @@ export default function HomePageClient({ heroBook, newArrivals }: HomePageClient
           <div className="text-center mb-12">
             <h2 className="section-title mb-0">{t('featured.newArrivals')}</h2>
           </div>
-          {displayNewArrivals.length > 0 ? (
+          {arrivalsLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
+            </div>
+          ) : displayNewArrivals.length > 0 ? (
             <ProductGrid books={displayNewArrivals} />
           ) : (
             <p className="text-center text-ink-muted py-8">

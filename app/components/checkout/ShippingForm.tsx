@@ -108,7 +108,7 @@ export function ShippingForm({
       }
       
       try {
-        const methods = await getShippingMethods(address);
+        const methods = await getShippingMethods(address, { currency });
         
         // Skip state updates if this effect has been superseded by a newer run
         if (didCancel) return;

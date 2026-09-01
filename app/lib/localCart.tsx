@@ -180,9 +180,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<LocalCart>(createEmptyCart);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Ref so async callbacks (syncToBackend) always read the latest cart
-  const cartRef = useRef(cart);
-  useEffect(() => { cartRef.current = cart; }, [cart]);
+  const priceRefreshGenerationRef = useRef(0);
 
   // Hydrate from localStorage after first mount (avoids SSR mismatch)
   useEffect(() => {
@@ -279,7 +277,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
     // 1. POST local items to the backend "from-cart" endpoint
     const response = await fetch('/api/oscar/basket/from-cart/', {
       method: 'POST',
-      headers: getAuthHeaders(),
+      headers: getAuthHeaders({ currency }),
       credentials: 'include',
       body: JSON.stringify({
         items: currentCart.items.map(i => ({ product_id: i.productId, quantity: i.quantity })),
@@ -315,7 +313,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
 
         const linesResponse = await fetch(linesUrl, {
           method: 'GET',
-          headers: getAuthHeaders(),
+          headers: getAuthHeaders({ currency }),
           credentials: 'include',
         });
 
@@ -336,6 +334,7 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
   const refreshPrices = useCallback(async (newCurrency: string, localeOverride?: string): Promise<void> => {
     const currentCart = getStoredCart();
     if (currentCart.items.length === 0) return;
+    const refreshGeneration = ++priceRefreshGenerationRef.current;
 
     // Fetch updated data for all items in parallel.
     // The API returns localized title/author based on Accept-Language header,
@@ -355,15 +354,15 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
         if (isVariant) {
           // Fetch both parent (for display info) and variant (for price)
           const [parentProduct, variantProduct] = await Promise.allSettled([
-            getProductById(item.parentProductId.toString(), undefined, localeOverride),
-            getProductById(item.productId.toString(), undefined, localeOverride),
+            getProductById(item.parentProductId.toString(), undefined, localeOverride, newCurrency),
+            getProductById(item.productId.toString(), undefined, localeOverride, newCurrency),
           ]);
 
           // Price from variant
           if (variantProduct.status === 'fulfilled') {
             const vp = variantProduct.value;
             const newPrice = parseFloat(vp.price);
-            if (!isNaN(newPrice) && newPrice > 0) {
+            if (!isNaN(newPrice) && newPrice >= 0) {
               update.price = newPrice;
             }
             if (vp.title) {
@@ -387,9 +386,14 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
           }
         } else {
           // Non-variant: everything from the single product
-          const product = await getProductById(item.productId.toString(), undefined, localeOverride);
+          const product = await getProductById(
+            item.productId.toString(),
+            undefined,
+            localeOverride,
+            newCurrency
+          );
           const newPrice = parseFloat(product.price);
-          if (!isNaN(newPrice) && newPrice > 0) {
+          if (!isNaN(newPrice) && newPrice >= 0) {
             update.price = newPrice;
           }
           if (product.title) {
@@ -416,16 +420,29 @@ export function LocalCartProvider({ children }: { children: ReactNode }) {
       })
     );
 
-    setCart((prev) => ({
-      ...prev,
-      items: prev.items.map((item) => ({
-        ...item,
-        ...(updatesMap.has(item.productId) ? updatesMap.get(item.productId)! : {}),
-        currency: newCurrency,
-      })),
-      lastUpdated: new Date().toISOString(),
-      currency: newCurrency,
-    }));
+    if (refreshGeneration !== priceRefreshGenerationRef.current) return;
+
+    setCart((prev) => {
+      const items = prev.items.map((item) => {
+        const update = updatesMap.get(item.productId);
+        if (!update) return item;
+
+        return {
+          ...item,
+          ...update,
+          ...(update.price !== undefined ? { currency: newCurrency } : {}),
+        };
+      });
+      const allPricesUpdated =
+        items.length === 0 || items.every((item) => item.currency === newCurrency);
+
+      return {
+        ...prev,
+        items,
+        lastUpdated: new Date().toISOString(),
+        currency: allPricesUpdated ? newCurrency : prev.currency,
+      };
+    });
   }, []);
 
   // ---- Computed values ----

@@ -174,6 +174,11 @@ export default function ProductDetailClient({
   const [addedToCartVariantId, setAddedToCartVariantId] = useState<number | null>(null);
   const [addToCartError, setAddToCartError] = useState<string | null>(null);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [displayRelatedBooks, setDisplayRelatedBooks] = useState(relatedBooks);
+  const [relatedFetchedForKey, setRelatedFetchedForKey] = useState(
+    relatedBooks.length > 0 ? serverFetchKey : currentKey
+  );
+  const [relatedLoading, setRelatedLoading] = useState(false);
 
   // Show loading spinner when:
   // 1. Initial load is in progress
@@ -214,7 +219,8 @@ export default function ProductDetailClient({
           const product = await getProductById(
             productId,
             abortController.signal,
-            locale
+            locale,
+            currency
           );
           if (abortController.signal.aborted) return;
           const converted = oscarProductToBook(product, locale);
@@ -245,7 +251,8 @@ export default function ProductDetailClient({
         const product = await getProductById(
           productId,
           abortController.signal,
-          locale
+          locale,
+          currency
         );
         if (abortController.signal.aborted) return;
         const convertedBook = oscarProductToBook(product, locale);
@@ -279,6 +286,55 @@ export default function ProductDetailClient({
     initialBook,
     isAuthenticated,
     authLoading,
+  ]);
+
+  useEffect(() => {
+    if (relatedBooks.length === 0) {
+      setDisplayRelatedBooks([]);
+      setRelatedFetchedForKey(currentKey);
+      return;
+    }
+    if (relatedFetchedForKey === currentKey) return;
+
+    const abortController = new AbortController();
+
+    async function fetchRelatedBooks() {
+      try {
+        setRelatedLoading(true);
+        const products = await Promise.all(
+          relatedBooks.map((relatedBook) =>
+            getProductById(
+              relatedBook.id,
+              abortController.signal,
+              locale,
+              currency
+            )
+          )
+        );
+        if (abortController.signal.aborted) return;
+        setDisplayRelatedBooks(
+          products.map((product) => oscarProductToBook(product, locale))
+        );
+        setRelatedFetchedForKey(currentKey);
+      } catch (err) {
+        if (!abortController.signal.aborted) {
+          console.error('Failed to refresh related products:', err);
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setRelatedLoading(false);
+        }
+      }
+    }
+
+    fetchRelatedBooks();
+    return () => abortController.abort();
+  }, [
+    relatedBooks,
+    relatedFetchedForKey,
+    currentKey,
+    locale,
+    currency,
   ]);
 
   // Fetch purchased book IDs for the logged-in user
@@ -700,7 +756,13 @@ export default function ProductDetailClient({
         {relatedBooks.length > 0 && (
           <section className="mt-8 pt-6 pb-12 border-t border-parchment-dark/30">
             <h2 className="section-title text-center mb-8">{t('catalog.relatedProducts')}</h2>
-            <ProductGrid books={relatedBooks} />
+            {relatedLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-burgundy" />
+              </div>
+            ) : relatedFetchedForKey === currentKey ? (
+              <ProductGrid books={displayRelatedBooks} />
+            ) : null}
           </section>
         )}
       </div>
