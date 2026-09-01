@@ -7,25 +7,17 @@ import CartItem from '../../components/CartItem';
 import { useLocalCart } from '../../lib/localCart';
 import { useAuth } from '../../lib/AuthContext';
 import { useCurrency } from '../../i18n/CurrencyContext';
+import { currencySymbols, type Currency } from '../../i18n/settings';
 import { useTranslations, useLanguage } from '../../i18n/LanguageContext';
 
 /** Map ISO 4217 currency code to display symbol */
-function getCurrencySymbol(currency: string): string {
-  try {
-    const formatted = Intl.NumberFormat('en', {
-      style: 'currency',
-      currency,
-      currencyDisplay: 'narrowSymbol',
-    }).formatToParts(0);
-    return formatted.find((p) => p.type === 'currency')?.value ?? currency;
-  } catch {
-    return currency;
-  }
+function getCurrencySymbol(currency: string | undefined, fallback: string): string {
+  return currencySymbols[currency as Currency] || fallback;
 }
 
 export default function CartPage() {
   const { items, totalPrice, updateQuantity, removeItem, refreshPrices } = useLocalCart();
-  const { currency } = useCurrency();
+  const { currency, symbol } = useCurrency();
   const t = useTranslations();
   const tCart = useTranslations('cart');
   const { locale } = useLanguage();
@@ -38,7 +30,7 @@ export default function CartPage() {
 
   // Detect mixed currencies in cart items
   const hasMixedCurrencies = items.length > 0 && new Set(items.map(i => i.currency)).size > 1;
-  const subtotalSymbol = getCurrencySymbol(items[0]?.currency || currency);
+  const subtotalSymbol = getCurrencySymbol(items[0]?.currency || currency, symbol);
 
   const lastRefreshKeyRef = useRef<string>('');
 
