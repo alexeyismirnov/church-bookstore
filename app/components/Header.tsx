@@ -7,7 +7,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LocalizedLink from './LocalizedLink';
 import { useLocalizedPath } from '../i18n/useLocalizedPath';
-import { Search, User, ShoppingCart, Menu, X, Heart, LogOut, User as UserIcon, BookOpen } from 'lucide-react';
+import { Search, User, ShoppingCart, Menu, X, Heart, LogOut, User as UserIcon, BookOpen, ReceiptText } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import CurrencySelector from './CurrencySelector';
 import { useTranslations } from '../i18n/LanguageContext';
@@ -124,7 +124,7 @@ export default function Header() {
                         className="flex items-center gap-2 px-4 py-2 text-ink hover:bg-parchment-dark/20 transition-colors"
                         onClick={() => setIsDropdownOpen(false)}
                       >
-                        <UserIcon className="w-4 h-4" />
+                        <ReceiptText className="w-4 h-4" />
                         {t('myOrders')}
                       </LocalizedLink>
                       <LocalizedLink
