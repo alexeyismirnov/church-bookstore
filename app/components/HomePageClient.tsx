@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import LocalizedLink from './LocalizedLink';
 import { Loader2, BookOpen, Headphones, Cross, type LucideIcon } from 'lucide-react';
 import Hero from './Hero';
 import ProductGrid from './ProductGrid';
-import { getMyBooks, getFullImageUrl } from '../lib/api';
+import { getMyBooks, getFullImageUrl, getNewArrivals } from '../lib/api';
 import ProductImage from './ProductImage';
 import { useAuth } from '../lib/AuthContext';
 import { STATIC_CATEGORIES } from '../lib/data';
 import { buildProductSlug } from '../lib/product-slug';
 import { useApiLocale } from '../i18n/useApiLocale';
+import { useCurrency } from '../i18n/CurrencyContext';
 import { useTranslations } from '../i18n/LanguageContext';
 import { Book, MyBook } from '../types';
 
@@ -33,10 +34,41 @@ interface HomePageClientProps {
 
 export default function HomePageClient({ heroBook, newArrivals }: HomePageClientProps) {
   const locale = useApiLocale();
+  const { currency } = useCurrency();
   const t = useTranslations('homepage');
   const tGlobal = useTranslations();
   const [miniBookshelf, setMiniBookshelf] = useState<MyBook[]>([]);
+  const [displayNewArrivals, setDisplayNewArrivals] = useState(newArrivals);
+  const lastArrivalsRequest = useRef(`${locale}:${currency}`);
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+
+  useEffect(() => {
+    const requestKey = `${locale}:${currency}`;
+    if (lastArrivalsRequest.current === requestKey) {
+      return;
+    }
+    lastArrivalsRequest.current = requestKey;
+
+    const controller = new AbortController();
+
+    async function refreshNewArrivals() {
+      try {
+        const arrivals = await getNewArrivals(5, {
+          locale,
+          currency,
+          signal: controller.signal,
+        });
+        setDisplayNewArrivals(arrivals.slice(1));
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          console.error('Failed to refresh new arrivals:', err);
+        }
+      }
+    }
+
+    refreshNewArrivals();
+    return () => controller.abort();
+  }, [currency, locale]);
 
   useEffect(() => {
     if (authLoading || !isAuthenticated) {
@@ -117,8 +149,8 @@ export default function HomePageClient({ heroBook, newArrivals }: HomePageClient
           <div className="text-center mb-12">
             <h2 className="section-title mb-0">{t('featured.newArrivals')}</h2>
           </div>
-          {newArrivals.length > 0 ? (
-            <ProductGrid books={newArrivals} />
+          {displayNewArrivals.length > 0 ? (
+            <ProductGrid books={displayNewArrivals} />
           ) : (
             <p className="text-center text-ink-muted py-8">
               No new arrivals at the moment. Check back soon!

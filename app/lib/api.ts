@@ -175,13 +175,25 @@ export function getApiHeaders(options?: {
  * @param page - Page number (1-based)
  * @returns Paginated product response
  */
-export async function getProductsByCategory(categoryId: string, page: number = 1, inStock?: boolean): Promise<OscarPaginationResponse<OscarProduct>> {
+interface ProductListingRequestOptions {
+  locale?: string;
+  currency?: string;
+  signal?: AbortSignal;
+}
+
+export async function getProductsByCategory(
+  categoryId: string,
+  page: number = 1,
+  inStock?: boolean,
+  options?: ProductListingRequestOptions
+): Promise<OscarPaginationResponse<OscarProduct>> {
   let url = `${getApiBase()}/prodcat/${categoryId}/?page=${page}`;
   if (inStock) url += '&in_stock=true';
   const response = await fetch(url, {
     method: 'GET',
-    headers: getApiHeaders(),
+    headers: getApiHeaders(options),
     cache: 'no-store', // Ensure fresh data
+    signal: options?.signal,
   });
 
   if (!response.ok) {
@@ -197,13 +209,18 @@ export async function getProductsByCategory(categoryId: string, page: number = 1
  * @param page - Page number (1-based)
  * @returns Paginated product response
  */
-export async function getProducts(page: number = 1, inStock?: boolean): Promise<OscarPaginationResponse<OscarProduct>> {
+export async function getProducts(
+  page: number = 1,
+  inStock?: boolean,
+  options?: ProductListingRequestOptions
+): Promise<OscarPaginationResponse<OscarProduct>> {
   let url = `${getApiBase()}/products/?page=${page}`;
   if (inStock) url += '&in_stock=true';
   const response = await fetch(url, {
     method: 'GET',
-    headers: getApiHeaders(),
+    headers: getApiHeaders(options),
     cache: 'no-store', // Ensure fresh data
+    signal: options?.signal,
   });
 
   if (!response.ok) {
@@ -220,13 +237,19 @@ export async function getProducts(page: number = 1, inStock?: boolean): Promise<
  * @param page - Page number (1-based)
  * @returns Paginated product response
  */
-export async function searchProducts(query: string, page: number = 1, inStock?: boolean): Promise<OscarPaginationResponse<OscarProduct>> {
+export async function searchProducts(
+  query: string,
+  page: number = 1,
+  inStock?: boolean,
+  options?: ProductListingRequestOptions
+): Promise<OscarPaginationResponse<OscarProduct>> {
   let url = `${getApiBase()}/search/?q=${encodeURIComponent(query)}&page=${page}`;
   if (inStock) url += '&in_stock=true';
   const response = await fetch(url, {
     method: 'GET',
-    headers: getApiHeaders(),
+    headers: getApiHeaders(options),
     cache: 'no-store', // Ensure fresh data
+    signal: options?.signal,
   });
 
   if (!response.ok) {
@@ -718,15 +741,24 @@ export function oscarProductToBook(product: OscarProduct, locale: string = 'en')
  * @param limit - Maximum number of products to return (default 6)
  * @returns Array of Book objects
  */
-export async function getNewArrivals(limit: number = 6): Promise<Book[]> {
-  try {
-    const response = await getProducts(1);
-    const locale = getLanguagePreference();
-    return response.results.slice(0, limit).map(product => oscarProductToBook(product, locale));
-  } catch (err) {
-    console.error('Failed to fetch new arrivals:', err);
-    return [];
+export async function getNewArrivals(
+  limit: number = 6,
+  options?: { locale?: string; currency?: string; signal?: AbortSignal }
+): Promise<Book[]> {
+  const locale = options?.locale ?? getLanguagePreference();
+  const response = await fetch(`${getApiBase()}/products/?page=1`, {
+    method: 'GET',
+    headers: getApiHeaders({ locale, currency: options?.currency }),
+    cache: 'no-store',
+    signal: options?.signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch new arrivals: ${response.status} ${response.statusText}`);
   }
+
+  const data: OscarPaginationResponse<OscarProduct> = await response.json();
+  return data.results.slice(0, limit).map((product) => oscarProductToBook(product, locale));
 }
 
 /**

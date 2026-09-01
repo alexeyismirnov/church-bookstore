@@ -110,6 +110,13 @@ export default function CatalogContent({
       return;
     }
 
+    const controller = new AbortController();
+    const requestOptions = {
+      locale,
+      currency,
+      signal: controller.signal,
+    };
+
     async function fetchProducts() {
       setLoading(true);
       setError(null);
@@ -118,13 +125,23 @@ export default function CatalogContent({
         let response;
         if (isSearchActive && committedSearchQuery.trim()) {
           // Search mode: fetch products matching the search query
-          response = await searchProducts(committedSearchQuery, currentPage, inStock);
+          response = await searchProducts(
+            committedSearchQuery,
+            currentPage,
+            inStock,
+            requestOptions
+          );
         } else if (selectedCategoryId) {
           // Fetch products by category from /api/prodcat/<categoryId>/
-          response = await getProductsByCategory(selectedCategoryId, currentPage, inStock);
+          response = await getProductsByCategory(
+            selectedCategoryId,
+            currentPage,
+            inStock,
+            requestOptions
+          );
         } else {
           // Fetch all products from /api/oscar/products/
-          response = await getProducts(currentPage, inStock);
+          response = await getProducts(currentPage, inStock, requestOptions);
         }
         
         // Convert Oscar products to Book format with current locale
@@ -136,14 +153,19 @@ export default function CatalogContent({
         setHasNextPage(!!response.next);
         setHasPrevPage(!!response.previous);
       } catch (err) {
-        console.error('Error fetching products:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load products');
+        if (!controller.signal.aborted) {
+          console.error('Error fetching products:', err);
+          setError(err instanceof Error ? err.message : 'Failed to load products');
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
 
     fetchProducts();
+    return () => controller.abort();
   }, [
     currentPage,
     selectedCategoryId,
