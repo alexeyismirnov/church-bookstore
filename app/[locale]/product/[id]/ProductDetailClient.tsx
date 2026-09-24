@@ -343,7 +343,7 @@ export default function ProductDetailClient({
 
     async function fetchPurchasedBooks() {
       try {
-        const myBooks = await getMyBooks();
+        const myBooks = await getMyBooks(locale);
         const purchasedIds = new Set<number>();
         for (const mb of myBooks) {
           if (mb.purchased) {
@@ -358,7 +358,7 @@ export default function ProductDetailClient({
     }
 
     fetchPurchasedBooks();
-  }, [authLoading, isAuthenticated]);
+  }, [authLoading, isAuthenticated, locale]);
 
   // Reviews: use SSR when locale matches; refetch when locale/auth changes
   useEffect(() => {

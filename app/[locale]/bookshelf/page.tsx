@@ -8,14 +8,15 @@ import { getMyBooks, deleteMyBook, getFullImageUrl, transformToSpacesUrl } from 
 import ProductImage from '../../components/ProductImage';
 import { buildProductSlug } from '../../lib/product-slug';
 import { useAuth } from '../../lib/AuthContext';
-import { useTranslations, useLanguage } from '../../i18n/LanguageContext';
+import { useTranslations } from '../../i18n/LanguageContext';
+import { useApiLocale } from '../../i18n/useApiLocale';
 import { MyBook } from '../../types';
 
 export default function BookshelfPage() {
   const router = useLocalizedRouter();
   const t = useTranslations();
   const tBookshelf = useTranslations('bookshelf');
-  const { locale, isLoading: contextLoading } = useLanguage();
+  const locale = useApiLocale();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   
   const [books, setBooks] = useState<MyBook[]>([]);
@@ -32,13 +33,11 @@ export default function BookshelfPage() {
   }, [authLoading, isAuthenticated, router]);
 
   useEffect(() => {
-    // Wait for language context and auth to load before fetching
-    if (contextLoading) return;
     if (!isAuthenticated) return;
     
     async function fetchBooks() {
       try {
-        const myBooks = await getMyBooks();
+        const myBooks = await getMyBooks(locale);
         setBooks(myBooks);
       } catch (err) {
         console.error('Error fetching books:', err);
@@ -49,7 +48,7 @@ export default function BookshelfPage() {
     }
 
     fetchBooks();
-  }, [locale, contextLoading, isAuthenticated]);
+  }, [locale, isAuthenticated]);
 
   const handleDeleteBook = async (bookId: number) => {
     if (deletingBookId === bookId) return; // Already deleting

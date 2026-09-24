@@ -90,7 +90,7 @@ export default function HomePageClient({
 
     async function fetchMiniBookshelf() {
       try {
-        const myBooks = await getMyBooks();
+        const myBooks = await getMyBooks(locale);
         const visibleBooks = myBooks.filter((book) => {
           const downloadUrl = book.download_url || '';
           const epubUrl = book.epub_url || '';

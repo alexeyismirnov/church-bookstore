@@ -65,13 +65,23 @@ export function LanguageProvider({ children, initialLocale }: LanguageProviderPr
   );
 
   // URL is the source of truth on locale-prefixed routes (instant on router.push).
+  // Keep localStorage/cookie in sync so API helpers that read locale from storage
+  // (getApiHeaders / getAuthHeaders) match the language shown in the UI.
   useEffect(() => {
-    if (pathLocale) {
-      setLocaleState(pathLocale);
-      return;
+    const nextLocale = pathLocale
+      ?? (initialLocale && locales.includes(initialLocale) ? initialLocale : null);
+    if (!nextLocale) return;
+
+    setLocaleState(nextLocale);
+    try {
+      localStorage.setItem('locale', nextLocale);
+    } catch {
+      // ignore (private mode, etc.)
     }
-    if (initialLocale && locales.includes(initialLocale)) {
-      setLocaleState(initialLocale);
+    try {
+      document.cookie = `locale=${nextLocale}; max-age=${60 * 60 * 24 * 365}; path=/; SameSite=Lax`;
+    } catch {
+      // ignore
     }
   }, [pathLocale, initialLocale]);
 

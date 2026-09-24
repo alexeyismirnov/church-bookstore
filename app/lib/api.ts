@@ -143,9 +143,18 @@ export function transformToSpacesUrl(url: string | null | undefined): string | n
   return `${SPACES_ROOT}/${bucket}/${filename}`;
 }
 
-// Get language from localStorage (set by LanguageContext)
+/**
+ * Locale for API Accept-Language headers.
+ * Prefer the URL path (/ru/..., /zh-hans/...) over localStorage — the UI already
+ * follows the path, but storage can lag (e.g. landed on /ru/bookshelf while
+ * localStorage still says "en"), which made /mybooks return English titles.
+ */
 function getLanguagePreference(): string {
   if (typeof window === 'undefined') return 'en';
+  const segment = window.location.pathname.split('/').filter(Boolean)[0];
+  if (segment === 'en' || segment === 'ru' || segment === 'zh-hans' || segment === 'zh-hant') {
+    return segment;
+  }
   return localStorage.getItem('locale') || 'en';
 }
 
@@ -916,10 +925,11 @@ export function getAuthHeaders(options?: {
 
 /**
  * Fetch user's purchased books (mybooks) from the API
+ * @param locale - Optional locale for Accept-Language (prefer URL locale over localStorage)
  * @returns Array of MyBook objects
  * @throws Error if not authenticated or request fails
  */
-export async function getMyBooks(): Promise<MyBook[]> {
+export async function getMyBooks(locale?: string): Promise<MyBook[]> {
   const user = getStoredUser();
   
   if (!user || !user.email) {
@@ -928,7 +938,9 @@ export async function getMyBooks(): Promise<MyBook[]> {
   
   const response = await fetch(`${getApiBase()}/mybooks`, {
     method: 'POST',
-    headers: getAuthHeaders(),
+    // Pass locale explicitly so URL language wins over a stale localStorage value
+    // (same pattern as catalog/checkout — avoids English titles on /ru/bookshelf).
+    headers: getAuthHeaders({ locale }),
     body: JSON.stringify({ email: user.email }),
     cache: 'no-store',
   });
