@@ -85,7 +85,7 @@ export default function FilterSidebar({
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const data = await getCategories();
+        const data = await getCategories(locale);
         setCategories(data);
         setFetchedLocale(locale);
         setError(null);

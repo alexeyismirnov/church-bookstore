@@ -253,6 +253,7 @@ function CheckoutContent() {
               }
             : undefined,
           shippingAddress: checkoutState.shippingAddress || undefined,
+          locale,
         });
 
         console.log('Order placed successfully after redirect:', order.number);
@@ -469,7 +470,7 @@ function CheckoutContent() {
           currentState.isShippingRequired &&
           currentState.shippingAddress
         ) {
-          const methods = await getShippingMethods(currentState.shippingAddress, { currency });
+          const methods = await getShippingMethods(currentState.shippingAddress, { currency, locale });
           if (cancelled || generation !== currencyRefreshGenerationRef.current) return;
           updatedShippingMethod =
             methods.find((method) => method.code === currentState.selectedShippingMethod?.code) ??
@@ -696,6 +697,7 @@ function CheckoutContent() {
           tax: selectedShippingMethod.price.tax,
         } : undefined,
         shippingAddress: shippingAddress || undefined,
+        locale,
       });
 
       console.log('Order placed successfully:', order.number);
@@ -756,6 +758,7 @@ function CheckoutContent() {
             }
           : undefined,
         shippingAddress: checkoutState.shippingAddress || undefined,
+        locale,
       });
 
       console.log('Order placed successfully after retry:', order.number);

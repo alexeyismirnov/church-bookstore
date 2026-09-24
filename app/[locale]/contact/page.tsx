@@ -4,9 +4,12 @@ import { useState, useRef } from 'react';
 import { Mail, Globe, MapPin, Send } from 'lucide-react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useTranslations } from '../../i18n/LanguageContext';
+import { useApiLocale } from '../../i18n/useApiLocale';
+import { getApiHeaders } from '../../lib/api';
 
 export default function ContactPage() {
   const t = useTranslations('contact');
+  const locale = useApiLocale();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -34,7 +37,7 @@ export default function ContactPage() {
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getApiHeaders({ locale }),
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,

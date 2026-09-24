@@ -433,10 +433,10 @@ export async function getCategoriesForServer(
   }
 }
 
-export async function getCategories(): Promise<Category[]> {
+export async function getCategories(locale?: string): Promise<Category[]> {
   const response = await fetch(`${getApiBase()}/categories/`, {
     method: 'GET',
-    headers: getApiHeaders(),
+    headers: getApiHeaders({ locale }),
     cache: 'no-store',
   });
 
@@ -1031,10 +1031,13 @@ export async function fetchProductDetails(productId: string): Promise<{
  */
 export async function getShippingMethods(
   shippingAddr?: ShippingAddress,
-  options?: { currency?: string; signal?: AbortSignal }
+  options?: { currency?: string; locale?: string; signal?: AbortSignal }
 ): Promise<ShippingMethod[]> {
   const url = `${getApiBase()}/basket/shipping-methods/`;
-  const headers = getAuthHeaders({ currency: options?.currency });
+  const headers = getAuthHeaders({
+    currency: options?.currency,
+    locale: options?.locale,
+  });
   
   // Use GET when no address is provided (cart page), POST with address body otherwise
   if (!shippingAddr) {
@@ -1102,8 +1105,10 @@ export async function placeOrder(params: {
   };
   shippingAddress?: ShippingAddress;
   guestEmail?: string;
+  /** UI locale — drives confirmation-email language via Accept-Language. */
+  locale?: string;
 }): Promise<Order> {
-  const headers = getAuthHeaders();
+  const headers = getAuthHeaders({ locale: params.locale });
 
   // Oscar requires a full URL (HyperlinkedRelatedField). Prefer the URL returned by the API.
   const apiBase = getOscarDirectApiBase();

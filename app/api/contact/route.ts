@@ -47,9 +47,17 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Forward to Django backend
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    const acceptLanguage = request.headers.get('Accept-Language');
+    if (acceptLanguage) {
+      headers['Accept-Language'] = acceptLanguage;
+    }
+
     const oscarResponse = await fetch(`${OSCAR_API_URL}/contact/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ name, email, message }),
     });
 

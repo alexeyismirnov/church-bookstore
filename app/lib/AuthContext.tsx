@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocalizedPath } from '../i18n/useLocalizedPath';
-import { getApiHeaders } from './api';
+import { getApiHeaders, getAuthHeaders as getSharedAuthHeaders } from './api';
 
 // Types for user and profile
 export interface User {
@@ -112,17 +112,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return '/api/oscar';
   };
 
-  // Get auth headers with token
-  const getAuthHeaders = (): HeadersInit => {
-    const token = getStoredToken();
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
-    if (token) {
-      headers['Authorization'] = `Token ${token}`;
-    }
-    return headers;
-  };
+  // Prefer shared headers so Accept-Language / X-Currency match the UI
+  // (local-only auth headers previously omitted them and could reset profile.language).
+  const getAuthHeaders = (): HeadersInit => getSharedAuthHeaders();
 
   // Initialize auth state on mount
   useEffect(() => {
@@ -181,9 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch(`${getApiBase()}/login/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getApiHeaders(),
         body: JSON.stringify({ username, password }),
       });
 

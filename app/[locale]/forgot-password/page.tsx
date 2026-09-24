@@ -5,9 +5,12 @@ import LocalizedLink from '../../components/LocalizedLink';
 import { Mail, CheckCircle } from 'lucide-react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useTranslations } from '../../i18n/LanguageContext';
+import { useApiLocale } from '../../i18n/useApiLocale';
+import { getApiHeaders } from '../../lib/api';
 
 export default function ForgotPasswordPage() {
   const t = useTranslations('auth.forgotPassword');
+  const locale = useApiLocale();
 
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +36,7 @@ export default function ForgotPasswordPage() {
     try {
       const response = await fetch('/api/password-reset', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getApiHeaders({ locale }),
         body: JSON.stringify({ email, hcaptcha_token: hcaptchaToken }),
       });
 
