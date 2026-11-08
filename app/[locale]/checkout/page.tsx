@@ -11,6 +11,7 @@ import { useLocalizedRouter } from '../../i18n/useLocalizedRouter';
 import { ShippingAddress, ShippingMethod, Basket } from '../../types';
 import { getShippingMethods, placeOrder, getStoredToken } from '../../lib/api';
 import { useLocalCart, type SyncResult } from '../../lib/localCart';
+import { useAuth } from '../../lib/AuthContext';
 import { useCurrency } from '../../i18n/CurrencyContext';
 import { currencySymbols, type Currency } from '../../i18n/settings';
 import { useTranslations } from '../../i18n/LanguageContext';
@@ -48,6 +49,27 @@ interface CheckoutPaymentState {
   basketUrl?: string;
   currency: string;
   total: string;
+}
+
+/** Payload for /api/stripe/create-payment-intent (includes webhook fulfillment metadata). */
+function buildPaymentIntentRequestBody(params: {
+  amount: number;
+  currency: string;
+  userId: number;
+  basketId: string;
+  locale: string;
+  shippingMethodCode?: string | null;
+  shippingAddress?: ShippingAddress | null;
+}) {
+  return {
+    amount: params.amount,
+    currency: params.currency.toLowerCase(),
+    userId: params.userId,
+    basketId: params.basketId,
+    locale: params.locale,
+    shippingMethodCode: params.shippingMethodCode || 'free-shipping',
+    shippingAddress: params.shippingAddress || null,
+  };
 }
 
 /** Convert a SyncResult into CartItemForDisplay[] for the checkout UI. */
@@ -89,6 +111,7 @@ function CheckoutContent() {
   const searchParams = useSearchParams();
 
   // Require authentication for checkout
+  const { user } = useAuth();
   const [authChecked, setAuthChecked] = useState(false);
   useEffect(() => {
     if (!getStoredToken()) {
@@ -336,6 +359,10 @@ function CheckoutContent() {
     if (!isShippingRequired && checkoutStep === 'shipping') {
       // No shipping required - go directly to payment
       // Create payment intent immediately without shipping address
+      // Wait until auth user + basket are available (needed for webhook metadata).
+      if (!user?.id || !basket?.id) {
+        return;
+      }
       console.log('[checkout] Step determination: cartItems=', cartItems.length, 'items, isShippingRequired=', isShippingRequired);
       const createPaymentIntent = async () => {
         // Calculate subtotal from cartItems (no shipping cost for digital-only orders)
@@ -364,10 +391,17 @@ function CheckoutContent() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              amount: orderTotal, // No shipping cost for digital-only orders
-              currency: paymentCurrency.toLowerCase(),
-            }),
+            body: JSON.stringify(
+              buildPaymentIntentRequestBody({
+                amount: orderTotal, // No shipping cost for digital-only orders
+                currency: paymentCurrency,
+                userId: user.id,
+                basketId: basket.id,
+                locale,
+                shippingMethodCode: 'free-shipping',
+                shippingAddress: null,
+              })
+            ),
           });
 
           if (!response.ok) {
@@ -390,8 +424,8 @@ function CheckoutContent() {
               clientSecret: data.clientSecret,
               paymentIntentId: data.paymentIntentId,
               selectedShippingMethod: null,
-              basketId: basket?.id || '',
-              basketUrl: basket?.url,
+              basketId: basket.id,
+              basketUrl: basket.url,
               currency: paymentCurrency,
               total: orderTotal.toFixed(2),
             };
@@ -411,7 +445,7 @@ function CheckoutContent() {
       // Shipping required - stay on shipping step, mark step as determined
       setIsStepDetermined(true);
     }
-  }, [isBasketLoaded, isStepDetermined, isShippingRequired, checkoutStep, cartItems]);
+  }, [isBasketLoaded, isStepDetermined, isShippingRequired, checkoutStep, cartItems, user, basket, locale, currency, tCheckout]);
 
   const checkoutCurrencyStateRef = useRef({
     checkoutStep,
@@ -490,13 +524,23 @@ function CheckoutContent() {
             : 0;
           const newTotal = newSubtotal + newShipping;
           const paymentGeneration = ++paymentRequestGenerationRef.current;
+          if (!user?.id) {
+            throw new Error('Missing user for payment intent');
+          }
           const response = await fetch('/api/stripe/create-payment-intent', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              amount: newTotal,
-              currency: currency.toLowerCase(),
-            }),
+            body: JSON.stringify(
+              buildPaymentIntentRequestBody({
+                amount: newTotal,
+                currency,
+                userId: user.id,
+                basketId: refreshedBasket.id,
+                locale,
+                shippingMethodCode: updatedShippingMethod?.code || 'free-shipping',
+                shippingAddress: currentState.shippingAddress,
+              })
+            ),
           });
           if (!response.ok) throw new Error('Failed to initialize payment');
           paymentData = await response.json();
@@ -625,15 +669,25 @@ function CheckoutContent() {
     // Fetch payment intent from Stripe API
     const paymentGeneration = ++paymentRequestGenerationRef.current;
     try {
+      if (!user?.id || !basket?.id) {
+        throw new Error('Missing user or basket for payment intent');
+      }
       const response = await fetch('/api/stripe/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          amount: total,
-          currency: committedCurrency.toLowerCase(),
-        }),
+        body: JSON.stringify(
+          buildPaymentIntentRequestBody({
+            amount: total,
+            currency: committedCurrency,
+            userId: user.id,
+            basketId: basket.id,
+            locale,
+            shippingMethodCode: selectedShippingMethod?.code || 'free-shipping',
+            shippingAddress: address,
+          })
+        ),
       });
 
       if (!response.ok) {
@@ -653,8 +707,8 @@ function CheckoutContent() {
           clientSecret: data.clientSecret,
           paymentIntentId: data.paymentIntentId,
           selectedShippingMethod: selectedShippingMethod,
-          basketId: basket?.id || '',
-          basketUrl: basket?.url,
+          basketId: basket.id,
+          basketUrl: basket.url,
           currency: committedCurrency,
           total: total.toFixed(2),
         };

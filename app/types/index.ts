@@ -446,6 +446,7 @@ export interface OrderAddress {
 export interface OscarOrder {
   number: string;
   url: string;
+  basket?: string; // basket URL — present when ORDER_FIELDS includes basket
   lines: string; // URL to lines
   lines_url: string;
   status: string;

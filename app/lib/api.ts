@@ -1087,9 +1087,74 @@ export async function getShippingMethods(
 // =============================================================================
 
 /**
+ * Find an order already created for this basket (e.g. by Stripe webhook)
+ * while the browser return path is still racing or failed checkout.
+ */
+async function findExistingOrderForBasket(
+  basketId: string,
+  locale?: string
+): Promise<Order | null> {
+  const basketNeedle = `/baskets/${basketId}`;
+  const maxAgeMs = 60 * 60 * 1000; // 1 hour
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    try {
+      const response = await fetch(`${getApiBase()}/orders/?page=1`, {
+        headers: getAuthHeaders({ locale }),
+      });
+      if (!response.ok) continue;
+
+      const data = (await response.json()) as OscarOrderListResponse;
+      const now = Date.now();
+      const recent = (data.results || []).filter((order) => {
+        const placedAt = Date.parse(order.date_placed);
+        return Number.isFinite(placedAt) && now - placedAt <= maxAgeMs;
+      });
+      const match =
+        recent.find((order) => order.basket && order.basket.includes(basketNeedle)) ||
+        // Sole recent order when basket hyperlink is omitted from the payload
+        (recent.length === 1 ? recent[0] : undefined);
+
+      if (match) {
+        return {
+          number: match.number,
+          status: match.status,
+          date_placed: match.date_placed,
+          basket: match.basket || '',
+          currency: match.currency,
+          total_incl_tax: match.total_incl_tax,
+          total_excl_tax: match.total_excl_tax,
+          shipping_incl_tax: match.shipping_incl_tax,
+          shipping_excl_tax: match.shipping_excl_tax,
+          shipping_method: match.shipping_method,
+          shipping_code: match.shipping_code,
+          url: match.url,
+          lines: match.lines,
+          guest_email: match.email,
+          owner: match.owner,
+          offer_discounts: [],
+          voucher_discounts: [],
+        };
+      }
+    } catch (err) {
+      console.error('Error looking up existing order after checkout race:', err);
+    }
+  }
+
+  return null;
+}
+
+/**
  * Place an order via the Oscar checkout API.
  * Called after payment is confirmed to register the order in the backend.
  * On success, the basket status changes from "Open" to "Submitted" and an order is created.
+ *
+ * If the Stripe webhook already fulfilled the order, checkout may return 401/406
+ * (frozen/submitted basket). In that case we recover the existing order.
  */
 export async function placeOrder(params: {
   basketId: string;
@@ -1143,6 +1208,18 @@ export async function placeOrder(params: {
     } catch {
       errorData = rawBody;
     }
+
+    if (response.status === 401 || response.status === 406) {
+      const existing = await findExistingOrderForBasket(params.basketId, params.locale);
+      if (existing) {
+        console.log(
+          'Order already fulfilled (likely Stripe webhook); recovering order',
+          existing.number
+        );
+        return existing;
+      }
+    }
+
     console.error('Order placement failed:', response.status, errorData, { payload });
     throw new Error(formatOscarApiError(errorData, response.status));
   }
