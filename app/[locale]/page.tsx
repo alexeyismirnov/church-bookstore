@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
 export default async function HomePage({ params }: HomePageProps) {
   const { locale: localeParam } = await params;
   const locale: Locale = resolveLocaleFromParams(localeParam);
-  const currency = await resolveCurrencyFromParams();
+  const currency = await resolveCurrencyFromParams(locale);
 
   const arrivals = await getNewArrivalsForServer(5, locale, currency);
   const { heroBook, newArrivals } = splitHeroAndArrivals(arrivals);

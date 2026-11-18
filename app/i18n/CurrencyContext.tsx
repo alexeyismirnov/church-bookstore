@@ -3,7 +3,7 @@
 
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Currency, defaultCurrency, currencies, currencySymbols, currencyNames } from './settings';
 
 interface CurrencyContextType {
@@ -34,6 +34,17 @@ export function CurrencyProvider({ children, initialCurrency }: CurrencyProvider
   // isLoading is always false because the currency is known from the first render
   // (provided via the initialCurrency prop from the server-read cookie).
   const isLoading = false;
+
+  // Keep localStorage in sync with the server-resolved currency (middleware cookie /
+  // first-visit locale default) so getApiHeaders() matches the UI without a flash.
+  useEffect(() => {
+    if (!initialCurrency || !currencies.includes(initialCurrency)) return;
+    try {
+      localStorage.setItem('currency', initialCurrency);
+    } catch {
+      // ignore (private mode, etc.)
+    }
+  }, [initialCurrency]);
 
   const setCurrency = useCallback((newCurrency: Currency) => {
     // Write to localStorage BEFORE updating React state.

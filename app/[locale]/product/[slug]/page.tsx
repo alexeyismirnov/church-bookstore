@@ -24,7 +24,7 @@ interface ProductPageProps {
 }
 
 async function loadProduct(locale: Locale, id: string) {
-  const currency = await resolveCurrencyFromParams();
+  const currency = await resolveCurrencyFromParams(locale);
   const book = await getCachedProductById(id, locale, currency);
   return { locale, currency, book, serverFetchKey: `${locale}:${currency}` };
 }

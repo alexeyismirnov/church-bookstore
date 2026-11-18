@@ -3,6 +3,7 @@ import { resolveLocaleParam } from '../i18n/routing';
 import {
   currencies,
   defaultCurrency,
+  defaultCurrencyForLocale,
   defaultLocale,
   locales,
   type Currency,
@@ -13,9 +14,12 @@ export function resolveLocaleFromParams(localeParam?: string): Locale {
   return resolveLocaleParam(localeParam);
 }
 
-/** Currency still follows cookie/profile preference; locale comes from the URL. */
-export async function resolveCurrencyFromParams(): Promise<Currency> {
-  return resolveCurrencyFromCookies();
+/**
+ * Currency follows cookie/profile preference; on first visit (no cookie)
+ * falls back to a locale-based default (zh-hans→CNY, zh-hant→HKD, else USD).
+ */
+export async function resolveCurrencyFromParams(locale?: Locale): Promise<Currency> {
+  return resolveCurrencyFromCookies(locale);
 }
 
 export async function resolveLocaleFromCookies(): Promise<Locale> {
@@ -28,12 +32,13 @@ export async function resolveLocaleFromCookies(): Promise<Locale> {
   return defaultLocale;
 }
 
-export async function resolveCurrencyFromCookies(): Promise<Currency> {
+export async function resolveCurrencyFromCookies(fallbackLocale?: Locale): Promise<Currency> {
   const cookieStore = await cookies();
   const profileCurrency = cookieStore.get('profile_currency')?.value as Currency | undefined;
   const currencyCookie = cookieStore.get('currency')?.value as Currency | undefined;
 
   if (profileCurrency && currencies.includes(profileCurrency)) return profileCurrency;
   if (currencyCookie && currencies.includes(currencyCookie)) return currencyCookie;
+  if (fallbackLocale) return defaultCurrencyForLocale(fallbackLocale);
   return defaultCurrency;
 }

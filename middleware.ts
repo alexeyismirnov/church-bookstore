@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { defaultLocale, locales, type Locale } from './app/i18n/settings';
+import {
+  currencies,
+  defaultCurrencyForLocale,
+  defaultLocale,
+  locales,
+  type Currency,
+  type Locale,
+} from './app/i18n/settings';
 
 const LOCALE_COOKIE = 'locale';
+const CURRENCY_COOKIE = 'currency';
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 function mapLanguageTagToLocale(tag: string): Locale | null {
   const normalized = tag.trim().toLowerCase();
@@ -89,6 +98,22 @@ function detectLocale(request: NextRequest): Locale {
   return defaultLocale;
 }
 
+function hasCurrencyCookie(request: NextRequest): boolean {
+  const value = request.cookies.get(CURRENCY_COOKIE)?.value;
+  return Boolean(value && currencies.includes(value as Currency));
+}
+
+/** Persist first-visit currency from locale; never overwrite an existing choice. */
+function ensureCurrencyCookie(response: NextResponse, request: NextRequest, locale: Locale): void {
+  if (hasCurrencyCookie(request)) return;
+
+  response.cookies.set(CURRENCY_COOKIE, defaultCurrencyForLocale(locale), {
+    path: '/',
+    maxAge: COOKIE_MAX_AGE,
+    sameSite: 'lax',
+  });
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -100,16 +125,19 @@ export function middleware(request: NextRequest) {
     const response = NextResponse.next();
     response.cookies.set(LOCALE_COOKIE, matchedLocale, {
       path: '/',
-      maxAge: 60 * 60 * 24 * 365,
+      maxAge: COOKIE_MAX_AGE,
       sameSite: 'lax',
     });
+    ensureCurrencyCookie(response, request, matchedLocale);
     return response;
   }
 
   const locale = detectLocale(request);
   const url = request.nextUrl.clone();
   url.pathname = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
-  return NextResponse.redirect(url);
+  const response = NextResponse.redirect(url);
+  ensureCurrencyCookie(response, request, locale);
+  return response;
 }
 
 export const config = {

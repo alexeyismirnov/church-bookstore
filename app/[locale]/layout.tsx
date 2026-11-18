@@ -20,7 +20,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   }
 
   const locale = resolveLocaleParam(localeParam);
-  const initialCurrency: Currency = await resolveCurrencyFromCookies();
+  const initialCurrency: Currency = await resolveCurrencyFromCookies(locale);
 
   return (
     <Providers initialLocale={locale} initialCurrency={initialCurrency}>

@@ -43,7 +43,7 @@ function parsePage(page?: string): number {
 }
 
 async function loadCatalogContext(locale: Locale, searchParams: CatalogUrlParams) {
-  const currency = await resolveCurrencyFromParams();
+  const currency = await resolveCurrencyFromParams(locale);
   const page = parsePage(searchParams.page);
   const inStock = searchParams.in_stock === 'true';
 

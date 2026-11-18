@@ -28,6 +28,13 @@ export type Currency = (typeof currencies)[number];
 
 export const defaultCurrency: Currency = 'USD';
 
+/** First-visit currency from browser/locale: zh-hans→CNY, zh-hant→HKD, else USD. */
+export function defaultCurrencyForLocale(locale: Locale): Currency {
+  if (locale === 'zh-hans') return 'CNY';
+  if (locale === 'zh-hant') return 'HKD';
+  return defaultCurrency;
+}
+
 // Currency symbols for UI display
 export const currencySymbols: Record<Currency, string> = {
   USD: '$',
